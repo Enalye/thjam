@@ -7,9 +7,6 @@ public class GameScheduler : MonoBehaviour
 {
     public static GameScheduler instance = null;     // Singleton
 
-    //public Transform origin;
-    public Transform background;
-
     public MeshPool meshpool;
     public List<Enemy> enemies;
     public Player player;
@@ -41,14 +38,9 @@ public class GameScheduler : MonoBehaviour
             Destroy(gameObject);
         }
 
-        InitializeCameraSettings();
-
         // Initialize quadtree and meshpool
         quadtree.Init();
         meshpool.Init();
-
-        background.position = ComputePosition(new Vector3(-96, 0, 50));
-        background.localScale = ComputeScale(new Vector3(384, 448));
 
         // Initialize player
         player.Init();
@@ -82,31 +74,5 @@ public class GameScheduler : MonoBehaviour
             accumulator -= dt;
             t += dt;
         }
-
-        /*float alpha = accumulator / dt;
-        meshpool.PrepareRendering(alpha);*/
-    }
-
-    void InitializeCameraSettings() {
-        cam = Camera.main;
-        cam_height = 2f * cam.orthographicSize;
-        cam_width = cam_height * cam.aspect;
-
-        scale_factor = Camera.main.orthographicSize / 240;
-        origin = new Vector3(-cam_width / 2f, cam_height / 2f); // Origin is top left
-    }
-
-    // Compute positions, and scale for different resolutions
-    public static Vector3 ComputePosition(Vector3 position) {
-        Vector3 rapport = new Vector3(position.x / default_resolution.x,
-                                      position.y / default_resolution.y,
-									  position.z);
-
-		position = new Vector3(rapport.x * cam_width, rapport.y * cam_height, position.z);
-        return position;
-    }
-
-    public static Vector3 ComputeScale(Vector3 scale) {
-        return scale * scale_factor;
     }
 }
