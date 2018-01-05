@@ -42,7 +42,7 @@ public class QuadTreeHolder : MonoBehaviour {
 	public void CheckCollision(Player player) {
 		bullets_close_player.Clear();
 		if(player.obj != null && player.can_be_damaged) { // Optimisation
-			bullets_close_player = quadtree.Get(player.obj.AABB);
+			bullets_close_player = quadtree.Get(player.grazeObj.AABB);
 
 			// For each bullet close to the ennemy
 			for(int i = 0; i < bullets_close_player.Count && player.can_be_damaged; ++i) {
@@ -55,14 +55,14 @@ public class QuadTreeHolder : MonoBehaviour {
 					bullet.Type == EType.ENEMY)) {
 
 					if(CircleCollision(playerPos, bulletPos, player.grazebox_radius, bullet.Radius)) {
-						if(CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
-							StartCoroutine(player._HitDisplay());
-							bullet_pool.RemoveBullet(bullets_close_player[i]);
-						}
-
 						if (bullet.Grazed == false) {
 							StartCoroutine(player._GrazeDisplay());
 							bullet.Grazed = true;
+						}
+
+						if(CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
+							StartCoroutine(player._HitDisplay());
+							bullet_pool.RemoveBullet(bullets_close_player[i]);
 						}
 					}
 				}
@@ -258,9 +258,9 @@ public class QuadTreeHolder : MonoBehaviour {
 
 		if (player.obj != null) {
 			Gizmos.color = Color.red;
-			Gizmos.DrawWireSphere (player.obj.Position, player.obj.Radius);
+			Gizmos.DrawWireSphere (player.obj.Position, player.hitbox_radius);
 			Gizmos.color = Color.blue;
-			Gizmos.DrawWireSphere (player.obj.Position, player.collectHitboxRadius);
+			Gizmos.DrawWireSphere (player.obj.Position, player.grazebox_radius);
 		}
     }
 }
