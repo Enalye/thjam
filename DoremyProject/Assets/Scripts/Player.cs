@@ -203,8 +203,11 @@ public class Player : Entity {
     }
 
 	public IEnumerator _HitDisplay() {
+		can_be_damaged = false;
+		pool.UpdateGaugeLevel(-15.0f);
 		pool.ChangeBulletColor(obj, Color.red);
 		yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
 		pool.ChangeBulletColor(obj, Color.white);
+		can_be_damaged = true;
 	}
 }
