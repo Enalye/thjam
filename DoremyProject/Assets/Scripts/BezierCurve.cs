@@ -18,11 +18,6 @@ public class BezierCurve : MonoBehaviour {
     [SerializeField]
     private Path path;
     public int linesteps;
-	
-    public BezierCurve(int l) {
-        linesteps = l;
-        path = new Path(4);
-    }
 
     public int CurveCount {
         get {
@@ -47,6 +42,10 @@ public class BezierCurve : MonoBehaviour {
     public void SetControlPoint(int index, Vector3 point) {
         path.points[index] = point;
     }
+
+	public void SetTime(int cr_index, float value) {
+		path.time[cr_index] = value;
+	}
 
     public void ComputeTimeIndex(ref float t, out int i) {
         // Position the right index and time
@@ -93,12 +92,16 @@ public class BezierCurve : MonoBehaviour {
     }
 
     public void Reset() {
-        path.points = new Vector3[] {
-            new Vector3(1f, 0f, 0f),
-            new Vector3(2f, 0f, 0f),
-            new Vector3(3f, 0f, 0f),
-            new Vector3(4f, 0f, 0f)
-        };
+		if (path != null) {
+			path = new Path(4);
+		}
+
+		path.points = new Vector3[] {
+			new Vector3 (1f, 0f, 0f),
+			new Vector3 (2f, 0f, 0f),
+			new Vector3 (3f, 0f, 0f),
+			new Vector3 (4f, 0f, 0f)
+		};
 	}
 
     public void AddCurve() {
