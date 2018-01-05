@@ -265,7 +265,7 @@ public partial class Bullet : ScriptableObject
         }
     }
 
-    public IEnumerator _Follow(BezierCurve curve) {
+	public IEnumerator _Follow(BezierCurve curve) {
         float elapsedTime = 0;
         while (elapsedTime < 1) {
             Position = curve.GetPoint(elapsedTime);
