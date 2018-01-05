@@ -20,10 +20,15 @@ public partial class MeshPool : MonoBehaviour {
 
     // Number of bullets to pre-allocate
     public int MaxBullets = 5000;
+	private int MaxItems;
 
     // Mesh and bullets pre-allocated
     private Mesh[] _meshs;
     private Bullet[] _bullets;
+
+	// Dream gauge
+	private Gauge _gauge;
+	public Gauge _gauge_prefab;
 
     // Vertices data
     private int[][] _indices;
@@ -41,13 +46,17 @@ public partial class MeshPool : MonoBehaviour {
     public void Init() {
         _active.Clear();
 
-        _bullets = new Bullet[MaxBullets];
+		MaxItems = MaxBullets + 1;
+		_bullets = new Bullet[MaxItems];
         for(int i = 0; i < MaxBullets; i++) {
             _bullets[i] = ScriptableObject.CreateInstance("Bullet") as Bullet;
         }
 
+		// Init gauge
+		_bullets[MaxBullets] = ScriptableObject.CreateInstance("Gauge") as Gauge;
+
         // Dirty init stuff here
-        _available = new Queue<int>(Enumerable.Range(0, MaxBullets));
+		_available = new Queue<int>(Enumerable.Range(0, MaxBullets));
 
         int NbMaterials = (int)EMaterial.COUNT;
 
@@ -74,15 +83,16 @@ public partial class MeshPool : MonoBehaviour {
 
         // Allocating for each material @TODO maybe set MaxBullets to less for some meshs. Or use sprites for them !
         for (int i = 0; i < NbMaterials; ++i) {
-            _vertices[i] = new Vector3[MaxBullets * 4];
-            _indices[i] = new int[MaxBullets * 6];
-            _normals[i] = Enumerable.Repeat(Vector3.back, MaxBullets * 4).ToArray();
-            _uvs[i] = new Vector2[MaxBullets * 4];
-            _colors[i] = Enumerable.Repeat((Color32)Color.white, MaxBullets * 4).ToArray();
+			_vertices[i] = new Vector3[MaxItems * 4];
+			_indices[i] = new int[MaxItems * 6];
+			_normals[i] = Enumerable.Repeat(Vector3.back, MaxItems * 4).ToArray();
+			_uvs[i] = new Vector2[MaxItems * 4];
+			_colors[i] = Enumerable.Repeat((Color32)Color.white, MaxItems * 4).ToArray();
             _meshs[i] = new Mesh { vertices = _vertices[i], normals = _normals[i], uv = _uvs[i], colors32 = _colors[i] };
 			_materials[i] = MeshRenderers[i].sharedMaterial;
         }
 
+		SetupGauge();
     }
 
     public List<Bullet> GetBullets() {
@@ -114,6 +124,15 @@ public partial class MeshPool : MonoBehaviour {
 
         return bullet;
     }
+
+	public void SetupGauge() {
+		_gauge = _bullets[MaxBullets] as Gauge;
+		_gauge.CopyData(_gauge_prefab);
+		_gauge.Index = MaxBullets;
+
+		SetupBullet(_gauge);
+		StartCoroutine(_gauge._Decrease());
+	}
 
     public void SetupBullet(Bullet bullet) {
         int MaterialIdx = (int)bullet.Material;
@@ -150,7 +169,7 @@ public partial class MeshPool : MonoBehaviour {
 
         return bullet;
     }
-
+		
     public void CleanBullet(Bullet bullet) {
         // We only clean indice data because laziness / optimisation
         int xdx = bullet.Index * 6;
@@ -199,12 +218,15 @@ public partial class MeshPool : MonoBehaviour {
 				// Update bullets position if they are not part of a group
 				if (bullet.Owner != EOwner.GROUP) {
 					int MaterialIdx = (int)bullet.Material;
-					bullet.ComputePosition(_vertices [MaterialIdx], _colors [MaterialIdx], dt);
+					bullet.ComputePosition(_vertices[MaterialIdx], _colors[MaterialIdx], dt);
 				}
 
 				_temp.Add (bullet);
 			}
         }
+
+		int GaugeMatIdx = (int)_gauge.Material;
+		_gauge.ComputePosition(_vertices[GaugeMatIdx], _colors[GaugeMatIdx], dt);
 
         _active = _temp;
         BulletCount = _active.Count;
