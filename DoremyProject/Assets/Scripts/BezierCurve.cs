@@ -49,15 +49,10 @@ public class BezierCurve : MonoBehaviour {
 
     public void ComputeTimeIndex(ref float t, out int i) {
         // Position the right index and time
-        if (t >= 1f) {
-            t = 1f;
-            i = path.points.Length - 4;
-        } else {
-            float step = Mathf.Clamp01(t) * CurveCount;
-            i = (int)step;
-            t = step - i;
-            i *= 3;
-        }
+        float step = Mathf.Clamp01(t) * CurveCount;
+        i = (int)step;
+        t = step - i;
+        i *= 3;
     }
 
     public float GetSpeed(float t) {
