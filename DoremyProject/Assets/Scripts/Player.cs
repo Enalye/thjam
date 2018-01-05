@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Player : Entity {
     public static Player instance = null;     // Singleton
 	public float hitbox_radius = 0.15f;
-	public float grazebox_radius = 0.25f;
+	public float grazebox_radius = 0.3f;
 
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
@@ -17,6 +17,7 @@ public class Player : Entity {
     public Bounds clamping;
 
 	public Bullet playerSprite;
+	public Bullet grazeObj;
     public GameObject bomb;
 
     public float focus_speed = 5;
@@ -93,6 +94,10 @@ public class Player : Entity {
 				playerSprite.Scale = transform.lossyScale;
 			}
 
+			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
+			grazeObj.SetScaleFromRadius(grazebox_radius);
+			grazeObj.Color = new Color32(255, 255, 255, 125);
+
 			/* Init collection hitbox */
         
 			if (power_level >= 1) { 
@@ -144,19 +149,19 @@ public class Player : Entity {
         }
 
         Vector3 move = new Vector3(moveHorizontal, moveVertical, 0);
-        obj.Direction = move.normalized;
+		grazeObj.Direction = obj.Direction = move.normalized;
         transform.position = obj.Position;
 
         if(move != Vector3.zero) {
             moving = true;
             if (Input.GetKey("left shift")) {
-                obj.Speed = focus_speed;
+				grazeObj.Speed = obj.Speed = focus_speed;
             } else {
-				obj.Speed = unfocus_speed;
+				grazeObj.Speed = obj.Speed = unfocus_speed;
             }
         } else {
             moving = false;
-            obj.Speed = 0;
+			grazeObj.Speed = obj.Speed = 0;
         }
 
 		if (animator != null) {

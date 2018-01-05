@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-public class Enemy : Entity {
+public partial class Enemy : Entity {
 	public Sprite power_item;
 	public Sprite point_item;
 
@@ -21,8 +21,9 @@ public class Enemy : Entity {
 
         if(obj != null && Application.isPlaying) {
 			obj.SetScaleFromRadius(0.75f);
-			StartCoroutine(Pattern());
-        }
+			//StartCoroutine(CirclePattern());
+			StartCoroutine(RosaceSpell());
+		}
     }
 
     public void Die() {
@@ -52,7 +53,7 @@ public class Enemy : Entity {
 		yield return new WaitForFixedUpdate ();
 	}
 
-	public IEnumerator Pattern() {
+	public IEnumerator CirclePattern() {
 		for(int i = 0; i < 5; i++) {
 			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
 			Circle(type, 15, 2f, 0);
@@ -62,13 +63,14 @@ public class Enemy : Entity {
 		yield return new WaitForSeconds (0.25f);
 	}
 
+
 	public void Circle(EType type, float n, float speed, float offset) {
 		for(float i = 0; i < 360; i += 360 / n) {
 			float ang = i + offset;
 
 			if (bullet_sprite) { // The mesh pool for bullets != null) {
 				Bullet shot = pool.AddBullet(bullet_sprite, type, EMaterial.BULLET,
-					             			 obj.Position, speed, ang, 0, 0);
+					             			 obj.Position, 0, ang, 0, 0);
 
 				shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
 				shot.SetScaleFromRadius(0.2f);
@@ -78,6 +80,19 @@ public class Enemy : Entity {
 				bullets.Add(shot);
 			}
 		}
+	}
+
+	public void Rosace(float k, float ang, float radius, float rot, Bullet rosacePart) {
+		float radAng = Mathf.Deg2Rad * ang;
+		rosacePart.Position.x = Mathf.Cos(k * radAng) * Mathf.Sin(radAng) * radius;
+		rosacePart.Position.y = Mathf.Cos(k * radAng) * Mathf.Cos(radAng) * radius;
+
+		float x = rosacePart.Position.x;
+		float y = rosacePart.Position.y;
+
+		float radRot = Mathf.Deg2Rad * rot;
+		rosacePart.Position.x = obj.Position.x + (x * Mathf.Cos(radRot) - y * Mathf.Sin(radRot));
+		rosacePart.Position.y = obj.Position.y + (x * Mathf.Sin(radRot) + y * Mathf.Cos(radRot));
 	}
 
 	private void SpawnItem(Sprite sprite) {
