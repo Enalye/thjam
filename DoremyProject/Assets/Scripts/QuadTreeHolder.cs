@@ -51,7 +51,7 @@ public class QuadTreeHolder : MonoBehaviour {
 					bullets_close_player[i].Type == EType.ENEMY) &&
 					CircleCollision(player.obj, bullets_close_player[i])) {
 
-					// Update player life
+					StartCoroutine(player._HitDisplay());
 				}
 
 				if((bullets_close_player[i].Type == EType.ITEM)) {
@@ -231,6 +231,9 @@ public class QuadTreeHolder : MonoBehaviour {
 
 			Gizmos.color = Color.green;
 			Gizmos.DrawWireCube (bullets[i].AABB.center, bullets[i].AABB.size);
+
+			Gizmos.color = Color.red;
+			Gizmos.DrawWireSphere (bullets[i].AABB.center, bullets[i].Radius);
         }
 
 		if (player.obj != null) {

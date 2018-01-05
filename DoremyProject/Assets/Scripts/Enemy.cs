@@ -67,10 +67,10 @@ public class Enemy : Entity {
 
 			if (bullet_sprite) { // The mesh pool for bullets != null) {
 				Bullet shot = pool.AddBullet(bullet_sprite, EType.BULLET, EMaterial.BULLET,
-					             obj.Position, speed, ang, 0, 0);
+					             			 obj.Position, speed, ang, 0, 0);
 
-				shot.Scale = Vector3.one * 0.5f;
-				shot.Radius = 5;
+				shot.Radius = 0.2f;
+				shot.Scale = Vector3.one * shot.Radius * 2;
 				shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
 				shot.AutoDelete = false;
 

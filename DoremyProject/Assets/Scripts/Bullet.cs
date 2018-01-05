@@ -126,8 +126,8 @@ public partial class Bullet : ScriptableObject
 		if (ang_vec.HasValue) { AngularVelocity = ang_vec.Value; }
 	}
 
-    public void CopyData(Sprite sprite, EType type, EMaterial material,
-                         Vector3 position, float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
+    public void CopyData(Sprite sprite, EType type, EMaterial material, Vector3 position,
+						 float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
         Position = position;
         PreviousPosition = position;
         Direction = new Vector3(0, 0);

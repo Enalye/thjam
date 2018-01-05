@@ -190,14 +190,18 @@ public partial class MeshPool : MonoBehaviour {
         _temp.Remove(bullet);
     }
 
-    public Bullet ChangeBulletAppearance(Bullet bullet, Sprite sprite, EMaterial material) {
+    public void ChangeBulletAppearance(Bullet bullet, Sprite sprite, EMaterial material) {
         CleanBullet(bullet);
         bullet.Bounds = sprite.bounds;
         bullet.UVs = sprite.rect;
         bullet.Material = material;
         SetupBullet(bullet);
-        return bullet;
     }
+
+	public void ChangeBulletColor(Bullet bullet, Color32 color) {
+		bullet.Color = color;
+		SetupBullet(bullet);
+	}
 
     public void UpdateBulletAppearance(Bullet bullet) {
         int MaterialIdx = (int)bullet.Material;
