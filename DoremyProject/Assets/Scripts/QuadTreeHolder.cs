@@ -31,11 +31,11 @@ public class QuadTreeHolder : MonoBehaviour {
     }
 	
 	// Clear and re-add bullets to the QuadTree (maybe logic needs to be sorted out of the quadtree to avoid complexity)
-	public void ReferenceBullets (List<Bullet> pool_bullets) {
+	public void ReferenceBullets(List<Bullet> pool_bullets) {
 		ResetQuadTree();
 
 		foreach (Bullet bullet in pool_bullets) {
-			quadtree.Insert (bullet);
+			quadtree.Insert(bullet);
 		}
 	}
 
