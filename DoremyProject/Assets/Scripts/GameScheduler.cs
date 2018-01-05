@@ -27,8 +27,6 @@ public class GameScheduler : MonoBehaviour
 
     public bool InDialogue;
 
-	private 
-
     // Charged to initialize every other script in the right order.
     void OnEnable() {
         // Set instance to this object

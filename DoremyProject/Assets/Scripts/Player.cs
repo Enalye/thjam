@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Player : Entity {
     public static Player instance = null;     // Singleton
+	public float hitbox_radius = 0.15f;
 
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
@@ -20,6 +21,7 @@ public class Player : Entity {
     public float focus_speed = 5;
     public float unfocus_speed = 10;
 	public float collectHitboxRadius = 50;
+	public float secondsOfInvicibilityOnHit = 1.2f;
 
     public int power_level;
     public Sprite option;
@@ -75,10 +77,11 @@ public class Player : Entity {
 
 		if (obj != null) {
 			obj.Clamping = clamping;
-			obj.Radius = 5; // @TODO : pass this in parameter
+			obj.Radius = hitbox_radius;
+			obj.Scale = Vector3.one * hitbox_radius * 2;
 
 			// Object is invisible and only used for collision
-			obj.Color = new Color (0, 0, 0, 0);
+			obj.Color = Color.white; // Temporary visible as missing the sprites
 
 			/* Init options lists */
 			option_data = new OptionData();
@@ -86,7 +89,7 @@ public class Player : Entity {
 			option_data.positions = new List<Vector3>();
 
 			if (animatorRenderer != null) {
-				playerSprite = pool.AddBullet (animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
+				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
 				playerSprite.Scale = transform.lossyScale;
 			}
 
@@ -111,7 +114,7 @@ public class Player : Entity {
 
         // Update appearance (if driven by sprite)
 		if(playerSprite != null) {
-			playerSprite = pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER);
+			pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER);
 			playerSprite.Position = obj.Position;
         }
 
@@ -198,4 +201,10 @@ public class Player : Entity {
             }
         }
     }
+
+	public IEnumerator _HitDisplay() {
+		pool.ChangeBulletColor(obj, Color.red);
+		yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
+		pool.ChangeBulletColor(obj, Color.white);
+	}
 }
