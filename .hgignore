@@ -1,6 +1,8 @@
 syntax: glob
 
 DoremyProject/DoremyProject.userprefs
+DoremyProject/Assembly-CSharp-Editor.csproj
+DoremyProject/Assembly-CSharp.csproj
 
 DoremyProject/obj
 DoremyProject/Library
