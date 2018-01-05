@@ -11,6 +11,8 @@ public partial class Enemy : Entity {
     public Color death_color;       // Color used for coroutine DeathEffect
 	public float life;              // The amount of life this enemy has
 
+	public BezierCurve curve;
+
 	public Sprite bullet_sprite;
 
     private bool dead;
@@ -21,7 +23,7 @@ public partial class Enemy : Entity {
 
         if(obj != null && Application.isPlaying) {
 			obj.SetScaleFromRadius(0.75f);
-			//StartCoroutine(CirclePattern());
+			StartCoroutine(obj._Follow(curve));
 			StartCoroutine(RosaceSpell());
 		}
     }
