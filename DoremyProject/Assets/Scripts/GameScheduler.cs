@@ -53,7 +53,7 @@ public class GameScheduler : MonoBehaviour
     }
 
     void Update() {
-        player.UpdateAt();
+        player.UpdateAt(1f);
         //dialogue.UpdateAt();
 
         float frameTime = Time.deltaTime;
@@ -64,7 +64,7 @@ public class GameScheduler : MonoBehaviour
 			meshpool.ReferenceBullets();	// Reference bullets for collisions
 
 			// Collisions checks
-			player.UpdateAt();
+			player.UpdateAt(dt);
 			for (int i = 0; i < enemies.Count; ++i) {
 				enemies[i].UpdateAt(dt);
 			}
