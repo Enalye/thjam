@@ -232,10 +232,12 @@ public class QuadTreeHolder : MonoBehaviour {
 			Gizmos.color = Color.green;
 			Gizmos.DrawWireCube (bullets[i].AABB.center, bullets[i].AABB.size);
         }
-			
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere (player.obj.Position, player.obj.Radius);
-		Gizmos.color = Color.blue;
-		Gizmos.DrawWireSphere (player.obj.Position, player.collectHitboxRadius);
+
+		if (player.obj != null) {
+			Gizmos.color = Color.red;
+			Gizmos.DrawWireSphere (player.obj.Position, player.obj.Radius);
+			Gizmos.color = Color.blue;
+			Gizmos.DrawWireSphere (player.obj.Position, player.collectHitboxRadius);
+		}
     }
 }

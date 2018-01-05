@@ -204,19 +204,18 @@ public partial class Bullet : ScriptableObject
     }
 
     // This is used for physics
-    public virtual void ComputePosition(Vector3[] _vertices, Color32[] _colors, float dt = 0) {
+    public virtual void ComputePosition(Vector3[] vertices, Color32[] colors, float dt = 0) {
         UpdateState(dt);
-        SetupVertices(_vertices, _colors);     
+        SetupVertices(vertices, colors);     
     }
 
     // This is the real function setting up vertices
-    public virtual void SetupVertices(Vector3[] _vertices, Color32[] _colors) {
+	public virtual void SetupVertices(Vector3[] vertices, Color32[] colors) {
         int offset = Index * 4;
         Vector3 bullet_ext = Vector3.Scale(Bounds.extents, Scale);
 
         // Clamp
-        if (Clamping != null)
-        {
+        if (Clamping != null) {
             Vector3 clamping_ext = Clamping.Value.extents;
             Vector3 clamping_pos = Clamping.Value.center;
             Vector3 max_boundary = new Vector3(clamping_pos.x + clamping_ext.x - bullet_ext.x, clamping_pos.y - clamping_ext.y - bullet_ext.y);
@@ -229,21 +228,25 @@ public partial class Bullet : ScriptableObject
         float max_x = Position.x + bullet_ext.x;
         float max_y = Position.y + bullet_ext.y;
 
-        _vertices[offset] = Maths.Rotate(new Vector3(min_x, min_y, Position.z), Position, SpriteAngle);          // Low left
-        _vertices[offset + 1] = Maths.Rotate(new Vector3(max_x, min_y, Position.z), Position, SpriteAngle);      // Up left
-        _vertices[offset + 2] = Maths.Rotate(new Vector3(max_x, max_y, Position.z), Position, SpriteAngle);      // Up right
-        _vertices[offset + 3] = Maths.Rotate(new Vector3(min_x, max_y, Position.z), Position, SpriteAngle);      // Low right
+		SetupVertices(offset, min_x, min_y, max_x, max_y, vertices, colors);
 
         // Update colliders box
-        float rect_min_x = Mathf.Min(_vertices[offset].x, _vertices[offset + 1].x, _vertices[offset + 2].x, _vertices[offset + 3].x);
-        float rect_min_y = Mathf.Min(_vertices[offset].y, _vertices[offset + 1].y, _vertices[offset + 2].y, _vertices[offset + 3].y);
-        float rect_max_x = Mathf.Max(_vertices[offset].x, _vertices[offset + 1].x, _vertices[offset + 2].x, _vertices[offset + 3].x);
-        float rect_max_y = Mathf.Max(_vertices[offset].y, _vertices[offset + 1].y, _vertices[offset + 2].y, _vertices[offset + 3].y);
+		float rect_min_x = Mathf.Min(vertices[offset].x, vertices[offset + 1].x, vertices[offset + 2].x, vertices[offset + 3].x);
+		float rect_min_y = Mathf.Min(vertices[offset].y, vertices[offset + 1].y, vertices[offset + 2].y, vertices[offset + 3].y);
+		float rect_max_x = Mathf.Max(vertices[offset].x, vertices[offset + 1].x, vertices[offset + 2].x, vertices[offset + 3].x);
+		float rect_max_y = Mathf.Max(vertices[offset].y, vertices[offset + 1].y, vertices[offset + 2].y, vertices[offset + 3].y);
         AABB = Rect.MinMaxRect(rect_min_x, rect_min_y, rect_max_x, rect_max_y);
-        OBB = new OBB(_vertices[offset + 3], _vertices[offset + 2], _vertices[offset], _vertices[offset + 1]);
-
-        _colors[offset] = _colors[offset + 1] = _colors[offset + 2] = _colors[offset + 3] = Color;
+		OBB = new OBB(vertices[offset + 3], vertices[offset + 2], vertices[offset], vertices[offset + 1]);
     }
+
+	public void SetupVertices(int offset, float min_x, float min_y, float max_x, float max_y, Vector3[] vertices, Color32[] colors) {
+		vertices[offset] = Maths.Rotate(new Vector3(min_x, min_y, Position.z), Position, SpriteAngle);          // Low left
+		vertices[offset + 1] = Maths.Rotate(new Vector3(max_x, min_y, Position.z), Position, SpriteAngle);      // Up left
+		vertices[offset + 2] = Maths.Rotate(new Vector3(max_x, max_y, Position.z), Position, SpriteAngle);      // Up right
+		vertices[offset + 3] = Maths.Rotate(new Vector3(min_x, max_y, Position.z), Position, SpriteAngle);      // Low right
+
+		colors[offset] = colors[offset + 1] = colors[offset + 2] = colors[offset + 3] = Color;
+	}
 		
     public IEnumerator _Bind(Transform transform) {
         while (Active) {
