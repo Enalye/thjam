@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Player : Entity {
     public static Player instance = null;     // Singleton
 	public float hitbox_radius = 0.15f;
+	public float grazebox_radius = 0.3f;
 
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
@@ -16,6 +17,7 @@ public class Player : Entity {
     public Bounds clamping;
 
 	public Bullet playerSprite;
+	public Bullet grazeObj;
     public GameObject bomb;
 
     public float focus_speed = 5;
@@ -84,8 +86,7 @@ public class Player : Entity {
 
 		if (obj != null) {
 			obj.Clamping = clamping;
-			obj.Radius = hitbox_radius;
-			obj.Scale = Vector3.one * hitbox_radius * 2;
+			obj.SetScaleFromRadius(hitbox_radius);
 
 			// Object is invisible and only used for collision
 			obj.Color = Color.white; // Temporary visible as missing the sprites
@@ -97,6 +98,10 @@ public class Player : Entity {
 				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
 				playerSprite.Scale = transform.lossyScale;
 			}
+
+			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
+			grazeObj.SetScaleFromRadius(grazebox_radius);
+			grazeObj.Color = new Color32(255, 255, 255, 125);
 
 			/* Init collection hitbox */
 
@@ -146,19 +151,19 @@ public class Player : Entity {
         }
 
         Vector3 move = new Vector3(moveHorizontal, moveVertical, 0);
-        obj.Direction = move.normalized;
+		grazeObj.Direction = obj.Direction = move.normalized;
         transform.position = obj.Position;
 
         if(move != Vector3.zero) {
             moving = true;
             if (Input.GetButton("Focus")) {
-                obj.Speed = focus_speed;
+				grazeObj.Speed = obj.Speed = focus_speed;
             } else {
-				obj.Speed = unfocus_speed;
+				grazeObj.Speed = obj.Speed = unfocus_speed;
             }
         } else {
             moving = false;
-            obj.Speed = 0;
+			grazeObj.Speed = obj.Speed = 0;
         }
 
 		if (animator != null) {
@@ -338,8 +343,15 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _EatDisplay() {
-		pool.UpdateGaugeLevel(1.0f);
+		pool.UpdateGaugeLevel(5.0f);
 		pool.ChangeBulletColor(obj, Color.green);
+		yield return new WaitForSeconds(0.1f);
+		pool.ChangeBulletColor(obj, Color.white);
+	}
+
+	public IEnumerator _GrazeDisplay() {
+		pool.UpdateGaugeLevel(5.0f);
+		pool.ChangeBulletColor(obj, Color.yellow);
 		yield return new WaitForSeconds(0.1f);
 		pool.ChangeBulletColor(obj, Color.white);
 	}

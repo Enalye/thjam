@@ -1,12 +1,13 @@
 fileFormatVersion: 2
 guid: 40932b83bab65a640a6765f2559657e4
-timeCreated: 1515143792
+timeCreated: 1515164703
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: shapes_0
     21300002: shapes_1
     21300004: shapes_2
+    21300006: shapes_3
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -118,6 +119,20 @@ TextureImporter:
         y: 310
         width: 119
         height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shapes_3
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 301
+        width: 125
+        height: 108
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
