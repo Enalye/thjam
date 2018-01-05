@@ -210,4 +210,11 @@ public class Player : Entity {
 		pool.ChangeBulletColor(obj, Color.white);
 		can_be_damaged = true;
 	}
+
+	public IEnumerator _EatDisplay() {
+		pool.UpdateGaugeLevel(1.0f);
+		pool.ChangeBulletColor(obj, Color.green);
+		yield return new WaitForSeconds(0.1f);
+		pool.ChangeBulletColor(obj, Color.white);
+	}
 }

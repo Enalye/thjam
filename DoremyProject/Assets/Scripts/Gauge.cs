@@ -22,7 +22,7 @@ public class Gauge : Bullet {
 	}
 
 	public void UpdateLevel(float levelChange) {
-		level = Mathf.Max(0, level + levelChange);
+		level = Mathf.Clamp(level + levelChange, 0, 100);
 	}		
 
 	public IEnumerator _Decrease() {

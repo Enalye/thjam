@@ -2,7 +2,7 @@
 using System.Collections;
 
 public enum EOwner { ENEMY, PLAYER, GROUP, NONE };
-public enum EType { DEFAULT, PLAYER, OPTION, SHOT, ENEMY, BULLET, BOMB, ITEM, EFFECT, CUSTOM };
+public enum EType { DEFAULT, PLAYER, OPTION, SHOT, ENEMY, NIGHTMARE, DREAM, BOMB, ITEM, EFFECT, CUSTOM };
 public enum EStyle { SHOT, LASER, CURVE, TEXT };
 
 // Add as many items as materials / fonts (in rendering order)
