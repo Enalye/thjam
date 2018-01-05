@@ -58,6 +58,7 @@ public partial class Enemy : Entity {
 		}
 
 		if (pattern == EPattern.HOMING) {
+			obj.Lifetime = wait_time + 8;
 			StartCoroutine(HomingPattern());
 		}
 	}
