@@ -208,6 +208,10 @@ public partial class MeshPool : MonoBehaviour {
         bullet.SetupUVs(_uvs[MaterialIdx], _materials[MaterialIdx].mainTexture);
     }
 
+	public void UpdateGaugeLevel(float levelChange) {
+		_gauge.UpdateLevel(levelChange);
+	}
+
     public void UpdateAt(float dt) {
         _temp = new List<Bullet>();
 

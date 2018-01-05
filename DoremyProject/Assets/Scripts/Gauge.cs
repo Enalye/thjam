@@ -21,10 +21,14 @@ public class Gauge : Bullet {
 		SetupVertices(offset, min_x, min_y, max_x, max_y, vertices, colors);
 	}
 
+	public void UpdateLevel(float levelChange) {
+		level = Mathf.Max(0, level + levelChange);
+	}		
+
 	public IEnumerator _Decrease() {
 		while (Application.isPlaying) {
 			yield return new WaitForSeconds (0.1f);
-			level = Mathf.Max(0, level - 0.5f);
+			UpdateLevel(-0.5f);
 		}
 	}
 }
