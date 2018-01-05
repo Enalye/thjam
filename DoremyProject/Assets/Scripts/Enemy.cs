@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { CIRCLE, ROSACE, HOMING };
+public enum EPattern { CIRCLE, ROSACE, HOMING, NONSPELL1 };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -27,6 +27,7 @@ public partial class Enemy : Entity {
 
         if(obj != null && Application.isPlaying) {
 			obj.SetScaleFromRadius(0.35f);
+
 			StartCoroutine(_Behaviour());
 		}
     }
@@ -47,7 +48,10 @@ public partial class Enemy : Entity {
 
 	public IEnumerator _Behaviour() {
 		yield return new WaitForSeconds(wait_time);
-		StartCoroutine(obj._Follow(curve));
+
+		if (curve != null) {
+			StartCoroutine (obj._Follow (curve));
+		}
 
 		if (pattern == EPattern.ROSACE) {
 			StartCoroutine(RosaceSpell(obj.Position.x > 0 ? 1 : -1));
@@ -60,6 +64,10 @@ public partial class Enemy : Entity {
 		if (pattern == EPattern.HOMING) {
 			obj.Lifetime = wait_time + 8;
 			StartCoroutine(HomingPattern());
+		}
+
+		if (pattern == EPattern.NONSPELL1) {
+			StartCoroutine(DoremyNonspell1());
 		}
 	}
 
