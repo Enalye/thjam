@@ -1,4 +1,7 @@
 syntax: glob
 
+DoremyProject/DoremyProject.userprefs
+
+DoremyProject/obj
 DoremyProject/Library
 DoremyProject/Temp

@@ -24,9 +24,7 @@ public class Player : Entity {
 	public float secondsOfInvicibilityOnHit = 1.2f;
 
     public int power_level;
-    public Sprite option;
-    public float option_scale;
-    public List<OptionData> default_option_data;
+    public Sprite optionSprite;
 
     public List<Transform> bomb_components;
 
@@ -54,12 +52,21 @@ public class Player : Entity {
     [System.NonSerialized]
     public bool render;
 
-    private OptionData option_data;
+    private List<OptionData> options;
 
     [System.Serializable]
     public class OptionData {
-        public List<Vector3> positions;
-        public List<Bullet> options;
+        public Vector3 position;
+        public Bullet bullet;
+
+		public OptionData(Bullet nBullet) {
+			bullet = nBullet;
+
+			bullet.Color = Color.blue;
+			bullet.Radius = .4f;
+			bullet.Scale = Vector3.one * bullet.Radius;
+			bullet.AutoDelete = false;
+		}
     }
 
     public override void Init() {
@@ -84,9 +91,7 @@ public class Player : Entity {
 			obj.Color = Color.white; // Temporary visible as missing the sprites
 
 			/* Init options lists */
-			option_data = new OptionData();
-			option_data.options = new List<Bullet>();
-			option_data.positions = new List<Vector3>();
+			CreateOptions();
 
 			if (animatorRenderer != null) {
 				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
@@ -94,10 +99,6 @@ public class Player : Entity {
 			}
 
 			/* Init collection hitbox */
-        
-			if (power_level >= 1) { 
-				SpawnOptions ();
-			}
 
 			// Init status
 			can_be_damaged = true;
@@ -105,10 +106,13 @@ public class Player : Entity {
 			moving = false;
 			dead = false;
 			render = true;
+
+			StartCoroutine(SpreadShot());
+			StartCoroutine(OptionsShot());
 		}
     }
 
-    public void UpdateAt() {
+	public void UpdateAt(float deltaTime) {
         moveHorizontal = Input.GetAxis("Horizontal");
         moveVertical = Input.GetAxis("Vertical");
 
@@ -121,9 +125,7 @@ public class Player : Entity {
         if (!dead) {
             ManageMovement();
 			pool.QuadTreeHolder.CheckCollision(this);
-            if (power_level >= 1) { // Wrong logic
-                UpdateOptions();
-            }
+			UpdateOptions(deltaTime);
         }
     }
 
@@ -149,7 +151,7 @@ public class Player : Entity {
 
         if(move != Vector3.zero) {
             moving = true;
-            if (Input.GetKey("left shift")) {
+            if (Input.GetButton("Focus")) {
                 obj.Speed = focus_speed;
             } else {
 				obj.Speed = unfocus_speed;
@@ -182,25 +184,149 @@ public class Player : Entity {
 		}
 	}
 
-    void SpawnOptions() {
-        foreach(Vector3 position in default_option_data[power_level-1].positions) {
-			Bullet option_bullet = pool.AddBullet(option, EType.OPTION, EMaterial.PLAYER,
-                                                  obj.Position + position, 0, 0, 0, (position.x < 0) ? 1 : -1);
-            option_bullet.Color = new Color32(255, 255, 255, 125);
-            option_bullet.Scale = new Vector3(option_scale, option_scale);
+	public void CreateOptions() {
+		options = new List<OptionData> ();
+	
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		power_level = 4; //Temporary
+	}
 
-            option_data.options.Add(option_bullet);
-            option_data.positions.Add(position);
-        }
-    }
+	private float optionAngleOffset = 0f;
+	public void UpdateOptions(float deltaTime) {
+		if (Input.GetButton("Focus")) {
+			for (int i = 0; i < options.Count; i++) {
+				if (i >= power_level) {
+					options[i].position = obj.Position;
+					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
+				} else {
+					float optionAngle = ((-90f + (power_level - 1) * -10f) + (i * 20f)) * Mathf.Deg2Rad;
+					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f);
+					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
+					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
+					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
+				}
+				options[i].bullet.Position = options[i].position;
+			}
+		} else {
+			for (int i = 0; i < options.Count; i++) {
+				if (i >= power_level) {
+					options[i].position = obj.Position;
+					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
+				} else {
+					float optionAngle = ((i * 360f + optionAngleOffset) / power_level) * Mathf.Deg2Rad;
+					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f) * 1.5f;
+					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
+					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
+					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
+					optionAngleOffset += deltaTime * 5f;
+				}
+				options[i].bullet.Position = options[i].position;
+			}
+		}
+	}
 
-    void UpdateOptions() {
-        if(obj != null) { 
-            for (int i = 0; i < option_data.options.Count; i++) {
-                option_data.options[i].Position = obj.Position + option_data.positions[i];
-            }
-        }
-    }
+	public IEnumerator OptionsShot() {
+		while(Application.isPlaying) {
+			if(dead)
+				continue;
+			
+			if (Input.GetButton("Focus")) {
+				if (Input.GetButton("Shot1")) {
+					for (int i = 0; i < power_level; i++) {
+						for (int y = 0; y < 4; y++) {
+							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+								options[i].position,
+								10f,
+								(90f - 10f) + (y * 20f / 4f),
+								0f, 0f);
+
+							shot.Color = Color.blue;
+							shot.Radius = .1f;
+							shot.Scale = Vector3.one * shot.Radius;
+							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
+							shot.Lifetime = 1f;
+							shot.AutoDelete = true;
+							bullets.Add(shot);
+						}
+					}
+				}
+				yield return new WaitForSeconds(.25f);
+			} else if(Input.GetButton ("Shot1")) {
+				for (int i = 0; i < power_level; i++) {
+					for (int y = 0; y < 3; y++) {
+						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+							             options[i].position,
+							             10f,
+							             (90f - 20f) + (y * 40f / 3f),
+							             0f, 0f);
+
+						shot.Color = Color.blue;
+						shot.Radius = .1f;
+						shot.Scale = Vector3.one * shot.Radius;
+						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
+						shot.Lifetime = 1f;
+						shot.AutoDelete = true;
+						bullets.Add(shot);
+					}
+				}
+				yield return new WaitForSeconds(.4f);
+			}
+			else yield return new WaitForSeconds(.2f);
+		}
+	}
+
+	public IEnumerator SpreadShot() {
+		while (Application.isPlaying) {
+			if (dead)
+				continue;
+
+			if(Input.GetButton("Focus")) {
+				if (Input.GetButton ("Shot1")) {
+					//Focus fire.
+					for (int i = 0; i < 3; i++) {
+						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+				              obj.Position,
+				              15f,
+				              (90f - 10f) + (i * 20f / 3f),
+				              .2f, 0f);
+
+						shot.Color = Color.red;
+						shot.Radius = .1f;
+						shot.Scale = Vector3.one * shot.Radius * 2f;
+						shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
+						shot.Lifetime = 1f;
+						shot.AutoDelete = true;
+						bullets.Add (shot);
+					}
+				}
+				yield return new WaitForSeconds (.1f);
+			}
+			else if (Input.GetButton ("Shot1")) {
+				//Unfocus fire.
+				for (int i = 0; i < 6; i++) {
+					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+						obj.Position,
+						10f,
+						(90f - 25f) + (i * 50f / 6f),
+						.1f, 0f);
+					
+					shot.Color = Color.green;
+					shot.Radius = .1f;
+					shot.Scale = Vector3.one * shot.Radius * 2f;
+					shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
+					shot.Lifetime = 1.5f;
+					shot.AutoDelete = true;
+					bullets.Add (shot);
+				}
+				yield return new WaitForSeconds (.2f);
+			}
+			else
+				yield return new WaitForSeconds (.3f);
+		}
+	}
 
 	public IEnumerator _HitDisplay() {
 		can_be_damaged = false;
@@ -218,3 +344,28 @@ public class Player : Entity {
 		pool.ChangeBulletColor(obj, Color.white);
 	}
 }
+
+
+
+
+
+						/*   void SpawnOptions() {
+        foreach(Vector3 position in default_option_data[power_level-1].positions) {
+			Bullet option_bullet = pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER,
+                                                  obj.Position + position, 0, 0, 0, (position.x < 0) ? 1 : -1);
+            option_bullet.Color = new Color32(255, 255, 255, 125);
+            option_bullet.Scale = new Vector3(option_scale, option_scale);
+
+            option_data.options.Add(option_bullet);
+            option_data.positions.Add(position);
+        }
+    }
+
+    void UpdateOptions() {
+        if(obj != null) { 
+            for (int i = 0; i < option_data.options.Count; i++) {
+                option_data.options[i].Position = obj.Position + option_data.positions[i];
+            }
+        }
+    }*/
+						
