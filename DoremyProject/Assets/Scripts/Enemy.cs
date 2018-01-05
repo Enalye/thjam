@@ -54,21 +54,23 @@ public class Enemy : Entity {
 
 	public IEnumerator Pattern() {
 		for(int i = 0; i < 5; i++) {
-			Circle(15, 2f, 0);
+			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
+			Circle(type, 15, 2f, 0);
 			yield return new WaitForSeconds(0.75f);
 		}
 
 		yield return new WaitForSeconds (0.25f);
 	}
 
-	public void Circle(float n, float speed, float offset) {
+	public void Circle(EType type, float n, float speed, float offset) {
 		for(float i = 0; i < 360; i += 360 / n) {
 			float ang = i + offset;
 
 			if (bullet_sprite) { // The mesh pool for bullets != null) {
-				Bullet shot = pool.AddBullet(bullet_sprite, EType.BULLET, EMaterial.BULLET,
+				Bullet shot = pool.AddBullet(bullet_sprite, type, EMaterial.BULLET,
 					             			 obj.Position, speed, ang, 0, 0);
 
+				shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
 				shot.Radius = 0.2f;
 				shot.Scale = Vector3.one * shot.Radius * 2;
 				shot.SpriteAngle = new Vector3 (0, 0, ang - 90);

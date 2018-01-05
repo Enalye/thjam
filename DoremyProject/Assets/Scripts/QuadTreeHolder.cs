@@ -47,11 +47,17 @@ public class QuadTreeHolder : MonoBehaviour {
 			// For each bullet close to the ennemy
 			for(int i = 0; i < bullets_close_player.Count && player.can_be_damaged; ++i) {
 				// Enemy collision => player loses a life
-				if((bullets_close_player[i].Type == EType.BULLET ||
+				if((bullets_close_player[i].Type == EType.NIGHTMARE ||
 					bullets_close_player[i].Type == EType.ENEMY) &&
 					CircleCollision(player.obj, bullets_close_player[i])) {
 
 					StartCoroutine(player._HitDisplay());
+				}
+
+				if((bullets_close_player[i].Type == EType.DREAM) &&
+					CircleCollision(player.obj, bullets_close_player[i])) {
+
+					StartCoroutine(player._EatDisplay());
 				}
 
 				if((bullets_close_player[i].Type == EType.ITEM)) {
