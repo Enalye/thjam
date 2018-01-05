@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Player : Entity {
     public static Player instance = null;     // Singleton
 	public float hitbox_radius = 0.15f;
+	public float grazebox_radius = 0.25f;
 
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
@@ -77,8 +78,7 @@ public class Player : Entity {
 
 		if (obj != null) {
 			obj.Clamping = clamping;
-			obj.Radius = hitbox_radius;
-			obj.Scale = Vector3.one * hitbox_radius * 2;
+			obj.SetScaleFromRadius(hitbox_radius);
 
 			// Object is invisible and only used for collision
 			obj.Color = Color.white; // Temporary visible as missing the sprites
@@ -212,8 +212,15 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _EatDisplay() {
-		pool.UpdateGaugeLevel(1.0f);
+		pool.UpdateGaugeLevel(5.0f);
 		pool.ChangeBulletColor(obj, Color.green);
+		yield return new WaitForSeconds(0.1f);
+		pool.ChangeBulletColor(obj, Color.white);
+	}
+
+	public IEnumerator _GrazeDisplay() {
+		pool.UpdateGaugeLevel(5.0f);
+		pool.ChangeBulletColor(obj, Color.yellow);
 		yield return new WaitForSeconds(0.1f);
 		pool.ChangeBulletColor(obj, Color.white);
 	}

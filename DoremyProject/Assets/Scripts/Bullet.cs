@@ -34,6 +34,9 @@ public partial class Bullet : ScriptableObject
     // Is it an active bullet (for coroutines)
     public bool Active = false;
 
+	// Was the bullet grazed ?
+	public bool Grazed = false;
+
     // Standard Position, Rotation, Scale
     public Vector3 Position;
     public Vector3 PreviousPosition;
@@ -118,6 +121,11 @@ public partial class Bullet : ScriptableObject
 
     // Usually not to be modified by hand
     public float CurrentTime { get; set; }
+
+	public void SetScaleFromRadius(float radius) {
+		Radius = radius;
+		Scale = Vector3.one * radius * 2;
+	}
 
 	public void CopyData(float ? speed, float ? angle, float ? acc, float ? ang_vec) {
 		if (speed.HasValue) { Speed = speed.Value; }
