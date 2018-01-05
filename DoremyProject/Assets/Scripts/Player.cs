@@ -85,8 +85,10 @@ public class Player : Entity {
 			option_data.options = new List<Bullet>();
 			option_data.positions = new List<Vector3>();
 
-			playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
-			playerSprite.Scale = transform.lossyScale;
+			if (animatorRenderer != null) {
+				playerSprite = pool.AddBullet (animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
+				playerSprite.Scale = transform.lossyScale;
+			}
 
 			/* Init collection hitbox */
         
@@ -109,12 +111,11 @@ public class Player : Entity {
 
         // Update appearance (if driven by sprite)
 		if(playerSprite != null) {
-			playerSprite = pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER); // @TODO : make this class more generic
+			playerSprite = pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER);
 			playerSprite.Position = obj.Position;
         }
 
-        if (!dead)
-        {
+        if (!dead) {
             ManageMovement();
 			pool.QuadTreeHolder.CheckCollision(this);
             if (power_level >= 1) { // Wrong logic
@@ -146,31 +147,37 @@ public class Player : Entity {
         if(move != Vector3.zero) {
             moving = true;
             if (Input.GetKey("left shift")) {
-                obj.Speed = 50;
+                obj.Speed = focus_speed;
             } else {
-                obj.Speed = 100;
+				obj.Speed = unfocus_speed;
             }
         } else {
             moving = false;
             obj.Speed = 0;
         }
 
-        if (Input.GetKey("x") && bombing == false) {
-            animator.SetBool("IsGoingRight", false);
-            animator.SetBool("IsGoingLeft", false);           
-        } else if(bombing == false) { 
-            if(obj.Direction.x < 0) {
-                animator.SetBool("IsGoingLeft", true);
-                animator.SetBool("IsGoingRight", false);            
-            } else if(obj.Direction.x > 0) {
-                animator.SetBool("IsGoingLeft", false);
-                animator.SetBool("IsGoingRight", true);
-            } else {
-                animator.SetBool("IsGoingLeft", false);
-                animator.SetBool("IsGoingRight", false);
-            }
-        }
+		if (animator != null) {
+			UpdateAnimations();
+		}
     }
+
+	void UpdateAnimations() {
+		if (Input.GetKey ("x") && bombing == false) {
+			animator.SetBool ("IsGoingRight", false);
+			animator.SetBool ("IsGoingLeft", false);           
+		} else if (bombing == false) { 
+			if (obj.Direction.x < 0) {
+				animator.SetBool ("IsGoingLeft", true);
+				animator.SetBool ("IsGoingRight", false);            
+			} else if (obj.Direction.x > 0) {
+				animator.SetBool ("IsGoingLeft", false);
+				animator.SetBool ("IsGoingRight", true);
+			} else {
+				animator.SetBool ("IsGoingLeft", false);
+				animator.SetBool ("IsGoingRight", false);
+			}
+		}
+	}
 
     void SpawnOptions() {
         foreach(Vector3 position in default_option_data[power_level-1].positions) {

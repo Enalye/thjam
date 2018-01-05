@@ -11,24 +11,26 @@ public class Enemy : Entity {
     public Color death_color;       // Color used for coroutine DeathEffect
 	public float life;              // The amount of life this enemy has
 
+	public Sprite bullet_sprite;
+
     private bool dead;
 
-    [ExecuteInEditMode]
     public override void Init() {
         base.Init();
+		dead = false;
 
-        if(obj != null) {
-			dead = false;
+        if(obj != null && Application.isPlaying) {
+			StartCoroutine(Pattern());
         }
     }
 
     public void Die() {
+		Debug.Log("Dying");
         if(!dead) {
             pool.RemoveBullet(obj);
 
 			StopAllCoroutines();
-			StartCoroutine(_DropItems(1, 1));
-            //StartCoroutine(_DeathExplotion());
+			StartCoroutine(_DropItems(1, 1));;
             dead = true;
         }
     }
@@ -36,33 +38,6 @@ public class Enemy : Entity {
 	public void UpdateAt(float dt) {
 		pool.QuadTreeHolder.CheckCollision(this);
 	}
-
-    public IEnumerator _DeathExplotion() {
-		Bullet effect = pool.AddBullet(death_effect, EType.EFFECT, EMaterial.GUI, obj.Position); // TODO : replace with appropriate enemy material / texture
-
-        float scale = 1;
-        float spin = 0;
-        byte alpha = 25;
-
-        effect.Sprite = sprite;
-        float angleX = Random.Range(0, 45);
-        float angleY = Random.Range(0, 45);
-
-        while (scale > 0)
-        {
-            effect.Color = death_color;
-            effect.SpriteAngle = new Vector3(angleX, angleY, spin);
-            effect.Scale = new Vector3(scale, scale);
-
-            scale -= 0.01f;
-            if(alpha > 0) alpha--;
-            spin+=5f;
-
-            yield return new WaitForFixedUpdate();
-        }
-
-		pool.RemoveBullet(effect);
-    }
 
 	public IEnumerator _DropItems(int nbPowerItems, int nbPointItems) {
 		int spriteAngularSpeed = 2;
@@ -75,6 +50,33 @@ public class Enemy : Entity {
 		}
 
 		yield return new WaitForFixedUpdate ();
+	}
+
+	public IEnumerator Pattern() {
+		for(int i = 0; i < 5; i++) {
+			Circle(15, 2f, 0);
+			yield return new WaitForSeconds(0.75f);
+		}
+
+		yield return new WaitForSeconds (0.25f);
+	}
+
+	public void Circle(float n, float speed, float offset) {
+		for(float i = 0; i < 360; i += 360 / n) {
+			float ang = i + offset;
+
+			if (bullet_sprite) { // The mesh pool for bullets != null) {
+				Bullet shot = pool.AddBullet(bullet_sprite, EType.BULLET, EMaterial.BULLET,
+					             obj.Position, speed, ang, 0, 0);
+
+				shot.Scale = Vector3.one * 0.5f;
+				shot.Radius = 5;
+				shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
+				shot.AutoDelete = false;
+
+				bullets.Add(shot);
+			}
+		}
 	}
 
 	private void SpawnItem(Sprite sprite) {

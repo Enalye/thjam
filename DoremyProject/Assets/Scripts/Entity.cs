@@ -17,9 +17,9 @@ public class Entity : MonoBehaviour {
     [ExecuteInEditMode]
     public virtual void Init()
     {
-        if(gameObject.activeInHierarchy) {
+		if(gameObject.activeInHierarchy && sprite != null) {
             bullets = new List<Bullet>();
-			obj = pool.AddBullet(sprite, type, material, GameScheduler.ComputeScale(transform.position));
+			obj = pool.AddBullet(sprite, type, material, transform.position);
         }
     }
 

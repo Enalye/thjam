@@ -6,7 +6,7 @@ public enum EType { DEFAULT, PLAYER, OPTION, SHOT, ENEMY, BULLET, BOMB, ITEM, EF
 public enum EStyle { SHOT, LASER, CURVE, TEXT };
 
 // Add as many items as materials / fonts (in rendering order)
-public enum EMaterial { BULLET, PLAYER, GUI, COUNT, NEUTRAL };
+public enum EMaterial { BULLET, PLAYER, ENEMY, COUNT, NEUTRAL };
 
 [CreateAssetMenu(fileName = "Bullet", menuName = "Sprites/Bullet")]
 public partial class Bullet : ScriptableObject

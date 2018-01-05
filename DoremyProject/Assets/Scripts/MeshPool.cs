@@ -33,7 +33,6 @@ public partial class MeshPool : MonoBehaviour {
     private Color32[][] _colors;
 
     private Material[] _materials;
-    private Font[] _fonts;
 
     // Queue to reference available bullets
     private Queue<int> _available;
@@ -67,21 +66,8 @@ public partial class MeshPool : MonoBehaviour {
         // Colors per material / mesh
         _colors = new Color32[NbMaterials][];
 
-        _fonts = new Font[] {
-            Resources.Load("arial") as Font,
-        };
-
         // Material array aligned with EMaterial enum
-        _materials = new Material[] {
-            // Main Materials
-            Resources.Load("MikoMaterial") as Material,
-            Resources.Load("BulletMaterial") as Material,
-            Resources.Load("BorderMaterial") as Material,
-            Resources.Load("GUIMaterial") as Material,
-            Resources.Load("DialogueMaterial") as Material,
-            // Fonts
-            _fonts[0].material
-        };
+		_materials = new Material[NbMaterials];
 			
         //_mesh = new Mesh {subMeshCount = (int)EMaterial.COUNT, vertices = _vertices, normals = _normals, uv = _uvs, colors32 = _colors};
         _meshs = new Mesh[NbMaterials];
@@ -94,6 +80,7 @@ public partial class MeshPool : MonoBehaviour {
             _uvs[i] = new Vector2[MaxBullets * 4];
             _colors[i] = Enumerable.Repeat((Color32)Color.white, MaxBullets * 4).ToArray();
             _meshs[i] = new Mesh { vertices = _vertices[i], normals = _normals[i], uv = _uvs[i], colors32 = _colors[i] };
+			_materials[i] = MeshRenderers[i].sharedMaterial;
         }
 
     }
@@ -241,7 +228,6 @@ public partial class MeshPool : MonoBehaviour {
             _meshs[i].colors32 = _colors[i];
             _meshs[i].RecalculateBounds();
             MeshFilters[i].mesh = _meshs[i];
-            MeshRenderers[i].material = _materials[i];
         }
     }
 
