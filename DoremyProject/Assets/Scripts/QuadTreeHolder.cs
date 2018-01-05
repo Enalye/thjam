@@ -46,18 +46,32 @@ public class QuadTreeHolder : MonoBehaviour {
 
 			// For each bullet close to the ennemy
 			for(int i = 0; i < bullets_close_player.Count && player.can_be_damaged; ++i) {
-				// Enemy collision => player loses a life
-				if((bullets_close_player[i].Type == EType.NIGHTMARE ||
-					bullets_close_player[i].Type == EType.ENEMY) &&
-					CircleCollision(player.obj, bullets_close_player[i])) {
+				Bullet bullet = bullets_close_player[i];
+				Vector3 playerPos = player.obj.Position;
+				Vector3 bulletPos = bullet.Position;
 
-					StartCoroutine(player._HitDisplay());
+				// Enemy collision => player loses a life
+				if((bullet.Type == EType.NIGHTMARE ||
+					bullet.Type == EType.ENEMY)) {
+
+					if(CircleCollision(playerPos, bulletPos, player.grazebox_radius, bullet.Radius)) {
+						if(CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
+							StartCoroutine(player._HitDisplay());
+							bullet_pool.RemoveBullet(bullets_close_player[i]);
+						}
+
+						if (bullet.Grazed == false) {
+							StartCoroutine(player._GrazeDisplay());
+							bullet.Grazed = true;
+						}
+					}
 				}
 
 				if((bullets_close_player[i].Type == EType.DREAM) &&
-					CircleCollision(player.obj, bullets_close_player[i])) {
+					CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
 
 					StartCoroutine(player._EatDisplay());
+					bullet_pool.RemoveBullet(bullets_close_player[i]);
 				}
 
 				if((bullets_close_player[i].Type == EType.ITEM)) {
@@ -86,12 +100,12 @@ public class QuadTreeHolder : MonoBehaviour {
 	}
 
 	// Circle collision (between player and bullet @TODO generalize)
-    public static bool CircleCollision(Bullet obj1, Bullet obj2) {
-		float diff_x = obj1.Position.x - obj2.Position.x;
-		float diff_y = obj1.Position.y - obj2.Position.y;
+	public static bool CircleCollision(Vector3 pos1, Vector3 pos2, float rad1, float rad2) {
+		float diff_x = pos1.x - pos2.x;
+		float diff_y = pos1.y - pos2.y;
 
         float dist_sqrt = (diff_x * diff_x) + (diff_y * diff_y);
-		float radius_sum = (obj1.Radius + obj2.Radius);
+		float radius_sum = (rad1 + rad2);
 
         return dist_sqrt <= radius_sum * radius_sum;
     }

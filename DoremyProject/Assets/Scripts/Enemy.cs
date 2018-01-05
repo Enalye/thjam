@@ -20,12 +20,12 @@ public class Enemy : Entity {
 		dead = false;
 
         if(obj != null && Application.isPlaying) {
+			obj.SetScaleFromRadius(0.75f);
 			StartCoroutine(Pattern());
         }
     }
 
     public void Die() {
-		Debug.Log("Dying");
         if(!dead) {
             pool.RemoveBullet(obj);
 
@@ -71,8 +71,7 @@ public class Enemy : Entity {
 					             			 obj.Position, speed, ang, 0, 0);
 
 				shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
-				shot.Radius = 0.2f;
-				shot.Scale = Vector3.one * shot.Radius * 2;
+				shot.SetScaleFromRadius(0.2f);
 				shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
 				shot.AutoDelete = false;
 
