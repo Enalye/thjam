@@ -254,6 +254,7 @@ public class Player : Entity {
 							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
 							shot.Lifetime = 1f;
 							shot.AutoDelete = true;
+							shot.Damage = 0.2f;
 							bullets.Add(shot);
 						}
 					}
@@ -274,6 +275,7 @@ public class Player : Entity {
 						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
 						shot.Lifetime = 1f;
 						shot.AutoDelete = true;
+						shot.Damage = 0.1f;
 						bullets.Add(shot);
 					}
 				}
@@ -304,6 +306,7 @@ public class Player : Entity {
 						shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
 						shot.Lifetime = 1f;
 						shot.AutoDelete = true;
+						shot.Damage = 0.3f;
 						bullets.Add (shot);
 					}
 				}
@@ -324,6 +327,7 @@ public class Player : Entity {
 					shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
 					shot.Lifetime = 1.5f;
 					shot.AutoDelete = true;
+					shot.Damage = 0.3f;
 					bullets.Add (shot);
 				}
 				yield return new WaitForSeconds (.2f);
