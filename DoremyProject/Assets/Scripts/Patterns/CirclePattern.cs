@@ -4,6 +4,7 @@ using UnityEngine;
 
 public partial class Enemy : Entity {
 	public IEnumerator CirclePattern() {
+		yield return new WaitForSeconds(2.0f);
 		for(int i = 0; i < 5; i++) {
 			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
 			Circle(type, 45, 2f, 0);

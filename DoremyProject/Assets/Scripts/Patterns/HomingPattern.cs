@@ -19,7 +19,7 @@ public partial class Enemy : Entity {
 				yield return new WaitForSeconds (0.05f);
 			}
 
-			yield return new WaitForSeconds (2.5f);
+			yield return new WaitForSeconds (1.5f);
 		}
 	}
 }

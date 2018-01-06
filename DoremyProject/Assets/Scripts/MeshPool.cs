@@ -264,7 +264,7 @@ public partial class MeshPool : MonoBehaviour {
 	private bool HandleBulletLifeTime(Bullet bullet) {
 		bool removed = false;
 		if ((bullet.Lifetime.HasValue && bullet.CurrentTime >= bullet.Lifetime.Value) ||
-			((bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT) && !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect))) {
+			(bullet.AutoDelete && (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT) && !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect))) {
 
 			RemoveBullet(bullet);
 			removed = true;

@@ -40,6 +40,7 @@ public partial class Bullet : ScriptableObject
     // Standard Position, Rotation, Scale
     public Vector3 Position;
     public Vector3 PreviousPosition;
+	public Bullet BoundPosition;
     public Vector3 Scale = new Vector3(1, 1);
     public Quaternion Rotation { get; set; }
 
@@ -213,7 +214,12 @@ public partial class Bullet : ScriptableObject
 			Speed = Speed + Acceleration;
 		}
 
-        Position += dt * Speed * Direction;
+		if (BoundPosition != null) {
+			Position = BoundPosition.Position;
+		} else {
+			Position += dt * Speed * Direction;
+		}
+
         Angle += AngularVelocity;
 		SpriteAngle += SpriteAngularVelocity;
     }
@@ -262,15 +268,6 @@ public partial class Bullet : ScriptableObject
 
 		colors[offset] = colors[offset + 1] = colors[offset + 2] = colors[offset + 3] = Color;
 	}
-		
-    public IEnumerator _Bind(Transform transform) {
-        while (Active) {
-            Position = transform.position;
-            Rotation = transform.rotation;
-            Scale = transform.lossyScale;
-            yield return null;
-        }
-    }
 
 	public IEnumerator _Follow(BezierCurve curve) {
         float elapsedTime = 0;
@@ -281,6 +278,31 @@ public partial class Bullet : ScriptableObject
             yield return new WaitForSeconds(GameScheduler.dt);
         }
     }
+
+	public IEnumerator _RotateAround(Bullet other, float angle) {
+		yield return null; // Exit the first time since other not set yet
+
+		while (Active && other.Active) {
+			Speed = other.Speed;
+
+			float radAng = Mathf.Deg2Rad * angle;
+			float cos = Mathf.Cos (radAng);
+			float sin = Mathf.Sin (radAng);
+
+			Position.x -= other.Position.x;
+			Position.y -= other.Position.y;
+
+			float xnew = Position.x * cos - Position.y * sin;
+			float ynew = Position.x * sin + Position.y * cos;
+
+			Position.x = xnew + other.Position.x;
+			Position.y = ynew + other.Position.y;
+
+			yield return null;
+		}
+
+		Lifetime = 0;
+	}
 
 	public IEnumerator _Change(float timeToWait, float ? speed, float ? angle, float ? acc, float ? ang_vec) {
 		yield return new WaitForSeconds(timeToWait);
