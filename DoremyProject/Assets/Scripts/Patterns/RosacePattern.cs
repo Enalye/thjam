@@ -32,6 +32,8 @@ public partial class Enemy : Entity {
 			shot.Radius = 0.1f;
 			shot.Scale = Vector3.one * 1.5f;
 			bullets.Add(shot);
+
+			StartCoroutine (shot._Appear(0.2f));
 		}
 
 		bool expand = true;
