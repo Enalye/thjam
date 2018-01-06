@@ -84,7 +84,8 @@ public partial class Bullet : ScriptableObject
 	public Vector3 SpriteAngularVelocity;
 
     public float Speed;
-	public float MinSpeed;
+	public float? MinSpeed;
+	public float? MaxSpeed;
     public float Acceleration;
     public float AngularVelocity;
 
@@ -205,7 +206,13 @@ public partial class Bullet : ScriptableObject
     protected void UpdateState(float dt = 0) {
         CurrentTime += dt;
         PreviousPosition = Position;
-		Speed = Speed + Acceleration;
+
+		if (MinSpeed.HasValue) {
+			Speed = Mathf.Max(MinSpeed.Value, Speed + Acceleration);
+		} else {
+			Speed = Speed + Acceleration;
+		}
+
         Position += dt * Speed * Direction;
         Angle += AngularVelocity;
 		SpriteAngle += SpriteAngularVelocity;

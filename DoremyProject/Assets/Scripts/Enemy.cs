@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { CIRCLE, ROSACE, HOMING, NONSPELL1 };
+public enum EPattern { CIRCLE, ROSACE, HOMING, SPIRAL };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -66,8 +66,8 @@ public partial class Enemy : Entity {
 			StartCoroutine(HomingPattern());
 		}
 
-		if (pattern == EPattern.NONSPELL1) {
-			StartCoroutine(DoremyNonspell1());
+		if (pattern == EPattern.SPIRAL) {
+			StartCoroutine(PlantPattern());
 		}
 	}
 
