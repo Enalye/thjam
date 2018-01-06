@@ -20,18 +20,16 @@ public partial class Enemy : Entity {
 		EType type = (generation % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
 		Color color = (type == EType.NIGHTMARE) ? Color.magenta : Color.cyan;
 
-		if (bullet_sprite) { // The mesh pool for bullets != null) {
-			for(int i = 0; i < 360; i+= 360 / 60) {
-				float ang = i;
+		for(int i = 0; i < 360; i+= 360 / 60) {
+			float ang = i;
 
-				Bullet shot = pool.AddBullet (bullet_sprite, type, EMaterial.BULLET,
-										      obj.Position, 0, ang, 0, 0);
+			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], type, EMaterial.BULLET,
+										  obj.Position, 0, ang, 0, 0);
 				
-				shot.Type = type;
-				shot.Color = color;
-				shot.SetScaleFromRadius(0.2f);
-				bullets.Add(shot);
-			}
+			shot.Type = type;
+			shot.Color = color;
+			shot.SetScaleFromRadius(0.2f);
+			bullets.Add(shot);
 		}
 
 		bool expand = true;

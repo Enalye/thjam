@@ -193,43 +193,45 @@ public class Player : Entity {
 	public void CreateOptions() {
 		options = new List<OptionData> ();
 	
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
 		power_level = 4; //Temporary
 	}
 
 	private float optionAngleOffset = 0f;
 	public void UpdateOptions(float deltaTime) {
-		if (Input.GetButton("Focus")) {
-			for (int i = 0; i < options.Count; i++) {
-				if (i >= power_level) {
-					options[i].position = obj.Position;
-					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
-				} else {
-					float optionAngle = ((-90f + (power_level - 1) * -10f) + (i * 20f)) * Mathf.Deg2Rad;
-					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f);
-					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
-					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
-					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
+		if (Application.isPlaying) {
+			if (Input.GetButton ("Focus")) {
+				for (int i = 0; i < options.Count; i++) {
+					if (i >= power_level) {
+						options [i].position = obj.Position;
+						options [i].bullet.Color = new Color (1f, 1f, 1f, 0f);
+					} else {
+						float optionAngle = ((-90f + (power_level - 1) * -10f) + (i * 20f)) * Mathf.Deg2Rad;
+						Vector3 pos = obj.Position + new Vector3 (Mathf.Cos (optionAngle), Mathf.Sin (optionAngle), 0f);
+						options [i].position = Vector3.Lerp (options [i].position, pos, deltaTime * .25f);
+						options [i].bullet.SpriteAngle += new Vector3 (0f, 0f, deltaTime * 2f);
+						options [i].bullet.Color = new Color (1f, 1f, 1f, 1f);
+					}
+					options [i].bullet.Position = options [i].position;
 				}
-				options[i].bullet.Position = options[i].position;
-			}
-		} else {
-			for (int i = 0; i < options.Count; i++) {
-				if (i >= power_level) {
-					options[i].position = obj.Position;
-					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
-				} else {
-					float optionAngle = ((i * 360f + optionAngleOffset) / power_level) * Mathf.Deg2Rad;
-					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f) * 1.5f;
-					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
-					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
-					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
-					optionAngleOffset += deltaTime * 5f;
+			} else {
+				for (int i = 0; i < options.Count; i++) {
+					if (i >= power_level) {
+						options [i].position = obj.Position;
+						options [i].bullet.Color = new Color (1f, 1f, 1f, 0f);
+					} else {
+						float optionAngle = ((i * 360f + optionAngleOffset) / power_level) * Mathf.Deg2Rad;
+						Vector3 pos = obj.Position + new Vector3 (Mathf.Cos (optionAngle), Mathf.Sin (optionAngle), 0f) * 1.5f;
+						options [i].position = Vector3.Lerp (options [i].position, pos, deltaTime * .25f);
+						options [i].bullet.SpriteAngle += new Vector3 (0f, 0f, deltaTime * 2f);
+						options [i].bullet.Color = new Color (1f, 1f, 1f, 1f);
+						optionAngleOffset += deltaTime * 5f;
+					}
+					options [i].bullet.Position = options [i].position;
 				}
-				options[i].bullet.Position = options[i].position;
 			}
 		}
 	}
@@ -243,7 +245,7 @@ public class Player : Entity {
 				if (Input.GetButton("Shot1")) {
 					for (int i = 0; i < power_level; i++) {
 						for (int y = 0; y < 4; y++) {
-							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
 								options[i].position,
 								10f,
 								(90f - 10f) + (y * 20f / 4f),
@@ -264,7 +266,7 @@ public class Player : Entity {
 			} else if(Input.GetButton ("Shot1")) {
 				for (int i = 0; i < power_level; i++) {
 					for (int y = 0; y < 3; y++) {
-						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
 							             options[i].position,
 							             10f,
 							             (90f - 20f) + (y * 40f / 3f),
@@ -295,7 +297,7 @@ public class Player : Entity {
 				if (Input.GetButton ("Shot1")) {
 					//Focus fire.
 					for (int i = 0; i < 3; i++) {
-						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
 				              obj.Position,
 				              15f,
 				              (90f - 10f) + (i * 20f / 3f),
@@ -316,7 +318,7 @@ public class Player : Entity {
 			else if (Input.GetButton ("Shot1")) {
 				//Unfocus fire.
 				for (int i = 0; i < 6; i++) {
-					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
 						obj.Position,
 						10f,
 						(90f - 25f) + (i * 50f / 6f),
