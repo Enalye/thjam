@@ -31,6 +31,19 @@ public class Pause : MonoBehaviour {
 		}
 
 		if (pauseMenu.activeSelf) {
+			if (Input.GetButton ("Shot1")) {
+				switch (menuIndex) {
+				case 0:
+					CloseMenu();
+					break;
+				case 1:
+					Application.Quit();
+					break;
+				default:
+					break;
+				}
+			}
+
 			switch(menuIndex) {
 			case 0:
 				continueText.color = new Color (1f, 1f, 1f, Mathf.Lerp (.35f, 1f, (Mathf.Cos ((Time.realtimeSinceStartup - selectionTime) * 2f) + 1f) / 2f));
@@ -55,6 +68,10 @@ public class Pause : MonoBehaviour {
 					menuIndex ++;
 					if (menuIndex > 1)
 						menuIndex = 0;
+				}
+				if (Input.GetButton ("Shot2")) {
+					selectionTime = Time.realtimeSinceStartup;
+					menuIndex = 1;
 				}
 			}
 		}
