@@ -25,7 +25,7 @@ public partial class Enemy : Entity {
 				Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
 					             pos, 0.1f, angle, 0.01f, 0.2f);
 				shot.Color = Color.magenta;
-				shot.SetScaleFromRadius (0.2f);
+				shot.SetScaleFromRadius (1.2f);
 			}
 
 			yield return new WaitForSeconds(0.5f);

@@ -40,7 +40,7 @@ public partial class Enemy : Entity {
 						            		      pos, 0.0f, angle);
 
 					shot.MinSpeed = speed2;
-					shot.SetScaleFromRadius (0.1f);
+					shot.SetScaleFromRadius(1.5f);
 					shot.Color = Color.magenta;
 					bullets.Add(shot);
 					StartCoroutine (shot._RotateAround(dream, 0.5f));
@@ -53,7 +53,7 @@ public partial class Enemy : Entity {
 				dream.Angle = angle;
 				dream.Acceleration = -0.15f;
 				dream.MinSpeed = speed2;
-				dream.SetScaleFromRadius (0.15f);
+				dream.SetScaleFromRadius (1.15f);
 				dream.Color = Color.cyan;
 
 				angle += (360 / 3) + Random.Range (-10, 10);

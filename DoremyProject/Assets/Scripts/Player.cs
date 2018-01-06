@@ -193,10 +193,10 @@ public class Player : Entity {
 	public void CreateOptions() {
 		options = new List<OptionData> ();
 	
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
 	}
 
 	private float optionAngleOffset = 0f;
@@ -249,7 +249,7 @@ public class Player : Entity {
 				if (Input.GetButton("Shot1")) {
 					for (int i = 0; i < power_level; i++) {
 						for (int y = 0; y < 4; y++) {
-							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
 								options[i].position,
 								10f,
 								(90f - 10f) + (y * 20f / 4f),
@@ -270,7 +270,7 @@ public class Player : Entity {
 			} else if(Input.GetButton ("Shot1")) {
 				for (int i = 0; i < power_level; i++) {
 					for (int y = 0; y < 3; y++) {
-						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.BULLET,
+						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
 							             options[i].position,
 							             10f,
 							             (90f - 20f) + (y * 40f / 3f),
@@ -301,7 +301,7 @@ public class Player : Entity {
 				if (Input.GetButton ("Shot1")) {
 					//Focus fire.
 					for (int i = 0; i < 3; i++) {
-						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
 				              obj.Position,
 				              15f,
 				              (90f - 10f) + (i * 20f / 3f),
@@ -322,7 +322,7 @@ public class Player : Entity {
 			else if (Input.GetButton ("Shot1")) {
 				//Unfocus fire.
 				for (int i = 0; i < 6; i++) {
-					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.BULLET,
+					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
 						obj.Position,
 						10f,
 						(90f - 25f) + (i * 50f / 6f),
