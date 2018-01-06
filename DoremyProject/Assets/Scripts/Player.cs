@@ -7,6 +7,10 @@ public class Player : Entity {
 	public float hitbox_radius = 0.15f;
 	public float grazebox_radius = 0.3f;
 
+	public Sprite hitbox_sprite;
+	public Sprite shot_sprite;
+	public Sprite option_sprite;
+
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
 
@@ -20,19 +24,13 @@ public class Player : Entity {
 	public Bullet grazeObj;
     public GameObject bomb;
 
-    public float focus_speed = 5;
-    public float unfocus_speed = 10;
-	public float collectHitboxRadius = 50;
-	public float secondsOfInvicibilityOnHit = 1.2f;
+	public float option_distance;
+    public float focus_speed;
+    public float unfocus_speed;
+	public float collectHitboxRadius;
+	public float secondsOfInvicibilityOnHit;
 
-    public int power_level;
-    public Sprite optionSprite;
-
-    public List<Transform> bomb_components;
-
-    // Experimental
-    public BezierCurve curve;
-    public Sprite laser_sprite;
+    public int power_level;	
 
     private float moveHorizontal;
     private float moveVertical;
@@ -153,7 +151,6 @@ public class Player : Entity {
 
         Vector3 move = new Vector3(moveHorizontal, moveVertical, 0);
 		obj.Direction = move.normalized;
-        transform.position = obj.Position;
 
         if(move != Vector3.zero) {
             moving = true;
@@ -193,10 +190,10 @@ public class Player : Entity {
 	public void CreateOptions() {
 		options = new List<OptionData> ();
 	
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
 	}
 
 	private float optionAngleOffset = 0f;
@@ -215,7 +212,7 @@ public class Player : Entity {
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
 				} else {
 					float optionAngle = ((-90f + (power_level - 1) * -10f) + (i * 20f)) * Mathf.Deg2Rad;
-					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f);
+					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle) * option_distance, Mathf.Sin(optionAngle) * option_distance, 0f);
 					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
 					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
@@ -229,7 +226,7 @@ public class Player : Entity {
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
 				} else {
 					float optionAngle = ((i * 360f + optionAngleOffset) / power_level) * Mathf.Deg2Rad;
-					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle), Mathf.Sin(optionAngle), 0f) * 1.5f;
+					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle) * option_distance, Mathf.Sin(optionAngle) * option_distance, 0f) * 1.5f;
 					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
 					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
@@ -249,16 +246,16 @@ public class Player : Entity {
 				if (Input.GetButton("Shot1")) {
 					for (int i = 0; i < power_level; i++) {
 						for (int y = 0; y < 4; y++) {
-							Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
-								options[i].position,
-								10f,
-								(90f - 10f) + (y * 20f / 4f),
-								0f, 0f);
+							Bullet shot = pool.AddBullet(shot_sprite, EType.SHOT, EMaterial.PLAYER,
+														 options[i].position,
+														 1000f,
+														 (90f - 10f) + (y * 20f / 4f),
+														 0f, 0f);
 
-							shot.Color = Color.blue;
-							shot.Radius = .1f;
+							shot.Color = Colors.firebrick;
+							shot.Radius = 0.25f;
 							shot.Scale = Vector3.one * shot.Radius;
-							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
+							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
 							shot.Lifetime = 1f;
 							shot.AutoDelete = true;
 							shot.Damage = 0.2f;
@@ -270,16 +267,16 @@ public class Player : Entity {
 			} else if(Input.GetButton ("Shot1")) {
 				for (int i = 0; i < power_level; i++) {
 					for (int y = 0; y < 3; y++) {
-						Bullet shot = pool.AddBullet(sprite, EType.SHOT, EMaterial.PLAYER,
-							             options[i].position,
-							             10f,
-							             (90f - 20f) + (y * 40f / 3f),
-							             0f, 0f);
+						Bullet shot = pool.AddBullet(shot_sprite, EType.SHOT, EMaterial.PLAYER,
+										             options[i].position,
+										             1000f,
+										             (90f - 20f) + (y * 40f / 3f),
+										             0f, 0f);
 
-						shot.Color = Color.blue;
-						shot.Radius = .1f;
+						shot.Color = Color.green;
+						shot.Radius = 0.25f;
 						shot.Scale = Vector3.one * shot.Radius;
-						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle);
+						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
 						shot.Lifetime = 1f;
 						shot.AutoDelete = true;
 						shot.Damage = 0.1f;
@@ -301,16 +298,16 @@ public class Player : Entity {
 				if (Input.GetButton ("Shot1")) {
 					//Focus fire.
 					for (int i = 0; i < 3; i++) {
-						Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
-				              obj.Position,
-				              15f,
-				              (90f - 10f) + (i * 20f / 3f),
-				              .2f, 0f);
+						Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
+										              obj.Position,
+										              1500f,
+										              (90f - 10f) + (i * 20f / 3f),
+										              .2f, 0f);
 
-						shot.Color = Color.red;
-						shot.Radius = .1f;
+						//shot.Color = Color.red;
+						shot.Radius = 0.2f;
 						shot.Scale = Vector3.one * shot.Radius * 2f;
-						shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
+						shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle + 90);
 						shot.Lifetime = 1f;
 						shot.AutoDelete = true;
 						shot.Damage = 0.3f;
@@ -322,16 +319,16 @@ public class Player : Entity {
 			else if (Input.GetButton ("Shot1")) {
 				//Unfocus fire.
 				for (int i = 0; i < 6; i++) {
-					Bullet shot = pool.AddBullet (sprite, EType.SHOT, EMaterial.PLAYER,
-						obj.Position,
-						10f,
-						(90f - 25f) + (i * 50f / 6f),
-						.1f, 0f);
+					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
+												  obj.Position,
+												  1000f,
+												  (90f - 25f) + (i * 50f / 6f),
+												  .1f, 0f);
 					
-					shot.Color = Color.green;
-					shot.Radius = .1f;
+					//shot.Color = Color.green;
+					shot.Radius = 0.2f;
 					shot.Scale = Vector3.one * shot.Radius * 2f;
-					shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle);
+					shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle + 90);
 					shot.Lifetime = 1.5f;
 					shot.AutoDelete = true;
 					shot.Damage = 0.3f;
