@@ -19,17 +19,15 @@ public partial class Enemy : Entity {
 		for(float i = 0; i < 360; i += 360 / n) {
 			float ang = i + offset;
 
-			if (bullet_sprite) { // The mesh pool for bullets != null) {
-				Bullet shot = pool.AddBullet (bullet_sprite, type, EMaterial.BULLET,
-					              		      obj.Position, 1.5f, ang);
+			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], type, EMaterial.BULLET,
+					              		  obj.Position, 1.5f, ang);
 
-				shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
-				shot.SetScaleFromRadius(0.2f);
-				shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
-				shot.AutoDelete = false;
+			shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
+			shot.SetScaleFromRadius(0.2f);
+			shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
+			shot.AutoDelete = false;
 
-				bullets.Add(shot);
-			}
+			bullets.Add(shot);
 		}
 	}
 }

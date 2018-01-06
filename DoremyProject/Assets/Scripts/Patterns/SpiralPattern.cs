@@ -19,7 +19,7 @@ public partial class Enemy : Entity {
 
 				Vector3 pos0 = Vector3.zero;
 				Vector3 pos10 = Vector3.zero;
-				Bullet dream =  pool.AddBullet (bullet_sprite, EType.DREAM, EMaterial.BULLET);
+				Bullet dream =  pool.AddBullet (GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET);
 
 				for (int j = 0; j < nbBulletsPerSpiral; ++j) {
 					radius2 += 0.08f;
@@ -36,7 +36,7 @@ public partial class Enemy : Entity {
 						pos10 = pos;
 					}
 
-					Bullet shot = pool.AddBullet (bullet_sprite, EType.NIGHTMARE, EMaterial.BULLET,
+					Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
 						            		      pos, 0.0f, angle);
 
 					shot.MinSpeed = speed2;

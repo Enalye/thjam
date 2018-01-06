@@ -171,6 +171,7 @@ public partial class Bullet : ScriptableObject
         Bounds = prefab.Sprite.bounds;
         Type = prefab.Type;
         Damage = prefab.Damage;
+		Material = prefab.Material;
     }
 
     public virtual void SetupTriangles(int[] _indices) {
@@ -317,6 +318,7 @@ public partial class Bullet : ScriptableObject
 	public IEnumerator _Change(float timeToWait, Sprite sprite, Color color, EType type, float ? speed, float ? angle, float ? acc = 0, float ? ang_vec = 0) {
 		yield return new WaitForSeconds(timeToWait);
 		CopyData(speed, angle, acc, ang_vec);
+		Type = type;
 		Color = color;
 	}
 }
