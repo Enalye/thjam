@@ -22,7 +22,7 @@ public partial class Enemy : Entity {
 				Vector3 pos = new Vector3 (x, y);
 				float angleToEnemy = Mathf.Atan2 (pos.y - obj.Position.y, pos.x - obj.Position.x) * Mathf.Rad2Deg;
 
-				Bullet shot = pool.AddBullet (bullet_sprite, EType.NIGHTMARE, EMaterial.BULLET,
+				Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
 					             pos, 0.1f, angle, 0.01f, 0.2f);
 				shot.Color = Color.magenta;
 				shot.SetScaleFromRadius (0.2f);

@@ -17,8 +17,6 @@ public partial class Enemy : Entity {
 	public EPattern    pattern;
 	public BezierCurve curve;
 
-	public Sprite bullet_sprite;
-
     private bool dead;
 
     public override void Init() {
