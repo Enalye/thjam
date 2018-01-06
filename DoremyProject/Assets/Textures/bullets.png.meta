@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2646887540854c34195ed6e0cfa0fed2
-timeCreated: 1515255318
+timeCreated: 1515256167
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -12,7 +12,7 @@ TextureImporter:
     21300010: bullets_5
     21300012: bullets_6
     21300014: bullets_7
-    21300016: bullets_8
+    21300016: white_blob
     21300018: bullets_9
     21300020: bullets_10
     21300022: bullets_11
@@ -22,7 +22,7 @@ TextureImporter:
     21300030: bullets_15
     21300032: bullets_16
     21300034: bullets_17
-    21300036: bullets_18
+    21300036: white_blob_negatif
     21300038: bullets_19
     21300040: bullets_20
     21300042: bullets_21
@@ -60,7 +60,7 @@ TextureImporter:
     21300106: bullets_53
     21300108: bullets_54
     21300110: bullets_55
-    21300112: bullets_56
+    21300112: while_big_circle
     21300114: bullets_57
     21300116: bullets_58
     21300118: bullets_59
@@ -75,7 +75,7 @@ TextureImporter:
     21300136: bullets_68
     21300138: bullets_69
     21300140: bullets_70
-    21300142: bullets_71
+    21300142: white_big_droplet
     21300144: bullets_72
     21300146: bullets_73
     21300148: bullets_74
@@ -95,7 +95,7 @@ TextureImporter:
     21300176: bullets_88
     21300178: bullets_89
     21300180: bullets_90
-    21300182: bullets_91
+    21300182: white_big_rice
     21300184: bullets_92
     21300186: bullets_93
     21300188: bullets_94
@@ -115,7 +115,7 @@ TextureImporter:
     21300216: bullets_108
     21300218: bullets_109
     21300220: bullets_110
-    21300222: bullets_111
+    21300222: white_middle_circle
     21300224: bullets_112
     21300226: bullets_113
     21300228: bullets_114
@@ -135,7 +135,7 @@ TextureImporter:
     21300256: bullets_128
     21300258: bullets_129
     21300260: bullets_130
-    21300262: bullets_131
+    21300262: white_small_droplet
     21300264: bullets_132
     21300266: bullets_133
     21300268: bullets_134
@@ -156,7 +156,7 @@ TextureImporter:
     21300298: bullets_149
     21300300: bullets_150
     21300302: white_arrow
-    21300304: bullets_152
+    21300304: white_small_circle
     21300306: bullets_153
     21300308: bullets_154
     21300310: bullets_155
@@ -280,7 +280,7 @@ TextureImporter:
     21300546: bullets_273
     21300548: bullets_274
     21300550: bullets_275
-    21300552: bullets_276
+    21300552: white_star
     21300554: bullets_277
     21300556: bullets_278
     21300558: bullets_279
@@ -288,7 +288,7 @@ TextureImporter:
     21300562: bullets_281
     21300564: bullets_282
     21300566: bullets_283
-    21300568: bullets_284
+    21300568: white_star_negatif
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -477,7 +477,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_8
+      name: white_blob
       rect:
         serializedVersion: 2
         x: 167
@@ -617,7 +617,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_18
+      name: white_blob_negatif
       rect:
         serializedVersion: 2
         x: 167
@@ -1023,7 +1023,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_56
+      name: while_big_circle
       rect:
         serializedVersion: 2
         x: 462
@@ -1163,7 +1163,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_71
+      name: white_big_droplet
       rect:
         serializedVersion: 2
         x: 458
@@ -1303,7 +1303,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_91
+      name: white_big_rice
       rect:
         serializedVersion: 2
         x: 463
@@ -1457,7 +1457,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_111
+      name: white_middle_circle
       rect:
         serializedVersion: 2
         x: 467
@@ -1625,7 +1625,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_131
+      name: white_small_droplet
       rect:
         serializedVersion: 2
         x: 464
@@ -1905,7 +1905,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_152
+      name: white_small_circle
       rect:
         serializedVersion: 2
         x: 469
@@ -2045,7 +2045,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_276
+      name: white_star
       rect:
         serializedVersion: 2
         x: 174
@@ -2171,7 +2171,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: bullets_284
+      name: white_star_negatif
       rect:
         serializedVersion: 2
         x: 174
