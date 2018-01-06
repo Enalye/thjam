@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { CIRCLE, ROSACE, HOMING, SPIRAL };
+public enum EPattern { CIRCLE, ROSACE, HOMING, SPIRAL, PLANT };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -37,7 +37,6 @@ public partial class Enemy : Entity {
             pool.RemoveBullet(obj);
 
 			StopAllCoroutines();
-			StartCoroutine(_DropItems(1, 1));;
             dead = true;
         }
     }
@@ -69,28 +68,9 @@ public partial class Enemy : Entity {
 		if (pattern == EPattern.SPIRAL) {
 			StartCoroutine(SpiralPattern());
 		}
-	}
 
-	public IEnumerator _DropItems(int nbPowerItems, int nbPointItems) {
-		int spriteAngularSpeed = 2;
-		for (int i = 0; i < nbPowerItems; ++i) {
-			SpawnItem (power_item);
+		if (pattern == EPattern.PLANT) {
+			StartCoroutine(PlantPattern());
 		}
-
-		for (int i = 0; i < nbPowerItems; ++i) {
-			SpawnItem (point_item);
-		}
-
-		yield return new WaitForFixedUpdate ();
-	}
-
-	private void SpawnItem(Sprite sprite) {
-		float ang = 90;
-		Vector3 pos = obj.Position + Vector3.forward * 10;
-		Bullet item = pool.AddBullet(sprite, EType.ITEM, EMaterial.BULLET,
-								     pos, 50, ang, -1);
-		item.SpriteAngle = Vector3.forward * (ang - 90);
-		item.SpriteAngularVelocity = Vector3.forward * 2;;
-		StartCoroutine(item._Change(0.75f, null, null, 0, null));
 	}
 }
