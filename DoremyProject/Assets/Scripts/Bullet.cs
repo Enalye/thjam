@@ -315,6 +315,33 @@ public partial class Bullet : ScriptableObject
 		Lifetime = 0;
 	}
 
+	public IEnumerator _Appear(float time) {
+		Color = Colors.ChangeAlpha(Color, 0);
+		Vector3 oriScale = Scale;
+
+		float elapsedTime = 0;
+		while (elapsedTime < time) {
+			float timeRatio = elapsedTime / time;
+
+			byte alpha = (byte)(255 * timeRatio);
+			Color = Colors.ChangeAlpha(Color, alpha);
+			elapsedTime += GameScheduler.dt;
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
+	}
+
+	public IEnumerator _Disappear(float time) {
+		Color = Colors.ChangeAlpha(Color, 0);
+
+		float elapsedTime = 0;
+		while (elapsedTime < time) {
+			byte alpha = (byte)(255 - (255 * (elapsedTime / time)));
+			Color = Colors.ChangeAlpha(Color, alpha);
+			elapsedTime += GameScheduler.dt;
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
+	}
+
 	public IEnumerator _Change(float timeToWait, Sprite sprite, Color color, EType type, float ? speed, float ? angle, float ? acc = 0, float ? ang_vec = 0) {
 		yield return new WaitForSeconds(timeToWait);
 		CopyData(speed, angle, acc, ang_vec);
