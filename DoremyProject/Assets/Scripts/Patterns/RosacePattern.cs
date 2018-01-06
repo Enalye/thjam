@@ -18,7 +18,7 @@ public partial class Enemy : Entity {
 		float nbBranches = 2;
 
 		EType type = (generation % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
-		Color color = (type == EType.NIGHTMARE) ? Color.magenta : Color.cyan;
+		Color32 color = (type == EType.NIGHTMARE) ? Colors.orchid : Colors.royalblue;
 
 		for(int i = 0; i < 360; i+= 360 / 60) {
 			float ang = i;
@@ -27,8 +27,10 @@ public partial class Enemy : Entity {
 										  obj.Position, 0, ang, 0, 0);
 				
 			shot.Type = type;
+			shot.SpriteAngle = Vector3.forward * ang;
 			shot.Color = color;
-			shot.SetScaleFromRadius(0.2f);
+			shot.Radius = 0.1f;
+			shot.Scale = Vector3.one * 1.5f;
 			bullets.Add(shot);
 		}
 
