@@ -11,12 +11,13 @@ public partial class Enemy : Entity {
 
 			int n = 8;
 			for (int i = 0; i < n; ++i) {
-				Bullet shot = pool.AddBullet(GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
+				Bullet shot = pool.AddBullet(GameScheduler.instance.sprites[2], EType.NIGHTMARE, EMaterial.BULLET,
 											 pos, 4f, angle);
-				shot.Color = Color.magenta;
-
-				shot.SetScaleFromRadius(0.2f);
-				yield return new WaitForSeconds (0.05f);
+				shot.Color = Colors.firebrick;
+				shot.Radius = 0.1f;
+				shot.Scale = Vector3.one * 1.5f;
+				shot.SpriteAngle = Vector3.forward * angle;
+				yield return new WaitForSeconds (0.1f);
 			}
 
 			yield return new WaitForSeconds (1.5f);
