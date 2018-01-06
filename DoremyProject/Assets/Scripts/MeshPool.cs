@@ -27,7 +27,7 @@ public partial class MeshPool : MonoBehaviour {
     private Bullet[] _bullets;
 
 	// Dream gauge
-	private Gauge _gauge;
+	public Gauge _gauge;
 	public Gauge _gauge_prefab;
 
     // Vertices data

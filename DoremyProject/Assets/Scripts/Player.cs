@@ -197,11 +197,17 @@ public class Player : Entity {
 		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
 		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
 		options.Add(new OptionData(pool.AddBullet(sprite, EType.OPTION, EMaterial.BULLET, obj.Position)));
-		power_level = 4; //Temporary
 	}
 
 	private float optionAngleOffset = 0f;
 	public void UpdateOptions(float deltaTime) {
+		int newPowerLevel = (int)((pool._gauge.level * 4f) / 100f);
+		if (newPowerLevel > power_level) {
+			power_level = newPowerLevel;
+		} else if (newPowerLevel < power_level) {
+			power_level = newPowerLevel;
+		}
+
 		if (Input.GetButton("Focus")) {
 			for (int i = 0; i < options.Count; i++) {
 				if (i >= power_level) {
@@ -360,29 +366,4 @@ public class Player : Entity {
 		yield return new WaitForSeconds(0.1f);
 		pool.ChangeBulletColor(obj, Color.white);
 	}
-}
-
-
-
-
-
-						/*   void SpawnOptions() {
-        foreach(Vector3 position in default_option_data[power_level-1].positions) {
-			Bullet option_bullet = pool.AddBullet(sprite, EType.OPTION, EMaterial.PLAYER,
-                                                  obj.Position + position, 0, 0, 0, (position.x < 0) ? 1 : -1);
-            option_bullet.Color = new Color32(255, 255, 255, 125);
-            option_bullet.Scale = new Vector3(option_scale, option_scale);
-
-            option_data.options.Add(option_bullet);
-            option_data.positions.Add(position);
-        }
-    }
-
-    void UpdateOptions() {
-        if(obj != null) { 
-            for (int i = 0; i < option_data.options.Count; i++) {
-                option_data.options[i].Position = obj.Position + option_data.positions[i];
-            }
-        }
-    }*/
-						
+}	
