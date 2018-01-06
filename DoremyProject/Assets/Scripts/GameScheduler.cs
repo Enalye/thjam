@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public class GameScheduler : MonoBehaviour
 {
     public static GameScheduler instance = null;     // Singleton

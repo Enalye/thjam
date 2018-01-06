@@ -102,6 +102,7 @@ public class Player : Entity {
 			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
 			grazeObj.SetScaleFromRadius(grazebox_radius);
 			grazeObj.Color = new Color32(255, 255, 255, 125);
+			grazeObj.BoundPosition = obj;
 
 			/* Init collection hitbox */
 
@@ -151,19 +152,19 @@ public class Player : Entity {
         }
 
         Vector3 move = new Vector3(moveHorizontal, moveVertical, 0);
-		grazeObj.Direction = obj.Direction = move.normalized;
+		obj.Direction = move.normalized;
         transform.position = obj.Position;
 
         if(move != Vector3.zero) {
             moving = true;
             if (Input.GetButton("Focus")) {
-				grazeObj.Speed = obj.Speed = focus_speed;
+				obj.Speed = focus_speed;
             } else {
-				grazeObj.Speed = obj.Speed = unfocus_speed;
+				obj.Speed = unfocus_speed;
             }
         } else {
             moving = false;
-			grazeObj.Speed = obj.Speed = 0;
+			obj.Speed = 0;
         }
 
 		if (animator != null) {

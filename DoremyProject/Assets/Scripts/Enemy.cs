@@ -67,7 +67,7 @@ public partial class Enemy : Entity {
 		}
 
 		if (pattern == EPattern.SPIRAL) {
-			StartCoroutine(PlantPattern());
+			StartCoroutine(SpiralPattern());
 		}
 	}
 
