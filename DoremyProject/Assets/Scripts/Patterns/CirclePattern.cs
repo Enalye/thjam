@@ -19,12 +19,13 @@ public partial class Enemy : Entity {
 		for(float i = 0; i < 360; i += 360 / n) {
 			float ang = i + offset;
 
-			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], type, EMaterial.BULLET,
+			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
 					              		  obj.Position, 1.5f, ang);
 
-			shot.Color = type == (EType.NIGHTMARE) ? Color.magenta : Color.cyan;
-			shot.SetScaleFromRadius(0.2f);
-			shot.SpriteAngle = new Vector3 (0, 0, ang - 90);
+			shot.Color = type == (EType.NIGHTMARE) ? Colors.firebrick : Colors.chartreusegreen;
+			shot.SpriteAngle = Vector3.forward * (ang - 180);
+			shot.Radius = 0.1f;
+			shot.Scale = Vector3.one * 1.5f;
 			shot.AutoDelete = false;
 
 			bullets.Add(shot);
