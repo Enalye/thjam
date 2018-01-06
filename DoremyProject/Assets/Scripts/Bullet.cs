@@ -208,12 +208,22 @@ public partial class Bullet : ScriptableObject
         CurrentTime += dt;
         PreviousPosition = Position;
 
-		if (MinSpeed.HasValue) {
-			Speed = Mathf.Max(MinSpeed.Value, Speed + Acceleration);
-		} else {
-			Speed = Speed + Acceleration;
+		/* No update if CurrentTime lower than delay to fire */
+		if(CurrentTime < Delay) {
+			return;
 		}
 
+		Speed = Speed + Acceleration;
+
+		/* If needed tune speed value */
+		if (MinSpeed.HasValue) {
+			Speed = Mathf.Max(MinSpeed.Value, Speed);
+		} 
+
+		if (MaxSpeed.HasValue) {
+			Speed = Mathf.Min (MaxSpeed.Value, Speed);
+		}
+			
 		if (BoundPosition != null) {
 			Position = BoundPosition.Position;
 		} else {
@@ -304,8 +314,9 @@ public partial class Bullet : ScriptableObject
 		Lifetime = 0;
 	}
 
-	public IEnumerator _Change(float timeToWait, float ? speed, float ? angle, float ? acc, float ? ang_vec) {
+	public IEnumerator _Change(float timeToWait, Sprite sprite, Color color, EType type, float ? speed, float ? angle, float ? acc = 0, float ? ang_vec = 0) {
 		yield return new WaitForSeconds(timeToWait);
 		CopyData(speed, angle, acc, ang_vec);
+		Color = color;
 	}
 }
