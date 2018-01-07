@@ -284,6 +284,9 @@ public partial class Bullet : ScriptableObject
             elapsedTime += GameScheduler.dt * curve.GetSpeed(elapsedTime);
             yield return new WaitForSeconds(GameScheduler.dt);
         }
+
+		// Turn on AutoDelete once moved to the end
+		AutoDelete = true;
     }
 
 	public IEnumerator _RotateAround(Bullet other, float angle) {

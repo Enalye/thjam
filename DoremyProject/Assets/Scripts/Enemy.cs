@@ -29,6 +29,7 @@ public partial class Enemy : Entity {
         if(obj != null && Application.isPlaying) {
 			obj.Radius = 35;
 			obj.Scale = Vector3.one;
+			obj.AutoDelete = false;
 
 			StartCoroutine(_Behaviour());
 		}
@@ -37,6 +38,7 @@ public partial class Enemy : Entity {
     public void Die() {
         if(!dead) {
             pool.RemoveBullet(obj);
+			bullets.Clear();
 
             dead = true;
         }

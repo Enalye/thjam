@@ -83,6 +83,7 @@ public class Player : Entity {
 
 		if (obj != null) {
 			// Obj represents hitbox here */
+			obj.AutoDelete = false;
 			obj.Clamping = clamping;
 			obj.Color = Colors.transparent;
 			obj.Scale = Vector3.one * 0.25f;
@@ -119,6 +120,13 @@ public class Player : Entity {
 	public void UpdateAt(float deltaTime) {
         moveHorizontal = Input.GetAxis("Horizontal");
         moveVertical = Input.GetAxis("Vertical");
+
+		/* Clean up bullets */
+		for (int i = 0; i < bullets.Count; ++i) {
+			if (bullets [i].Active == false) {
+				bullets.Remove(bullets [i]);
+			}
+		}
 
         // Update appearance (if driven by sprite)
 		if(playerSprite != null) {
@@ -263,7 +271,7 @@ public class Player : Entity {
 							shot.Lifetime = 1f;
 							shot.AutoDelete = true;
 							shot.Damage = 0.2f;
-							bullets.Add(shot);
+							//bullets.Add(shot);
 						}
 					}
 				}
