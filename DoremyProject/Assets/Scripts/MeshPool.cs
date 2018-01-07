@@ -12,9 +12,6 @@ public partial class MeshPool : MonoBehaviour {
     // Collision stuff
     public QuadTreeHolder QuadTreeHolder;
 
-    public string SortingLayerName;
-    public int OrderInLayer;
-
     public List<Bullet> _active = new List<Bullet>();
     private List<Bullet> _temp = new List<Bullet>();
 
