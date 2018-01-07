@@ -9,6 +9,7 @@ public class MainMenuButton : MonoBehaviour {
 	private bool isStarting = true;
 
 	void Start () {
+		Screen.SetResolution(960, 720, true);
 		image = gameObject.GetComponent<UnityEngine.UI.RawImage>();
 		dest = transform.position;
 		origin = dest + new Vector3(0f, 800f, 0f);
@@ -30,7 +31,8 @@ public class MainMenuButton : MonoBehaviour {
 		}
 		image.color = new Color (1f, 1f, 1f, Mathf.Lerp (.35f, 1f, (Mathf.Cos (Time.time * 2f) + 1f) / 2f));
 		if (Input.GetButton ("Shot1")) {
-			Application.LoadLevel (1);
+			float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
+			StartCoroutine (LoadAfter(fadeTime));
 		}
 	}
 
@@ -46,5 +48,10 @@ public class MainMenuButton : MonoBehaviour {
 		else if(p < 9f/10f)
 			return (4356f/361f * p * p) - (35442f/1805f * p) + 16061f/1805f;
 		return (54f/5f * p * p) - (513f/25f * p) + 268f/25f;
+	}
+
+	private IEnumerator LoadAfter(float time) {
+		yield return new WaitForSeconds (time);
+		Application.LoadLevel (1);
 	}
 }

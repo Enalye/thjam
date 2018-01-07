@@ -49,25 +49,25 @@ public partial class Enemy : Entity {
 
 				if (shot.Active) {
 					isAtLeastOneActive = true;
-
-					if (angleUpdate > 0.15f) {
-						angleUpdate -= 0.00001f;
-					}
-
-					shot.Angle += angleUpdate;
-
-					if (expand == true && radius < 1000) {
-						radius += 0.025f;
-
-						if (radius >= 1000) {
-							expand = false;
-						}
-					} else if (expand == false && radius > 0) {
-						radius -= 0.025f;
-					}
-
-					Rosace (nbBranches, shot.Angle, radius, angOffset * direction, shot);
 				}
+
+				if (angleUpdate > 0.15f) {
+					angleUpdate -= 0.00001f;
+				}
+
+				shot.Angle += angleUpdate;
+
+				if (expand == true && radius < 1000) {
+					radius += 0.025f;
+
+				if (radius >= 1000) {
+						expand = false;
+					}
+				} else if (expand == false && radius > 0) {
+					radius -= 0.025f;
+				}
+
+				Rosace (nbBranches, shot.Angle, radius, angOffset * direction, shot);
 			}
 
 			yield return new WaitForSeconds(0.01f);

@@ -125,7 +125,6 @@ public partial class Bullet : ScriptableObject
 		Lifetime = null;
 		Clamping = null;
 
-		Position = Vector3.zero;
 		Rotation = Quaternion.identity;
 		Scale = Vector3.one;
 
@@ -305,9 +304,10 @@ public partial class Bullet : ScriptableObject
 	public IEnumerator _Follow(BezierCurve curve) {
         float elapsedTime = 0;
         while (elapsedTime < 1) {
-            Position = curve.GetPoint(elapsedTime);
-            Direction = curve.GetDirection(elapsedTime);
-            elapsedTime += GameScheduler.dt * curve.GetSpeed(elapsedTime);
+			Position = curve.GetPoint (elapsedTime);
+			Direction = curve.GetDirection (elapsedTime);
+			elapsedTime += GameScheduler.dt * curve.GetSpeed (elapsedTime);
+
             yield return new WaitForSeconds(GameScheduler.dt);
         }
 

@@ -329,7 +329,7 @@ public class Player : Entity {
 				yield return new WaitForSeconds (.1f);
 			}
 			else if (Input.GetButton ("Shot1")) {
-				//Unfocus fire.
+				// Unfocus fire.
 				for (int i = 0; i < 6; i++) {
 					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
 												  Color.white,

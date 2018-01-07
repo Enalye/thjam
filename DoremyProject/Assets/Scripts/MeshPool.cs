@@ -228,9 +228,6 @@ public partial class MeshPool : MonoBehaviour {
 			HandleBulletLifeTime(bullet);
 
 			if (bullet.Active) {
-				// Check events registered in a bullet (change of position, angle, speed, acceleration, etc.)
-
-
 				// Update bullets position if they are not part of a group
 				if (bullet.Owner != EOwner.GROUP) {
 					int MaterialIdx = (int)bullet.Material;
