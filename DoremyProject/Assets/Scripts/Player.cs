@@ -93,14 +93,13 @@ public class Player : Entity {
 			CreateOptions();
 
 			if (animatorRenderer != null) {
-				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, obj.Position);
+				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, Color.white, obj.Position);
 				playerSprite.Scale = transform.lossyScale;
 			}
 
-			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
+			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, Colors.invisible, obj.Position);
 			grazeObj.Scale = Vector3.one * 1.2f;
 			grazeObj.Radius = grazebox_radius;
-			grazeObj.Color = new Color32(255, 255, 255, 0);
 			grazeObj.BoundPosition = obj;
 
 			/* Init collection hitbox */
@@ -191,10 +190,10 @@ public class Player : Entity {
 	public void CreateOptions() {
 		options = new List<OptionData> ();
 	
-		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
-		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, Color.white, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, Color.white, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, Color.white, obj.Position)));
+		options.Add(new OptionData(pool.AddBullet(option_sprite, EType.OPTION, EMaterial.PLAYER, Color.white, obj.Position)));
 	}
 
 	private float optionAngleOffset = 0f;
@@ -250,12 +249,12 @@ public class Player : Entity {
 					for (int i = 0; i < power_level; i++) {
 						for (int y = 0; y < 4; y++) {
 							Bullet shot = pool.AddBullet(shot_sprite, EType.SHOT, EMaterial.PLAYER,
+														 Colors.firebrick,
 														 options[i].position,
 														 1000f,
 														 (90f - 10f) + (y * 20f / 4f),
 														 0f, 0f);
 
-							shot.Color = Colors.firebrick;
 							shot.Radius = 0.25f;
 							shot.Scale = Vector3.one * shot.Radius;
 							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
@@ -271,12 +270,12 @@ public class Player : Entity {
 				for (int i = 0; i < power_level; i++) {
 					for (int y = 0; y < 3; y++) {
 						Bullet shot = pool.AddBullet(shot_sprite, EType.SHOT, EMaterial.PLAYER,
+													 Color.green,
 										             options[i].position,
 										             1000f,
 										             (90f - 20f) + (y * 40f / 3f),
 										             0f, 0f);
 
-						shot.Color = Color.green;
 						shot.Radius = 0.25f;
 						shot.Scale = Vector3.one * shot.Radius;
 						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
@@ -302,12 +301,12 @@ public class Player : Entity {
 					//Focus fire.
 					for (int i = 0; i < 3; i++) {
 						Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
+													  Color.white,
 										              obj.Position,
 										              1500f,
 										              (90f - 10f) + (i * 20f / 3f),
 										              .2f, 0f);
 
-						//shot.Color = Color.red;
 						shot.Radius = 0.2f;
 						shot.Scale = Vector3.one * shot.Radius * 2f;
 						shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle + 90);
@@ -323,12 +322,12 @@ public class Player : Entity {
 				//Unfocus fire.
 				for (int i = 0; i < 6; i++) {
 					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
+												  Color.white,
 												  obj.Position,
 												  1000f,
 												  (90f - 25f) + (i * 50f / 6f),
 												  .1f, 0f);
 					
-					//shot.Color = Color.green;
 					shot.Radius = 0.2f;
 					shot.Scale = Vector3.one * shot.Radius * 2f;
 					shot.SpriteAngle = new Vector3 (0f, 0f, shot.Angle + 90);

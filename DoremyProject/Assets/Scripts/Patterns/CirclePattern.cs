@@ -20,10 +20,10 @@ public partial class Enemy : Entity {
 			float ang = i + offset;
 
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
+										  type == (EType.NIGHTMARE) ? Colors.firebrick : Colors.chartreusegreen,
 				                          obj.Position, speed, ang);
 
 			shot.Position.z = Layering.Bullet;
-			shot.Color = type == (EType.NIGHTMARE) ? Colors.firebrick : Colors.chartreusegreen;
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
 			shot.Radius = 10f;
 			shot.Scale = Vector3.one * 1.5f;

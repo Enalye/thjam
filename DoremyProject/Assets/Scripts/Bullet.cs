@@ -6,7 +6,7 @@ public enum EType { DEFAULT, PLAYER, OPTION, SHOT, ENEMY, NIGHTMARE, DREAM, BOMB
 public enum EStyle { SHOT, LASER, CURVE, TEXT };
 
 // Add as many items as materials / fonts (in rendering order)
-public enum EMaterial { BULLET, PLAYER, ENEMY, COUNT, NEUTRAL };
+public enum EMaterial { BULLET, PLAYER, ENEMY, GUI, COUNT, NEUTRAL };
 
 [CreateAssetMenu(fileName = "Bullet", menuName = "Sprites/Bullet")]
 public partial class Bullet : ScriptableObject
@@ -33,6 +33,7 @@ public partial class Bullet : ScriptableObject
 
     // Is it an active bullet (for coroutines)
     public bool Active = false;
+	public bool Removing = false;
 
 	// Was the bullet grazed ?
 	public bool Grazed = false;
@@ -312,13 +313,12 @@ public partial class Bullet : ScriptableObject
 
 	public IEnumerator _Appear(float time) {
 		Color = Colors.ChangeAlpha(Color, 0);
-		Vector3 oriScale = Scale;
 
 		float elapsedTime = 0;
 		while (elapsedTime < time) {
 			float timeRatio = elapsedTime / time;
 
-			byte alpha = (byte)(255 * timeRatio);
+			byte alpha = (byte)Mathf.Min(255, 255 * timeRatio);
 			Color = Colors.ChangeAlpha(Color, alpha);
 			elapsedTime += GameScheduler.dt;
 			yield return new WaitForSeconds(GameScheduler.dt);
@@ -326,15 +326,19 @@ public partial class Bullet : ScriptableObject
 	}
 
 	public IEnumerator _Disappear(float time) {
-		Color = Colors.ChangeAlpha(Color, 0);
+		byte oriAlpha = Color.a;
 
 		float elapsedTime = 0;
 		while (elapsedTime < time) {
-			byte alpha = (byte)(255 - (255 * (elapsedTime / time)));
+			float timeRatio = elapsedTime / time;
+
+			byte alpha = (byte)Mathf.Max(0, oriAlpha * (1 - timeRatio));
 			Color = Colors.ChangeAlpha(Color, alpha);
 			elapsedTime += GameScheduler.dt;
 			yield return new WaitForSeconds(GameScheduler.dt);
 		}
+
+		Color = Colors.ChangeAlpha(Color, 0);
 	}
 
 	public IEnumerator _Change(float timeToWait, Sprite sprite, Color color, EType type, float ? speed, float ? angle, float ? acc = 0, float ? ang_vec = 0) {

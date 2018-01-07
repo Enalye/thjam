@@ -13,8 +13,8 @@ public partial class Enemy : Entity {
 			int n = 8;
 			for (int i = 0; i < n; ++i) {
 				Bullet shot = pool.AddBullet(GameScheduler.instance.sprites[2], EType.NIGHTMARE, EMaterial.BULLET,
+										     Colors.firebrick,
 											 pos, 200f, angle);
-				shot.Color = Colors.firebrick;
 				shot.Radius = 10f;
 				shot.Scale = Vector3.one * 1.5f;
 				shot.SpriteAngle = Vector3.forward * angle;
