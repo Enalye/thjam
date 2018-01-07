@@ -346,5 +346,9 @@ public partial class Bullet : ScriptableObject
 		CopyData(speed, angle, acc, ang_vec);
 		Type = type;
 		Color = color;
+
+		if (sprite != null) {
+			Sprite = sprite;
+		}
 	}
 }

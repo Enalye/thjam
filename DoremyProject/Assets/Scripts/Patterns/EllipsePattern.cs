@@ -8,7 +8,6 @@ public partial class Enemy : Entity {
 		float angle = 0;
 		float angle2 = 10;
 
-
 		yield return new WaitForSeconds(1.2f);
 
 		while (obj.Active) {
@@ -30,11 +29,11 @@ public partial class Enemy : Entity {
 					}
 
 					if (speed > 0) {
-						speed -= 1;
+						speed -= 50f;
 					}
 
 					if (speed <= 0) {
-						speed += 1;
+						speed += 50f;
 					}
 
 					angle += 360 / 24;
