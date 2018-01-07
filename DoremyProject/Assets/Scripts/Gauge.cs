@@ -18,6 +18,11 @@ public class Gauge : MonoBehaviour {
 		level = Mathf.Clamp(level + levelChange, 0, 100);
 		fluid.rectTransform.sizeDelta = new Vector3(fluid.rectTransform.sizeDelta.x,
 												    (level / 100) * 400);
+
+		if (level == 0) {
+			float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
+			StartCoroutine (LoadAfter(fadeTime));
+		}
 	}		
 
 	public IEnumerator _Decrease() {
@@ -25,5 +30,10 @@ public class Gauge : MonoBehaviour {
 			yield return new WaitForSeconds (0.1f);
 			UpdateLevel(-0.1f);
 		}
+	}
+
+	private IEnumerator LoadAfter(float time) {
+		yield return new WaitForSeconds (time);
+		Application.LoadLevel(2);
 	}
 }
