@@ -7,7 +7,7 @@ public partial class Enemy : Entity {
 		yield return new WaitForSeconds(2.0f);
 		for(int i = 0; i < 5; i++) {
 			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
-			Circle(type, 45, 2f, 0);
+			Circle(type, 45, 200f, 0);
 			yield return new WaitForSeconds(0.75f);
 		}
 
@@ -20,11 +20,12 @@ public partial class Enemy : Entity {
 			float ang = i + offset;
 
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
-					              		  obj.Position, 1.5f, ang);
+				                          obj.Position, speed, ang);
 
+			shot.Position.z = 5;
 			shot.Color = type == (EType.NIGHTMARE) ? Colors.firebrick : Colors.chartreusegreen;
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
-			shot.Radius = 0.1f;
+			shot.Radius = 10f;
 			shot.Scale = Vector3.one * 1.5f;
 			shot.AutoDelete = false;
 

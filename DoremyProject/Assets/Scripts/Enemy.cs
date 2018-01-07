@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { CIRCLE, ROSACE, HOMING, SPIRAL, PLANT };
+public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -24,7 +24,8 @@ public partial class Enemy : Entity {
 		dead = false;
 
         if(obj != null && Application.isPlaying) {
-			obj.SetScaleFromRadius(0.35f);
+			obj.Radius = 35;
+			obj.Scale = Vector3.one;
 
 			StartCoroutine(_Behaviour());
 		}

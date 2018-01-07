@@ -75,7 +75,7 @@ public class QuadTreeHolder : MonoBehaviour {
 				}
 
 				if((bullets_close_player[i].Type == EType.ITEM)) {
-
+					// @TODO item handling
 				}
 			}
 		}
@@ -90,6 +90,7 @@ public class QuadTreeHolder : MonoBehaviour {
 			for (int j = 0; j < bullets_buffer.Count; ++j) {
 				if (bullets_buffer[j].Type == EType.SHOT) {
 					enemy.life -= bullets_buffer[j].Damage;  // Add the damage of each bullet
+					bullet_pool.RemoveBullet(bullets_buffer[j]);
 
 					if (enemy.life <= 0) {
 						enemy.Die();
@@ -253,7 +254,9 @@ public class QuadTreeHolder : MonoBehaviour {
 			Gizmos.DrawWireCube (bullets[i].AABB.center, bullets[i].AABB.size);
 
 			Gizmos.color = Color.red;
-			Gizmos.DrawWireSphere (bullets[i].AABB.center, bullets[i].Radius);
+			if (bullets [i].Radius != 0) {
+				Gizmos.DrawWireSphere (bullets [i].AABB.center, bullets [i].Radius);
+			}
         }
 
 		if (player.obj != null) {

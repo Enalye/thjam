@@ -7,7 +7,6 @@ public class Player : Entity {
 	public float hitbox_radius = 0.15f;
 	public float grazebox_radius = 0.3f;
 
-	public Sprite hitbox_sprite;
 	public Sprite shot_sprite;
 	public Sprite option_sprite;
 
@@ -84,10 +83,8 @@ public class Player : Entity {
 
 		if (obj != null) {
 			obj.Clamping = clamping;
-			obj.SetScaleFromRadius(hitbox_radius);
-
-			// Object is invisible and only used for collision
-			obj.Color = Color.white; // Temporary visible as missing the sprites
+			obj.Color = new Color32(255, 255, 255, 155);
+			obj.Scale = Vector3.one * 0.5f;
 
 			/* Init options lists */
 			CreateOptions();
@@ -98,8 +95,8 @@ public class Player : Entity {
 			}
 
 			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
-			grazeObj.SetScaleFromRadius(grazebox_radius);
-			grazeObj.Color = new Color32(255, 255, 255, 125);
+			grazeObj.Scale = Vector3.one * 1.2f;
+			grazeObj.Color = new Color32(255, 255, 255, 55);
 			grazeObj.BoundPosition = obj;
 
 			/* Init collection hitbox */
@@ -123,7 +120,7 @@ public class Player : Entity {
         // Update appearance (if driven by sprite)
 		if(playerSprite != null) {
 			pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER);
-			playerSprite.Position = obj.Position;
+			playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
         }
 
         if (!dead) {
@@ -218,6 +215,7 @@ public class Player : Entity {
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
 				}
 				options[i].bullet.Position = options[i].position;
+				options[i].bullet.Scale = Vector3.one;
 			}
 		} else {
 			for (int i = 0; i < options.Count; i++) {
@@ -233,6 +231,7 @@ public class Player : Entity {
 					optionAngleOffset += deltaTime * 5f;
 				}
 				options[i].bullet.Position = options[i].position;
+				options[i].bullet.Scale = Vector3.one;
 			}
 		}
 	}

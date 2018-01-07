@@ -29,7 +29,7 @@ public partial class Enemy : Entity {
 			shot.Type = type;
 			shot.SpriteAngle = Vector3.forward * ang;
 			shot.Color = color;
-			shot.Radius = 0.1f;
+			shot.Radius = 10f;
 			shot.Scale = Vector3.one * 1.5f;
 			bullets.Add(shot);
 
@@ -48,14 +48,14 @@ public partial class Enemy : Entity {
 
 				shot.Angle += angleUpdate;
 
-				if (expand == true && radius < 10) {
-					radius += 0.00025f;
+				if (expand == true && radius < 1000) {
+					radius += 0.025f;
 
-					if (radius >= 10) {
+					if (radius >= 1000) {
 						expand = false;
 					}
 				} else if (expand == false && radius > 0) {
-					radius -= 0.00025f;
+					radius -= 0.025f;
 				}
 
 				Rosace(nbBranches, shot.Angle, radius, angOffset * direction, shot);
