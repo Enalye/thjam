@@ -111,8 +111,14 @@ public partial class Enemy : Entity {
 	IEnumerator Boss() {
 		yield return new WaitForSeconds(2.5f);
 
+		GameScheduler.instance.audioManager.PlayMusic(GameScheduler.instance.bossMusic);
+
 		yield return StartCoroutine(PlantPattern());
 		yield return StartCoroutine(MagusPattern());
+
+		float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
+		yield return new WaitForSeconds (fadeTime);
+		Application.LoadLevel (3);
 	}
 
 	public void NextPattern() {
