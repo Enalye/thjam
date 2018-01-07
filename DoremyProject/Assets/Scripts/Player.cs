@@ -84,8 +84,8 @@ public class Player : Entity {
 		if (obj != null) {
 			// Obj represents hitbox here */
 			obj.Clamping = clamping;
-			obj.Color = new Color32(255, 255, 255, 155);
-			obj.Scale = Vector3.one * 0.5f;
+			obj.Color = Colors.transparent;
+			obj.Scale = Vector3.one * 0.25f;
 			obj.Radius = hitbox_radius;
 			obj.Position.z = Layering.Hitbox;
 
@@ -123,7 +123,6 @@ public class Player : Entity {
         // Update appearance (if driven by sprite)
 		if(playerSprite != null) {
 			pool.ChangeBulletAppearance(playerSprite, animatorRenderer.sprite, EMaterial.PLAYER);
-			playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
         }
 
         if (!dead) {
@@ -176,13 +175,16 @@ public class Player : Entity {
 		} else if (bombing == false) { 
 			if (obj.Direction.x < 0) {
 				animator.SetBool ("IsGoingLeft", true);
-				animator.SetBool ("IsGoingRight", false);            
+				animator.SetBool ("IsGoingRight", false);
+				playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
 			} else if (obj.Direction.x > 0) {
 				animator.SetBool ("IsGoingLeft", false);
 				animator.SetBool ("IsGoingRight", true);
+				playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
 			} else {
 				animator.SetBool ("IsGoingLeft", false);
 				animator.SetBool ("IsGoingRight", false);
+				playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
 			}
 		}
 	}
@@ -256,7 +258,7 @@ public class Player : Entity {
 														 0f, 0f);
 
 							shot.Radius = 0.25f;
-							shot.Scale = Vector3.one * shot.Radius;
+							shot.Scale = Vector3.one * shot.Radius * 1.8f;
 							shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
 							shot.Lifetime = 1f;
 							shot.AutoDelete = true;
@@ -270,14 +272,14 @@ public class Player : Entity {
 				for (int i = 0; i < power_level; i++) {
 					for (int y = 0; y < 3; y++) {
 						Bullet shot = pool.AddBullet(shot_sprite, EType.SHOT, EMaterial.PLAYER,
-													 Color.green,
+													 Colors.limegreen,
 										             options[i].position,
 										             1000f,
 										             (90f - 20f) + (y * 40f / 3f),
 										             0f, 0f);
 
 						shot.Radius = 0.25f;
-						shot.Scale = Vector3.one * shot.Radius;
+						shot.Scale = Vector3.one * shot.Radius * 1.8f;
 						shot.SpriteAngle = new Vector3(0f, 0f, shot.Angle + 90);
 						shot.Lifetime = 1f;
 						shot.AutoDelete = true;
@@ -345,24 +347,24 @@ public class Player : Entity {
 
 	public IEnumerator _HitDisplay() {
 		can_be_damaged = false;
-		pool.UpdateGaugeLevel(-15.0f);
-		pool.ChangeBulletColor(obj, Color.red);
+		pool.UpdateGaugeLevel(-20.0f);
+		pool.ChangeBulletColor(obj, Colors.firebrick);
 		yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
-		pool.ChangeBulletColor(obj, Color.white);
+		pool.ChangeBulletColor(obj, Colors.transparent);
 		can_be_damaged = true;
 	}
 
 	public IEnumerator _EatDisplay() {
 		pool.UpdateGaugeLevel(15.0f);
-		pool.ChangeBulletColor(obj, Color.green);
+		pool.ChangeBulletColor(obj, Colors.limegreen);
 		yield return new WaitForSeconds(0.1f);
-		pool.ChangeBulletColor(obj, Color.white);
+		pool.ChangeBulletColor(obj, Colors.transparent);
 	}
 
 	public IEnumerator _GrazeDisplay() {
 		pool.UpdateGaugeLevel(5.0f);
-		pool.ChangeBulletColor(obj, Color.yellow);
+		pool.ChangeBulletColor(obj, Colors.yellow);
 		yield return new WaitForSeconds(0.1f);
-		pool.ChangeBulletColor(obj, Color.white);
+		pool.ChangeBulletColor(obj, Colors.transparent);
 	}
 }	

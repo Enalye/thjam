@@ -3,32 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Bullet", menuName = "Sprites/Gauge")]
-public class Gauge : Bullet {
+public class Gauge : MonoBehaviour {
 	[Range(0, 100)]
-	public float level = 50;  // Between 0 and 200%, starts at 100 by default
-	public float height = 10; // Height of the gauge
+	public float level;  // Between 0 and 100%, starts at 50 by default
 
-	// No collision handling here allows for a simplified code
-	public override void SetupVertices(Vector3[] vertices, Color32[] colors) {
-		int offset = Index * 4;
-		Vector3 bullet_ext = Vector3.Scale(Bounds.extents, Scale);
+	private UnityEngine.UI.Image fluid;
 
-		float min_x = Position.x - bullet_ext.x;
-		float min_y = Position.y;
-		float max_x = Position.x + bullet_ext.x;
-		float max_y = Position.y + (height * level / 100);
-
-		SetupVertices(offset, min_x, min_y, max_x, max_y, vertices, colors);
+	void Start () {
+		fluid = gameObject.GetComponent<UnityEngine.UI.Image>();
+		StartCoroutine (_Decrease ());
 	}
 
 	public void UpdateLevel(float levelChange) {
 		level = Mathf.Clamp(level + levelChange, 0, 100);
+		fluid.rectTransform.sizeDelta = new Vector3(fluid.rectTransform.sizeDelta.x,
+												    (level / 100) * 400);
 	}		
 
 	public IEnumerator _Decrease() {
 		while (Application.isPlaying) {
 			yield return new WaitForSeconds (0.1f);
-			UpdateLevel(-0.5f);
+			UpdateLevel(-0.1f);
 		}
 	}
 }

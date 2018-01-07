@@ -35,7 +35,7 @@ public class QuadTreeHolder : MonoBehaviour {
 		ResetQuadTree();
 
 		foreach (Bullet bullet in pool_bullets) {
-			quadtree.Insert(bullet);
+			quadtree.Insert (bullet);
 		}
 	}
 
@@ -247,19 +247,21 @@ public class QuadTreeHolder : MonoBehaviour {
         List<Bullet> bullets = bullet_pool.GetBullets();
 
         for (int i = 0; i < bullets.Count; i++) {
-			Gizmos.color = Color.yellow;
-			OBB OBB = bullets[i].OBB;
-			Gizmos.DrawLine (OBB.FL, OBB.FR);
-			Gizmos.DrawLine (OBB.FR, OBB.BR);
-			Gizmos.DrawLine (OBB.BR, OBB.BL);
-			Gizmos.DrawLine (OBB.BL, OBB.FL);
+			if (bullets [i].Type == EType.ENEMY || bullets [i].Type == EType.NIGHTMARE || bullets [i].Type == EType.DREAM || bullets [i].Type == EType.SHOT ) {
+				Gizmos.color = Color.yellow;
+				OBB OBB = bullets [i].OBB;
+				Gizmos.DrawLine (OBB.FL, OBB.FR);
+				Gizmos.DrawLine (OBB.FR, OBB.BR);
+				Gizmos.DrawLine (OBB.BR, OBB.BL);
+				Gizmos.DrawLine (OBB.BL, OBB.FL);
 
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireCube (bullets[i].AABB.center, bullets[i].AABB.size);
+				Gizmos.color = Color.green;
+				Gizmos.DrawWireCube (bullets [i].AABB.center, bullets [i].AABB.size);
 
-			Gizmos.color = Color.red;
-			if (bullets [i].Radius != 0) {
-				Gizmos.DrawWireSphere (bullets [i].AABB.center, bullets [i].Radius);
+				Gizmos.color = Color.red;
+				if (bullets [i].Radius != 0) {
+					Gizmos.DrawWireSphere (bullets [i].AABB.center, bullets [i].Radius);
+				}
 			}
         }
 
