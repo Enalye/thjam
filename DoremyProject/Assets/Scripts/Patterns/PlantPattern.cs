@@ -23,50 +23,50 @@ public partial class Enemy : Entity {
 		Bullet trim = pool.AddBullet (GameScheduler.instance.sprites[3], EType.DREAM, EMaterial.ENEMY,
 			                          Colors.royalblue, obj.Position, 100f, angle, 1.25f, 0.2f);
 		trim.Radius = 15f;
+		trim.AutoDelete = true;
 
-		float count = 0;
+		float time = 0;
 		while(trim.Active && !trim.Removing) {
-			if(count % 3 == 0) {
-				if(count % 6 == 0) {
-					float radAngle2 = Mathf.Deg2Rad * (trim.Angle + 90);
-					float radAngle3 = Mathf.Deg2Rad * (trim.Angle - 90);
+			float radAngle2 = Mathf.Deg2Rad * (trim.Angle + 90);
+			float radAngle3 = Mathf.Deg2Rad * (trim.Angle - 90);
 
-					float sin2 = Mathf.Sin (radAngle2);
-					float cos2 = Mathf.Cos (radAngle2);
-					float sin3 = Mathf.Sin (radAngle3);
-					float cos3 = Mathf.Cos (radAngle3);
+			float sin2 = Mathf.Sin (radAngle2);
+			float cos2 = Mathf.Cos (radAngle2);
+			float sin3 = Mathf.Sin (radAngle3);
+			float cos3 = Mathf.Cos (radAngle3);
 
-					float angDiff = Random.Range(30.0f, 45.0f);
+			float angDiff = Random.Range(30.0f, 45.0f);
 
-					Bullet stem1 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
-						                           Colors.chartreusegreen, trim.Position, 0.0f, trim.Angle);
-					stem1.Lifetime = 2.4f;
-					stem1.Delay = 0.25f;
-					StartCoroutine(stem1._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, stem1.Angle));
+			Bullet stem1 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
+				                           Colors.chartreusegreen, trim.Position, 0.0f, trim.Angle);
+			stem1.Lifetime = 2.4f;
+			stem1.Delay = 0.25f;
+			stem1.AutoDelete = true;
+			StartCoroutine(stem1._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, stem1.Angle));
 
-					Vector3 pos2 = new Vector3 (trim.Position.x + dec * cos2, trim.Position.y + dec * sin2); 
-					Bullet stem2 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
-						                           Colors.chartreusegreen, pos2, 0.0f, trim.Angle + angDiff);
-					stem2.Lifetime = 2.4f;
-					stem2.Delay = 0.25f;
-					StartCoroutine(stem2._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle + Random.Range(30.0f, 45.0f)));
+			Vector3 pos2 = new Vector3 (trim.Position.x + dec * cos2, trim.Position.y + dec * sin2); 
+			Bullet stem2 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
+				                           Colors.chartreusegreen, pos2, 0.0f, trim.Angle + angDiff);
+			stem2.Lifetime = 2.4f;
+			stem2.Delay = 0.25f;
+			stem2.AutoDelete = true;
+			StartCoroutine(stem2._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle + Random.Range(30.0f, 45.0f)));
 
-					Vector3 pos3 = new Vector3 (trim.Position.x + dec * cos3, trim.Position.y + dec * sin3);
-					Bullet stem3 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
-						                           Colors.chartreusegreen, pos3, 0.0f, trim.Angle - angDiff);
-					stem3.Lifetime = 2.4f;
-					stem3.Delay = 0.25f;
-					StartCoroutine(stem3._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle - Random.Range(30.0f, 45.0f)));
-				}
-			}
+			Vector3 pos3 = new Vector3 (trim.Position.x + dec * cos3, trim.Position.y + dec * sin3);
+			Bullet stem3 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
+				                           Colors.chartreusegreen, pos3, 0.0f, trim.Angle - angDiff);
+			stem3.Lifetime = 2.4f;
+			stem3.Delay = 0.25f;
+			stem3.AutoDelete = true;
+			StartCoroutine(stem3._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle - Random.Range(30.0f, 45.0f)));
 
-			if(count % 40 == 15) {
+			if(time == 0.2f) {
 				Flowers(trim);
-				count = 0;
+				time = 0;
 			}
 				
-			count++;
-			yield return new WaitForSeconds(GameScheduler.dt);
+			time += 0.1f;
+			yield return new WaitForSeconds(0.1f);
 		}
 	}
 
@@ -90,6 +90,7 @@ public partial class Enemy : Entity {
 			float angle = nAngle + nAngle_b;
 			Bullet petal = pool.AddBullet(GameScheduler.instance.sprites[1], EType.DREAM, EMaterial.BULLET,
 				                          Colors.yellow, pos, 0, angle);
+			petal.AutoDelete = true;
 			petal.Delay = 0.2f;
 			petal.SpriteAngle = Vector3.forward * angle;
 

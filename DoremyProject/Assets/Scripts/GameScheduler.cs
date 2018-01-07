@@ -13,6 +13,7 @@ public class GameScheduler : MonoBehaviour
     public Player player;
     public QuadTreeHolder quadtree;
 	public AudioManager audioManager;
+	public Dialogue dialogue;
 
     private Camera cam;
     private float t = 0f;
@@ -34,19 +35,24 @@ public class GameScheduler : MonoBehaviour
 
     // Charged to initialize every other script in the right order.
     void OnEnable() {
-        // Set instance to this object
-        if (instance == null) {
-            instance = this;
-        } else if (instance != this) {
-            Destroy(gameObject);
-        }
+		StartCoroutine(Begin());
+    }
 
-        // Initialize quadtree and meshpool
-        quadtree.Init();
-        meshpool.Init();
+	IEnumerator Begin() {
+		// Set instance to this object
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy(gameObject);
+		}
 
-        // Initialize player
-        player.Init();
+		// Initialize quadtree and meshpool
+		quadtree.Init();
+		meshpool.Init();
+
+		// Initialize player
+		player.Init();
+		dialogue.StartDialogue();
 		quadtree.player = player;
 
 		if (Application.isPlaying) {
@@ -54,34 +60,41 @@ public class GameScheduler : MonoBehaviour
 			audioManager.PlayMusic (stageMusic);
 		}
 
-        // Initialize enemies
-		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];
-        for (int i = 0; i < enemies.Length; ++i){
-            enemies[i].Init();
-        }
+		// Wait for dialogue end
+		InDialogue = true;
+		yield return StartCoroutine(dialogue.StartDialogue());
+		InDialogue = false;
 
-        meshpool.UpdateAt(0);
-    }
+		// Initialize enemies
+		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];
+		for (int i = 0; i < enemies.Length; ++i){
+			enemies[i].Init();
+		}
+
+		meshpool.UpdateAt(0);
+	}
 
     void Update() {
-        player.UpdateAt(1f);
-        //dialogue.UpdateAt();
+		player.UpdateAt (1f);
 
-        float frameTime = Time.deltaTime;
-        accumulator += frameTime;
+		float frameTime = Time.deltaTime;
+		accumulator += frameTime;
 
-        while(accumulator >= dt) {
-            meshpool.UpdateAt(dt);			// Movement
-			meshpool.ReferenceBullets();	// Reference bullets for collisions
+		while (accumulator >= dt) {
+			meshpool.UpdateAt (dt);			// Movement
+			meshpool.ReferenceBullets ();	// Reference bullets for collisions
 
 			// Collisions checks
-			player.UpdateAt(dt);
-			for (int i = 0; i < enemies.Length; ++i) {
-				enemies[i].UpdateAt(dt);
+			player.UpdateAt (dt);
+
+			if (InDialogue == false) {
+				for (int i = 0; i < enemies.Length; ++i) {
+					enemies [i].UpdateAt (dt);
+				}
 			}
 
-            accumulator -= dt;
-            t += dt;
-        }
+			accumulator -= dt;
+			t += dt;
+		}
     }
 }
