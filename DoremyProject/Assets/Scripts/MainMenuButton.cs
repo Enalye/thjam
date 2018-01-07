@@ -29,7 +29,7 @@ public class MainMenuButton : MonoBehaviour {
 			}
 		}
 		image.color = new Color (1f, 1f, 1f, Mathf.Lerp (.35f, 1f, (Mathf.Cos (Time.time * 2f) + 1f) / 2f));
-		if (Input.GetButton ("Shot1")) {
+		if (Input.GetButton ("Shot1") || Input.GetButton ("Shot2") || Input.GetButton ("Shot3")) {
 			Application.LoadLevel (1);
 		}
 	}
