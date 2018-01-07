@@ -13,20 +13,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 8
   Owner: 1
-  Material: 1
+  Material: 3
   Active: 0
+  Removing: 0
   Grazed: 0
   Position: {x: 0, y: 0, z: 0}
   PreviousPosition: {x: 0, y: 0, z: 0}
   BoundPosition: {fileID: 0}
-  Scale: {x: 0.5, y: 1, z: 0}
+  Scale: {x: 1, y: 1, z: 1}
   _angle: 0
   SpriteAngle: {x: 0, y: 0, z: 0}
   SpriteAngularVelocity: {x: 0, y: 0, z: 0}
   Speed: 0
   Acceleration: 0
   AngularVelocity: 0
-  Sprite: {fileID: 21300000, guid: 40932b83bab65a640a6765f2559657e4, type: 3}
+  Sprite: {fileID: 21300000, guid: ef53cb3f5de85f84ea70fdb2198f9c3a, type: 3}
   _color:
     serializedVersion: 2
     rgba: 4294967295
@@ -35,6 +36,6 @@ MonoBehaviour:
   Penetration: 0
   Damage: 0
   SpellResist: 0
-  AutoDelete: 1
+  AutoDelete: 0
   level: 50
-  height: 10
+  height: 1000

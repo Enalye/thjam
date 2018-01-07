@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT };
+public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -70,6 +70,10 @@ public partial class Enemy : Entity {
 
 		if (pattern == EPattern.PLANT) {
 			StartCoroutine(PlantPattern());
+		}
+
+		if (pattern == EPattern.ELLIPSE) {
+			StartCoroutine(EllipsePattern());
 		}
 	}
 }

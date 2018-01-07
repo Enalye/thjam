@@ -19,7 +19,7 @@ public partial class Enemy : Entity {
 
 				Vector3 pos0 = Vector3.zero;
 				Vector3 pos10 = Vector3.zero;
-				Bullet dream =  pool.AddBullet (GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET);
+				Bullet dream = pool.AddBullet (GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET, Colors.royalblue);
 
 				for (int j = 0; j < nbBulletsPerSpiral; ++j) {
 					radius2 += 6f;
@@ -37,12 +37,11 @@ public partial class Enemy : Entity {
 					}
 
 					Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
-						            		      pos, 0.0f, angle);
+												  Colors.orchid, pos, 0.0f, angle);
 
 					shot.MinSpeed = speed2;
 					shot.Scale = Vector3.one * 1.15f;
 					shot.Radius = 20f;
-					shot.Color = Colors.orchid;
 					bullets.Add(shot);
 					StartCoroutine (shot._RotateAround(dream, 0.5f));
 
@@ -56,7 +55,6 @@ public partial class Enemy : Entity {
 				dream.MinSpeed = speed2;
 				dream.Scale = Vector3.one * 1.5f;
 				dream.Radius = 20f;
-				dream.Color = Colors.royalblue;
 
 				angle += (360 / 3) + Random.Range (-10, 10);
 			}

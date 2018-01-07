@@ -125,7 +125,9 @@ public partial class MeshPool : MonoBehaviour {
 	public void SetupGauge() {
 		_gauge = _bullets[MaxBullets] as Gauge;
 		_gauge.CopyData(_gauge_prefab);
+		_gauge.Position = new Vector3(400.0f, -300.0f);
 		_gauge.Index = MaxBullets;
+		_gauge.height = 400;
 
 		SetupBullet(_gauge);
 		StartCoroutine(_gauge._Decrease());
@@ -143,14 +145,19 @@ public partial class MeshPool : MonoBehaviour {
         bullet.SetupVertices(_vertices[MaterialIdx], _colors[MaterialIdx]);
     }
 
-    public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Vector3 position, float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
-        Bullet bullet = AddBullet(sprite, type, material);
+	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position, float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
+		Bullet bullet = AddBullet(sprite, type, material, color);
         bullet.CopyData(sprite, type, material, position, speed, angle, acc, ang_vec);
         return bullet;
     }
 
-    public Bullet AddBullet(Sprite sprite, EType type, EMaterial material) {
+	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color) {
         Bullet bullet = PullBullet(type, material);
+		bullet.Color = color;
+
+		if (type == EType.NIGHTMARE || type == EType.DREAM) {
+			StartCoroutine(bullet._Appear(0.5f));
+		}
 
         // Update some of the bullet data
         if(sprite != null) { 
@@ -180,12 +187,21 @@ public partial class MeshPool : MonoBehaviour {
     }
 
     public void RemoveBullet(Bullet bullet) {
-        CleanBullet(bullet);
-
-        bullet.Active = false;
-        _available.Enqueue(bullet.Index);
-        _temp.Remove(bullet);
+		StartCoroutine(_DeleteAfterFade(bullet));
     }
+
+	public IEnumerator _DeleteAfterFade(Bullet bullet) {
+		bullet.Removing = true;
+		if (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM) {
+			yield return StartCoroutine(bullet._Disappear(0.5f));
+		}
+
+		CleanBullet(bullet);
+		bullet.Active = false;
+		bullet.Removing = false;
+		_available.Enqueue(bullet.Index);
+		_temp.Remove(bullet);
+	}
 
     public void ChangeBulletAppearance(Bullet bullet, Sprite sprite, EMaterial material) {
         CleanBullet(bullet);
@@ -214,9 +230,9 @@ public partial class MeshPool : MonoBehaviour {
 
         foreach (Bullet bullet in _active) {
 			// Check if the bullet has expired
-			bool removed = HandleBulletLifeTime(bullet);
+			HandleBulletLifeTime(bullet);
 
-			if (removed == false) {
+			if (bullet.Active) {
 				// Check events registered in a bullet (change of position, angle, speed, acceleration, etc.)
 
 
@@ -258,15 +274,12 @@ public partial class MeshPool : MonoBehaviour {
         }
     }
 
-	private bool HandleBulletLifeTime(Bullet bullet) {
-		bool removed = false;
-		if ((bullet.Lifetime.HasValue && bullet.CurrentTime >= bullet.Lifetime.Value) ||
-			(bullet.AutoDelete && (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT) && !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect))) {
-
+	private void HandleBulletLifeTime(Bullet bullet) {
+		if ((bullet.Removing == false) &&
+			((bullet.Lifetime.HasValue && bullet.CurrentTime >= bullet.Lifetime.Value) ||
+			 (bullet.AutoDelete && (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT) && !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect)))) {
 			RemoveBullet(bullet);
-			removed = true;
 		}
-		return removed;
 	}
 }
 
