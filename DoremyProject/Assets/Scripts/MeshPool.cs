@@ -193,7 +193,7 @@ public partial class MeshPool : MonoBehaviour {
 
 	public IEnumerator _DeleteAfterFade(Bullet bullet) {
 		bullet.Removing = true;
-		if (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM) {
+		if (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.ENEMY) {
 			yield return StartCoroutine(bullet._Disappear(0.5f));
 		}
 

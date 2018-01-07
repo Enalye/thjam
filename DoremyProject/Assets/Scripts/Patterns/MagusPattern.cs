@@ -17,7 +17,7 @@ public partial class Enemy : Entity {
 		float tRange = 400f;
 		float bAngle = 90;
 
-		while (obj.Active && (pattern == EPattern.MAGUS)) {
+		while (obj.Active && (currentPattern == 1)) {
 			if (tRange > 80) {
 				for (int i = 0; i < bnum; ++i) {
 					float bitAngle = bitAnglebase + 360 / bnum * i;

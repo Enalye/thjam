@@ -45,14 +45,14 @@ public class QuadTreeHolder : MonoBehaviour {
 			bullets_close_player = quadtree.Get(player.grazeObj.AABB);
 
 			// For each bullet close to the ennemy
-			for(int i = 0; i < bullets_close_player.Count && player.can_be_damaged; ++i) {
+			for(int i = 0; i < bullets_close_player.Count; ++i) {
 				Bullet bullet = bullets_close_player[i];
 				Vector3 playerPos = player.obj.Position;
 				Vector3 bulletPos = bullet.Position;
 
 				// Enemy collision => player loses a life
 				if((bullet.Type == EType.NIGHTMARE ||
-					bullet.Type == EType.ENEMY)) {
+					bullet.Type == EType.ENEMY) && player.can_be_damaged) {
 
 					if(CircleCollision(playerPos, bulletPos, player.grazebox_radius, bullet.Radius)) {
 						if (bullet.Grazed == false) {
@@ -67,7 +67,7 @@ public class QuadTreeHolder : MonoBehaviour {
 					}
 				}
 
-				if((bullets_close_player[i].Type == EType.DREAM) &&
+				if((bullets_close_player[i].Type == EType.DREAM && bullets_close_player[i].Removing == false) &&
 					CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
 
 					StartCoroutine(player._EatDisplay());
@@ -82,7 +82,7 @@ public class QuadTreeHolder : MonoBehaviour {
 	}
 
 	public void CheckCollision(Enemy enemy) {
-		if(enemy.obj != null && enemy.obj.Active) {
+		if(enemy.obj != null && enemy.obj.Active && !enemy.obj.Removing) {
 			// Get a list of bullets overlapping the current enemy bounding rect
 			bullets_buffer = quadtree.Get(enemy.obj.AABB);
 
@@ -93,7 +93,11 @@ public class QuadTreeHolder : MonoBehaviour {
 					bullet_pool.RemoveBullet(bullets_buffer[j]);
 
 					if (enemy.life <= 0) {
-						enemy.Die();
+						enemy.NextPattern();
+
+						if (enemy.nbPatterns == 0) {
+							enemy.Die ();
+						}
 					}
 				}
 			}

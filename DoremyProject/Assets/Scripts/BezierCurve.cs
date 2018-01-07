@@ -9,7 +9,7 @@ public class Path {
 
     public Path(int nb_points) {
         points = new Vector3[nb_points];
-        time = new float[(points.Length - 1) / 3];
+        time = new float[(points.Length) / 3];
     }
 }
 

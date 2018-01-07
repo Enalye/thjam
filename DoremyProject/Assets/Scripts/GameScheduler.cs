@@ -8,7 +8,7 @@ public class GameScheduler : MonoBehaviour
     public static GameScheduler instance = null;     // Singleton
 
     public MeshPool meshpool;
-    public List<Enemy> enemies;
+	private Enemy[] enemies;
 	public List<Sprite> sprites;
     public Player player;
     public QuadTreeHolder quadtree;
@@ -46,7 +46,8 @@ public class GameScheduler : MonoBehaviour
 		quadtree.player = player;
 
         // Initialize enemies
-        for (int i = 0; i < enemies.Count; ++i){
+		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];
+        for (int i = 0; i < enemies.Length; ++i){
             enemies[i].Init();
         }
 
@@ -66,7 +67,7 @@ public class GameScheduler : MonoBehaviour
 
 			// Collisions checks
 			player.UpdateAt(dt);
-			for (int i = 0; i < enemies.Count; ++i) {
+			for (int i = 0; i < enemies.Length; ++i) {
 				enemies[i].UpdateAt(dt);
 			}
 
