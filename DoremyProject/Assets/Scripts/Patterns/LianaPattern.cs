@@ -7,12 +7,13 @@ public partial class Enemy : Entity {
 	public IEnumerator LianePattern() {
 		yield return new WaitForSeconds(0.1f);
 
-		float chose   = 0;
-		float n       = 0;
+		float chose     = 0;
+		float n = (obj.Position.x < 0) ? 180f : 0f;
+		float speed = 150f; 
 
 		while (obj.Active) {
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites [5], EType.NIGHTMARE, EMaterial.BULLET, Colors.chartreusegreen,
-				             obj.Position, 150f, n);
+				                          obj.Position, speed, n);
 			shot.SpriteAngle = Vector3.forward * n;
 			shot.Radius = 5f;
 

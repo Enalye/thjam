@@ -20,10 +20,6 @@ public partial class Bullet : ScriptableObject
     // Clamping (optional !)
     public Bounds? Clamping { get; set; }
 
-    // Physics (optional !)
-    public float? Mass { get; set; }
-    public Vector3? Force { get; set; }
-
     // Type and owner
     public EType Type;
     public EOwner Owner;
@@ -115,7 +111,6 @@ public partial class Bullet : ScriptableObject
     public float Delay;
 
     // Player shot data
-    public float Penetration;
     public float Damage;
 
     // Deletion conditions
@@ -124,6 +119,39 @@ public partial class Bullet : ScriptableObject
 
     // Usually not to be modified by hand
     public float CurrentTime { get; set; }
+
+	// Reset all variables but index
+	public void Clean() {
+		Lifetime = null;
+		Clamping = null;
+
+		Position = Vector3.zero;
+		Rotation = Quaternion.identity;
+		Scale = Vector3.one;
+
+		BoundPosition = null;
+
+		Speed = 0;
+		MinSpeed = null;
+		MaxSpeed = null;
+
+		Direction = Vector3.zero;
+		Angle = 0;
+		Acceleration = 0;
+		AngularVelocity = 0;
+		Radius = 0;
+		Delay = 0;
+		Damage = 0;
+		CurrentTime = 0;
+
+		Sprite = null;
+
+		Grazed = false;
+		Active = false;
+		Removing = false;
+		SpellResist = false;
+		AutoDelete = false;
+	}
 
 	public void CopyData(float ? speed, float ? angle, float ? acc, float ? ang_vec) {
 		if (speed.HasValue) { Speed = speed.Value; }
@@ -156,8 +184,6 @@ public partial class Bullet : ScriptableObject
         PreviousPosition = prefab.Position;
         Direction = prefab.Direction;
         Lifetime = prefab.Lifetime;
-        Mass = prefab.Mass;
-        Force = prefab.Force;
         Scale = prefab.Scale;
         Angle = prefab.Angle;
         Speed = prefab.Speed;
