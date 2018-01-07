@@ -22,7 +22,7 @@ public partial class Enemy : Entity {
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
 				                          obj.Position, speed, ang);
 
-			shot.Position.z = 5;
+			shot.Position.z = Layering.Bullet;
 			shot.Color = type == (EType.NIGHTMARE) ? Colors.firebrick : Colors.chartreusegreen;
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
 			shot.Radius = 10f;

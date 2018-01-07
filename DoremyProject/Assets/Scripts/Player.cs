@@ -82,9 +82,12 @@ public class Player : Entity {
         base.Init();
 
 		if (obj != null) {
+			// Obj represents hitbox here */
 			obj.Clamping = clamping;
 			obj.Color = new Color32(255, 255, 255, 155);
 			obj.Scale = Vector3.one * 0.5f;
+			obj.Radius = hitbox_radius;
+			obj.Position.z = Layering.Hitbox;
 
 			/* Init options lists */
 			CreateOptions();
@@ -96,7 +99,8 @@ public class Player : Entity {
 
 			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, obj.Position);
 			grazeObj.Scale = Vector3.one * 1.2f;
-			grazeObj.Color = new Color32(255, 255, 255, 55);
+			grazeObj.Radius = grazebox_radius;
+			grazeObj.Color = new Color32(255, 255, 255, 0);
 			grazeObj.BoundPosition = obj;
 
 			/* Init collection hitbox */
@@ -215,7 +219,7 @@ public class Player : Entity {
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 1f);
 				}
 				options[i].bullet.Position = options[i].position;
-				options[i].bullet.Scale = Vector3.one;
+				options[i].bullet.Scale = Vector3.one * 0.75f;
 			}
 		} else {
 			for (int i = 0; i < options.Count; i++) {
@@ -231,7 +235,7 @@ public class Player : Entity {
 					optionAngleOffset += deltaTime * 5f;
 				}
 				options[i].bullet.Position = options[i].position;
-				options[i].bullet.Scale = Vector3.one;
+				options[i].bullet.Scale = Vector3.one * 0.75f;
 			}
 		}
 	}

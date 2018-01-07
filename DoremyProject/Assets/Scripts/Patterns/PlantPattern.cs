@@ -10,7 +10,7 @@ public partial class Enemy : Entity {
 			float nAngle = -180;
 
 			while (nAngle < 180) {
-				StartCoroutine(_Stems(nAngle, 0.05f));
+				StartCoroutine(_Stems(nAngle, 25f));
 				nAngle += 45;
 				yield return null;
 			}
@@ -21,7 +21,7 @@ public partial class Enemy : Entity {
 
 	public IEnumerator _Stems(float angle, float dec) {
 		Bullet trim = pool.AddBullet (GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET,
-									  obj.Position, 2.0f, angle, 0.025f, 0.2f);
+									  obj.Position, 100f, angle, 1.25f, 0.2f);
 		trim.Color = Color.cyan;
 		//trim.SetScaleFromRadius(0.2f);
 
@@ -44,27 +44,24 @@ public partial class Enemy : Entity {
 												   trim.Position, 0.0f, trim.Angle);
 					stem1.Lifetime = 2.4f;
 					stem1.Delay = 0.25f;
-					stem1.Color = Color.magenta;
-					//stem1.SetScaleFromRadius(0.1f);
-					StartCoroutine(stem1._Change(1.6f, GameScheduler.instance.sprites[0], Color.cyan, EType.DREAM, 0.0f, stem1.Angle));
+					stem1.Color = Colors.chartreusegreen;
+					StartCoroutine(stem1._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, stem1.Angle));
 
 					Vector3 pos2 = new Vector3 (trim.Position.x + dec * cos2, trim.Position.y + dec * sin2); 
 					Bullet stem2 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
 						                           pos2, 0.0f, trim.Angle + angDiff);
 					stem2.Lifetime = 2.4f;
 					stem2.Delay = 0.25f;
-					stem2.Color = Color.magenta;
-					//stem2.SetScaleFromRadius(0.1f);
-					StartCoroutine(stem2._Change(1.6f, GameScheduler.instance.sprites[0], Color.cyan, EType.DREAM, 0.0f, trim.Angle + Random.Range(30.0f, 45.0f)));
+					stem2.Color = Colors.chartreusegreen;
+					StartCoroutine(stem2._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle + Random.Range(30.0f, 45.0f)));
 
 					Vector3 pos3 = new Vector3 (trim.Position.x + dec * cos3, trim.Position.y + dec * sin3);
 					Bullet stem3 = pool.AddBullet (GameScheduler.instance.sprites[0], EType.NIGHTMARE, EMaterial.BULLET,
 						                           pos3, 0.0f, trim.Angle - angDiff);
 					stem3.Lifetime = 2.4f;
 					stem3.Delay = 0.25f;
-					stem3.Color = Color.magenta;
-					//stem3.SetScaleFromRadius(0.1f);
-					StartCoroutine(stem3._Change(1.6f, GameScheduler.instance.sprites[0], Color.cyan, EType.DREAM, 0.0f, trim.Angle - Random.Range(30.0f, 45.0f)));
+					stem3.Color = Colors.chartreusegreen;
+					StartCoroutine(stem3._Change(1.6f, GameScheduler.instance.sprites[0], Color.white, EType.DREAM, 0.0f, trim.Angle - Random.Range(30.0f, 45.0f)));
 				}
 			}
 
@@ -93,16 +90,17 @@ public partial class Enemy : Entity {
 			float cosAngleB = Mathf.Cos((nAngle + nAngle_b) * Mathf.Deg2Rad);
 			float sinAngleB = Mathf.Sin((nAngle + nAngle_b) * Mathf.Deg2Rad);
 
-			Vector3 pos = new Vector3(trim.Position.x + nGap * 0.01f * cosAngleGap + 0.2f * cosAngleB,
-				                      trim.Position.y + nGap * 0.01f * sinAngleGap + 0.2f * sinAngleB);
-			Bullet petal = pool.AddBullet(GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET,
-				                          pos, 0, nAngle + nAngle_b);
+			Vector3 pos = new Vector3(trim.Position.x + nGap * cosAngleGap + 10f * cosAngleB,
+				                      trim.Position.y + nGap * sinAngleGap + 10f * sinAngleB);
+			float angle = nAngle + nAngle_b;
+			Bullet petal = pool.AddBullet(GameScheduler.instance.sprites[1], EType.DREAM, EMaterial.BULLET,
+				                          pos, 0, angle);
 			petal.Delay = 0.2f;
-			//petal.SetScaleFromRadius(0.1f);
-			petal.Color = Color.green;
+			petal.Color = Color.yellow;
+			petal.SpriteAngle = Vector3.forward * angle;
 
-			StartCoroutine(petal._Change(1.2f, GameScheduler.instance.sprites[0], Color.red, EType.NIGHTMARE, null, null, 0.04f));
-			petal.MaxSpeed = 1.5f;
+			StartCoroutine(petal._Change(1.2f, GameScheduler.instance.sprites[1], Colors.firebrick, EType.NIGHTMARE, null, null, 2f));
+			petal.MaxSpeed = 150f;
 			petal.Lifetime = 4.0f;
 			nAngle += 60;
 		}

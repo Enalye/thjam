@@ -5,7 +5,7 @@ using UnityEngine;
 public partial class Enemy : Entity {
 	IEnumerator SpiralPattern() {
 		while (obj.Active) {
-			yield return new WaitForSeconds (1.0f);
+			yield return new WaitForSeconds (2.5f);
 			float angle = Random.Range (0, 360);
 
 			int nbSpirals = 3;
@@ -13,7 +13,7 @@ public partial class Enemy : Entity {
 
 			for (int i = 0; i < nbSpirals; ++i) {
 				float angle2 = Random.Range (0, 360);
-				float speed2 = Random.Range (-1.25f, -1.75f);
+				float speed2 = Random.Range (-60f, -90f);
 				float radius2 = 0;
 
 
@@ -22,11 +22,11 @@ public partial class Enemy : Entity {
 				Bullet dream =  pool.AddBullet (GameScheduler.instance.sprites[0], EType.DREAM, EMaterial.BULLET);
 
 				for (int j = 0; j < nbBulletsPerSpiral; ++j) {
-					radius2 += 0.08f;
+					radius2 += 6f;
 					float radAng2 = Mathf.Deg2Rad * angle2;
 
 					Vector3 pos = new Vector3 (obj.Position.x + radius2 * Mathf.Cos (radAng2),
-						             obj.Position.y + radius2 * Mathf.Sin (radAng2));
+						                       obj.Position.y + radius2 * Mathf.Sin (radAng2));
 
 					if (j == 0) {
 						pos0 = pos;
@@ -40,9 +40,9 @@ public partial class Enemy : Entity {
 						            		      pos, 0.0f, angle);
 
 					shot.MinSpeed = speed2;
-					shot.Scale = Vector3.one * 1.5f;
-					shot.Radius = 0.2f;
-					shot.Color = Color.magenta;
+					shot.Scale = Vector3.one * 1.15f;
+					shot.Radius = 20f;
+					shot.Color = Colors.orchid;
 					bullets.Add(shot);
 					StartCoroutine (shot._RotateAround(dream, 0.5f));
 
@@ -52,11 +52,11 @@ public partial class Enemy : Entity {
 				dream.Position = ((pos0 + pos10) / 2);
 				dream.Speed = 0.0f;
 				dream.Angle = angle;
-				dream.Acceleration = -0.15f;
+				dream.Acceleration = -7.5f;
 				dream.MinSpeed = speed2;
-				dream.Scale = Vector3.one * 1.15f;
-				dream.Radius = 0.2f;
-				dream.Color = Color.cyan;
+				dream.Scale = Vector3.one * 1.5f;
+				dream.Radius = 20f;
+				dream.Color = Colors.royalblue;
 
 				angle += (360 / 3) + Random.Range (-10, 10);
 			}

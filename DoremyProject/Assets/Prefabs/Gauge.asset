@@ -16,7 +16,7 @@ MonoBehaviour:
   Material: 1
   Active: 0
   Grazed: 0
-  Position: {x: 7, y: -4, z: 0}
+  Position: {x: 0, y: 0, z: 0}
   PreviousPosition: {x: 0, y: 0, z: 0}
   BoundPosition: {fileID: 0}
   Scale: {x: 0.5, y: 1, z: 0}
