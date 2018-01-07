@@ -1,10 +1,14 @@
 fileFormatVersion: 2
 guid: ef53cb3f5de85f84ea70fdb2198f9c3a
-timeCreated: 1515292471
+timeCreated: 1515325440
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: gauge
+    21300002: border
+    21300004: dream_text
+    21300006: continue
+    21300008: quit
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -89,7 +93,63 @@ TextureImporter:
         width: 42
         height: 237
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: border
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 286
+        width: 601
+        height: 441
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: dream_text
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 291
+        width: 19
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: continue
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 224
+        width: 206
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: quit
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 162
+        width: 206
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

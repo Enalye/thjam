@@ -8,7 +8,7 @@ public partial class Enemy : Entity {
 		for(int i = 0; i < 5; i++) {
 			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
 
-			if (obj.Active) {
+			if (obj.Active && !obj.Removing) {
 				Circle (type, 25, 200f, 0);
 			}
 

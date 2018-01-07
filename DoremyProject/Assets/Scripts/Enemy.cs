@@ -78,6 +78,7 @@ public partial class Enemy : Entity {
 		if (pattern == EPattern.KNIFE) {
 			obj.Type = EType.DREAM;
 			obj.Color = Colors.royalblue;
+			obj.AutoDelete = false;
 			StartCoroutine(KnifePattern(15, 75));
 		}
 

@@ -24,8 +24,11 @@ public partial class MeshPool : MonoBehaviour {
     private Bullet[] _bullets;
 
 	// Dream gauge
-	public Gauge _gauge;
-	public Gauge _gauge_prefab;
+	public Gauge   _gauge;
+
+	// GUI elements
+	public  Sprite  _border_sprite;
+	private Bullet  _border;
 
     // Vertices data
     private int[][] _indices;
@@ -43,14 +46,11 @@ public partial class MeshPool : MonoBehaviour {
     public void Init() {
         _active.Clear();
 
-		MaxItems = MaxBullets + 1;
+		MaxItems = MaxBullets;
 		_bullets = new Bullet[MaxItems];
         for(int i = 0; i < MaxBullets; i++) {
             _bullets[i] = ScriptableObject.CreateInstance("Bullet") as Bullet;
         }
-
-		// Init gauge
-		_bullets[MaxBullets] = ScriptableObject.CreateInstance("Gauge") as Gauge;
 
         // Dirty init stuff here
 		_available = new Queue<int>(Enumerable.Range(0, MaxBullets));
@@ -89,7 +89,9 @@ public partial class MeshPool : MonoBehaviour {
 			_materials[i] = MeshRenderers[i].sharedMaterial;
         }
 
-		SetupGauge();
+		// GUI elements
+		_border = AddBullet(_border_sprite, EType.EFFECT, EMaterial.GUI, Color.white);
+		_border.Scale = new Vector3(1.55f, 1.6f, 1);
     }
 
     public List<Bullet> GetBullets() {
@@ -121,17 +123,6 @@ public partial class MeshPool : MonoBehaviour {
 
         return bullet;
     }
-
-	public void SetupGauge() {
-		_gauge = _bullets[MaxBullets] as Gauge;
-		_gauge.CopyData(_gauge_prefab);
-		_gauge.Position = new Vector3(400.0f, -300.0f);
-		_gauge.Index = MaxBullets;
-		_gauge.height = 400;
-
-		SetupBullet(_gauge);
-		StartCoroutine(_gauge._Decrease());
-	}
 
     public void SetupBullet(Bullet bullet) {
         int MaterialIdx = (int)bullet.Material;
@@ -246,9 +237,6 @@ public partial class MeshPool : MonoBehaviour {
 				_temp.Add (bullet);
 			}
         }
-
-		int GaugeMatIdx = (int)_gauge.Material;
-		_gauge.ComputePosition(_vertices[GaugeMatIdx], _colors[GaugeMatIdx], dt);
 
         _active = _temp;
         BulletCount = _active.Count;

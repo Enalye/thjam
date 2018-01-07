@@ -8,15 +8,15 @@ public class Pause : MonoBehaviour {
 	public GameObject quitBtn;
 
 	private float pauseTime, selectionTime;
-	private UnityEngine.UI.Text continueText, quitText;
+	private UnityEngine.UI.Image continueText, quitText;
 	private int menuIndex;
 
 	void Start () {
 		pauseMenu.SetActive (false);
 		pauseTime = Time.realtimeSinceStartup;
 		selectionTime = pauseTime;
-		continueText = continueBtn.GetComponent<UnityEngine.UI.Text>();
-		quitText = quitBtn.GetComponent<UnityEngine.UI.Text>();
+		continueText = continueBtn.GetComponent<UnityEngine.UI.Image>();
+		quitText = quitBtn.GetComponent<UnityEngine.UI.Image>();
 	}
 
 	void Update () {
