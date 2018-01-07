@@ -82,7 +82,7 @@ public class QuadTreeHolder : MonoBehaviour {
 	}
 
 	public void CheckCollision(Enemy enemy) {
-		if(enemy.obj != null && enemy.obj.Active && !enemy.obj.Removing) {
+		if(enemy.obj != null && enemy.obj.Active && !enemy.obj.Removing && enemy.can_be_damaged) {
 			// Get a list of bullets overlapping the current enemy bounding rect
 			bullets_buffer = quadtree.Get(enemy.obj.AABB);
 

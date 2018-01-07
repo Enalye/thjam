@@ -39,28 +39,35 @@ public partial class Enemy : Entity {
 		}
 
 		bool expand = true;
-		while(Application.isPlaying) {
+		bool isAtLeastOneActive = true;
+		while(isAtLeastOneActive) {
+			isAtLeastOneActive = false;
+
 			// Update only bullets in the current generation
 			for(int i = generation * 60; i < generation * 60 + 60; i++) {
 				Bullet shot = bullets [i];
 
-				if(angleUpdate > 0.15f) {
-					angleUpdate -= 0.00001f;
-				}
+				if (shot.Active) {
+					isAtLeastOneActive = true;
 
-				shot.Angle += angleUpdate;
-
-				if (expand == true && radius < 1000) {
-					radius += 0.025f;
-
-					if (radius >= 1000) {
-						expand = false;
+					if (angleUpdate > 0.15f) {
+						angleUpdate -= 0.00001f;
 					}
-				} else if (expand == false && radius > 0) {
-					radius -= 0.025f;
-				}
 
-				Rosace(nbBranches, shot.Angle, radius, angOffset * direction, shot);
+					shot.Angle += angleUpdate;
+
+					if (expand == true && radius < 1000) {
+						radius += 0.025f;
+
+						if (radius >= 1000) {
+							expand = false;
+						}
+					} else if (expand == false && radius > 0) {
+						radius -= 0.025f;
+					}
+
+					Rosace (nbBranches, shot.Angle, radius, angOffset * direction, shot);
+				}
 			}
 
 			yield return new WaitForSeconds(0.01f);
