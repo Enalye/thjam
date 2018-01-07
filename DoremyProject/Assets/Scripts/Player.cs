@@ -353,7 +353,7 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _EatDisplay() {
-		pool.UpdateGaugeLevel(5.0f);
+		pool.UpdateGaugeLevel(15.0f);
 		pool.ChangeBulletColor(obj, Color.green);
 		yield return new WaitForSeconds(0.1f);
 		pool.ChangeBulletColor(obj, Color.white);

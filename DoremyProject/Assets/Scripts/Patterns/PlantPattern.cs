@@ -5,7 +5,7 @@ using UnityEngine;
 public partial class Enemy : Entity {
 	public IEnumerator PlantPattern() {
 		//yield return new WaitForSeconds (1.6f);
-		while (obj.Active) {
+		while (obj.Active && (currentPattern == 0)) {
 			//yield return new WaitForSeconds(0.3f);
 			float nAngle = -180;
 
@@ -22,6 +22,7 @@ public partial class Enemy : Entity {
 	public IEnumerator _Stems(float angle, float dec) {
 		Bullet trim = pool.AddBullet (GameScheduler.instance.sprites[3], EType.DREAM, EMaterial.ENEMY,
 			                          Colors.royalblue, obj.Position, 100f, angle, 1.25f, 0.2f);
+		trim.Radius = 15f;
 
 		float count = 0;
 		while(trim.Active && !trim.Removing) {

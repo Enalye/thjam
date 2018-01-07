@@ -5,8 +5,11 @@ using UnityEngine;
 public partial class Enemy : Entity {
 	public IEnumerator RosaceSpell(int direction) {
 		for (int i = 0; i < 5; ++i) {
-			StartCoroutine (RosacePattern(direction, i, 360 / 5 * i));
 			yield return new WaitForSeconds(1.5f);
+
+			if (obj.Active) {
+				StartCoroutine (RosacePattern (direction, i, 360 / 5 * i));
+			}
 		}
 
 		yield return null;

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE, MAGUS, KNIFE, WAVE };
+public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE, MAGUS, KNIFE, WAVE, LIANE, BOSS };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -16,12 +16,15 @@ public partial class Enemy : Entity {
 
 	public EPattern    pattern;
 	public BezierCurve curve;
+	public int nbPatterns = 1;
 
     private bool dead;
+	private int currentPattern;
 
     public override void Init() {
         base.Init();
 		dead = false;
+		currentPattern = 0;
 
         if(obj != null && Application.isPlaying) {
 			obj.Radius = 35;
@@ -35,7 +38,6 @@ public partial class Enemy : Entity {
         if(!dead) {
             pool.RemoveBullet(obj);
 
-			StopAllCoroutines();
             dead = true;
         }
     }
@@ -68,16 +70,9 @@ public partial class Enemy : Entity {
 			StartCoroutine(SpiralPattern());
 		}
 
-		if (pattern == EPattern.PLANT) {
-			StartCoroutine(PlantPattern());
-		}
 
 		if (pattern == EPattern.ELLIPSE) {
 			StartCoroutine(EllipsePattern());
-		}
-
-		if (pattern == EPattern.MAGUS) {
-			StartCoroutine(MagusPattern());
 		}
 			
 		if (pattern == EPattern.KNIFE) {
@@ -88,6 +83,39 @@ public partial class Enemy : Entity {
 
 		if (pattern == EPattern.WAVE) {
 			StartCoroutine(WavePattern());
+		}
+
+		if (pattern == EPattern.LIANE) {
+			StartCoroutine(LianePattern());
+		}
+
+		if (pattern == EPattern.BOSS) {
+			StartCoroutine(Boss());
+		}
+
+		// BOSS
+		if (pattern == EPattern.PLANT) {
+			StartCoroutine(PlantPattern());
+		}
+
+		if (pattern == EPattern.MAGUS) {
+			StartCoroutine(MagusPattern());
+		}
+	}
+
+	IEnumerator Boss() {
+		yield return new WaitForSeconds(2.5f);
+
+		yield return StartCoroutine(PlantPattern());
+		yield return StartCoroutine(MagusPattern());
+	}
+
+	public void NextPattern() {
+		nbPatterns--;
+		currentPattern++;
+
+		if (nbPatterns > 0) {
+			life = 50;
 		}
 	}
 }

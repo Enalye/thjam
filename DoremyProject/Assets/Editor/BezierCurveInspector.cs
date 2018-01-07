@@ -94,7 +94,7 @@ public class BezierCurveEditor : Editor {
             curve.SetControlPoint(selectedPointIndex, point);
 
 			if (selectedPointIndex > 0 && (selectedPointIndex % 3) == 0) {
-				curve.SetTime (selectedPointIndex % 3, time);
+				curve.SetTime ((selectedPointIndex / 3) - 1, time);
 			}
         }
     }
