@@ -14,6 +14,8 @@ public class GameScheduler : MonoBehaviour
     public QuadTreeHolder quadtree;
 	public AudioManager audioManager;
 	public Dialogue dialogue;
+	public SplineController splineController;
+	public SplineController splineController2;
 
     private Camera cam;
     private float t = 0f;
@@ -64,6 +66,10 @@ public class GameScheduler : MonoBehaviour
 		InDialogue = true;
 		yield return StartCoroutine(dialogue.StartDialogue());
 		InDialogue = false;
+
+		//Start camera travelling
+		splineController.FollowSpline();
+		splineController2.FollowSpline();
 
 		// Initialize enemies
 		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];
