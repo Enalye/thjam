@@ -38,7 +38,6 @@ public partial class Enemy : Entity {
     public void Die() {
         if(!dead) {
             pool.RemoveBullet(obj);
-			bullets.Clear();
 
             dead = true;
         }
