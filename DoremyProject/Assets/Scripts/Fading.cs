@@ -20,7 +20,6 @@ public class Fading : MonoBehaviour {
 	}
 
 	public float BeginFade(int direction) {
-		DontDestroyOnLoad(gameObject);
 		fadeDir = direction;
 		return fadeSpeed;
 	}
