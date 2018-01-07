@@ -17,6 +17,7 @@ public partial class Enemy : Entity {
 	public EPattern    pattern;
 	public BezierCurve curve;
 	public int nbPatterns = 1;
+	public bool can_be_damaged;
 
     private bool dead;
 	private int currentPattern;
@@ -24,6 +25,7 @@ public partial class Enemy : Entity {
     public override void Init() {
         base.Init();
 		dead = false;
+		can_be_damaged = false;
 		currentPattern = 0;
 
         if(obj != null && Application.isPlaying) {
@@ -38,7 +40,6 @@ public partial class Enemy : Entity {
     public void Die() {
         if(!dead) {
             pool.RemoveBullet(obj);
-
             dead = true;
         }
     }
@@ -49,6 +50,8 @@ public partial class Enemy : Entity {
 
 	public IEnumerator _Behaviour() {
 		yield return new WaitForSeconds(wait_time);
+
+		can_be_damaged = true;
 
 		if (curve != null) {
 			StartCoroutine (obj._Follow (curve));
