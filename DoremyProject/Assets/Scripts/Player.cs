@@ -271,7 +271,7 @@ public class Player : Entity {
 							shot.Lifetime = 1f;
 							shot.AutoDelete = true;
 							shot.Damage = 0.2f;
-							//bullets.Add(shot);
+							bullets.Add(shot);
 						}
 					}
 				}

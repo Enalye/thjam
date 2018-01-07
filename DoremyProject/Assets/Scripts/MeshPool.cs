@@ -170,6 +170,9 @@ public partial class MeshPool : MonoBehaviour {
         // We only clean indice data because laziness / optimisation
         int xdx = bullet.Index * 6;
         int matidx = (int)bullet.Material;
+
+		bullet.Clean();
+
         _indices[matidx][xdx] = 0;
         _indices[matidx][xdx + 1] = 0;
         _indices[matidx][xdx + 2] = 0;
@@ -191,12 +194,12 @@ public partial class MeshPool : MonoBehaviour {
 		CleanBullet(bullet);
 		bullet.Active = false;
 		bullet.Removing = false;
+		bullet.CurrentTime = 0;
 		_available.Enqueue(bullet.Index);
 		_temp.Remove(bullet);
 	}
 
     public void ChangeBulletAppearance(Bullet bullet, Sprite sprite, EMaterial material) {
-        CleanBullet(bullet);
         bullet.Bounds = sprite.bounds;
         bullet.UVs = sprite.rect;
         bullet.Material = material;

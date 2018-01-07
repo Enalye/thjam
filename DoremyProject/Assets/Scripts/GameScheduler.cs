@@ -12,6 +12,7 @@ public class GameScheduler : MonoBehaviour
 	public List<Sprite> sprites;
     public Player player;
     public QuadTreeHolder quadtree;
+	public AudioManager audioManager;
 
     private Camera cam;
     private float t = 0f;
@@ -25,6 +26,9 @@ public class GameScheduler : MonoBehaviour
     public static float cam_width;
     public static Vector3 origin;
     public static float scale_factor;
+
+	public AudioClip stageMusic;
+	public AudioClip bossMusic;
 
     public bool InDialogue;
 
@@ -44,6 +48,11 @@ public class GameScheduler : MonoBehaviour
         // Initialize player
         player.Init();
 		quadtree.player = player;
+
+		if (Application.isPlaying) {
+			audioManager.Init ();
+			audioManager.PlayMusic (stageMusic);
+		}
 
         // Initialize enemies
 		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];

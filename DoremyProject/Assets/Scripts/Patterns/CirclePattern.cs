@@ -31,7 +31,6 @@ public partial class Enemy : Entity {
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
 			shot.Radius = 10f;
 			shot.Scale = Vector3.one * 1.5f;
-			shot.AutoDelete = false;
 
 			bullets.Add(shot);
 		}
