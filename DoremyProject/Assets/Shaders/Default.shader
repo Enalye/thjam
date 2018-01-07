@@ -16,7 +16,7 @@ Shader "Sprites/DefaultZ"
 		{ 
 			"Queue"="Transparent" 
 			"IgnoreProjector"="True" 
-			"RenderType"="TransparentCutout" 
+			"RenderType"="Transparent" 
 			"PreviewType"="Plane"
 			"CanUseSpriteAtlas"="True"
 		}
