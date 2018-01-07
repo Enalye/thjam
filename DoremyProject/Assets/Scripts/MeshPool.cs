@@ -156,6 +156,7 @@ public partial class MeshPool : MonoBehaviour {
 		bullet.Color = color;
 
 		if (type == EType.NIGHTMARE || type == EType.DREAM) {
+			bullet.Position.z = Layering.Bullet;
 			StartCoroutine(bullet._Appear(0.5f));
 		}
 

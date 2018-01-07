@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE };
+public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE, MAGUS, KNIFE, WAVE };
 
 [ExecuteInEditMode]
 public partial class Enemy : Entity {
@@ -74,6 +74,20 @@ public partial class Enemy : Entity {
 
 		if (pattern == EPattern.ELLIPSE) {
 			StartCoroutine(EllipsePattern());
+		}
+
+		if (pattern == EPattern.MAGUS) {
+			StartCoroutine(MagusPattern());
+		}
+			
+		if (pattern == EPattern.KNIFE) {
+			obj.Type = EType.DREAM;
+			obj.Color = Colors.royalblue;
+			StartCoroutine(KnifePattern(15, 75));
+		}
+
+		if (pattern == EPattern.WAVE) {
+			StartCoroutine(WavePattern());
 		}
 	}
 }
