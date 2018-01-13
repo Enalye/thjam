@@ -136,33 +136,31 @@ public partial class MeshPool : MonoBehaviour {
     }
 
 	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position, float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
-		Bullet bullet = AddBullet(sprite, type, material, color);
-        bullet.CopyData(sprite, type, material, position, speed, angle, acc, ang_vec);
-        return bullet;
-    }
-
-	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color) {
-        Bullet bullet = PullBullet(type, material);
-		bullet.Color = color;
+		Bullet bullet = PullBullet(type, material);
+		bullet.CopyData(sprite, type, material, color, position, speed, angle, acc, ang_vec);
 
 		if (type == EType.NIGHTMARE || type == EType.DREAM) {
 			bullet.Position.z = Layering.Bullet;
 			StartCoroutine(bullet._Appear(0.5f));
 		}
 
-        // Update some of the bullet data
-        if(sprite != null) { 
-            bullet.UVs = sprite.rect;
-            bullet.Bounds = sprite.bounds;
-        }
+		// Update some of the bullet data
+		if(sprite != null) { 
+			bullet.UVs = sprite.rect;
+			bullet.Bounds = sprite.bounds;
+		}
 
-        SetupBullet(bullet);
+		SetupBullet(bullet);
 
 		// Add the bullet to active list
-        bullet.Active = true;
-        _active.Add(bullet);
+		bullet.Active = true;
+		_active.Add(bullet);
 
-        return bullet;
+		return bullet;
+	}
+
+	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color) {
+		return AddBullet (sprite, type, material, color, Vector3.zero);
     }
 		
     public void CleanBullet(Bullet bullet) {
@@ -247,7 +245,7 @@ public partial class MeshPool : MonoBehaviour {
         for (int i = 0; i < (int)EMaterial.COUNT; ++i) {
             _meshs[i].vertices = _vertices[i];
             if (_indices != null) {
-                _meshs[i].SetTriangles(_indices[i], 0);
+                _meshs[i].SetTriangles(_indices[i], 0, false);
             } 
 
             _meshs[i].uv = _uvs[i];
