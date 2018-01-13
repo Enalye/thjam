@@ -94,7 +94,7 @@ public partial class Bullet : ScriptableObject
 
     // Coordinate rect
     public Rect AABB { get; set; }
-    public OBB OBB { get; set; }    
+    public OBB  OBB { get; set; }    
 
     [SerializeField]
     private Color32 _color = new Color32(255, 255, 255, 255);
@@ -121,7 +121,7 @@ public partial class Bullet : ScriptableObject
     public float CurrentTime { get; set; }
 
 	// Reset all variables but index
-	public void Clean() {
+	public void Init() {
 		Lifetime = null;
 		Clamping = null;
 
@@ -146,10 +146,12 @@ public partial class Bullet : ScriptableObject
 		Sprite = null;
 
 		Grazed = false;
-		Active = false;
+		Active = true;
 		Removing = false;
 		SpellResist = false;
-		AutoDelete = false;
+		AutoDelete = true;
+
+		AABB = Rect.zero;
 	}
 
 	public void CopyData(float ? speed, float ? angle, float ? acc, float ? ang_vec) {
@@ -334,10 +336,8 @@ public partial class Bullet : ScriptableObject
 			Position.x = xnew + other.Position.x;
 			Position.y = ynew + other.Position.y;
 
-			yield return null;
+			yield return new WaitForSeconds(GameScheduler.dt);
 		}
-
-		Lifetime = 0;
 	}
 
 	public IEnumerator _Appear(float time) {
@@ -372,12 +372,15 @@ public partial class Bullet : ScriptableObject
 
 	public IEnumerator _Change(float timeToWait, Sprite sprite, Color color, EType type, float ? speed, float ? angle, float ? acc = 0, float ? ang_vec = 0) {
 		yield return new WaitForSeconds(timeToWait);
-		CopyData(speed, angle, acc, ang_vec);
-		Type = type;
-		Color = color;
 
-		if (sprite != null) {
-			Sprite = sprite;
+		if (Active) {
+			CopyData (speed, angle, acc, ang_vec);
+			Type = type;
+			Color = color;
+
+			if (sprite != null) {
+				Sprite = sprite;
+			}
 		}
 	}
 }

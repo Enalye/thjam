@@ -20,6 +20,7 @@ public class Entity : MonoBehaviour {
 		if(gameObject.activeInHierarchy && sprite != null) {
             bullets = new List<Bullet>();
 			obj = pool.AddBullet(sprite, type, material, Color.white, transform.position);
+			obj.AutoDelete = false;
         }
     }
 

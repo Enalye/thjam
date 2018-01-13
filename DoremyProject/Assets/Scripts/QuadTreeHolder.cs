@@ -41,7 +41,7 @@ public class QuadTreeHolder : MonoBehaviour {
 
 	public void CheckCollision(Player player) {
 		bullets_close_player.Clear();
-		if(player.obj != null && player.can_be_damaged) { // Optimisation
+		if(player.obj != null && player.can_be_damaged && !player.debug_invincible) { // Optimisation
 			bullets_close_player = quadtree.Get(player.grazeObj.AABB);
 
 			// For each bullet close to the ennemy
@@ -255,12 +255,14 @@ public class QuadTreeHolder : MonoBehaviour {
 				Gizmos.DrawLine (OBB.BR, OBB.BL);
 				Gizmos.DrawLine (OBB.BL, OBB.FL);
 
-				Gizmos.color = Color.green;
-				Gizmos.DrawWireCube (bullets [i].AABB.center, bullets [i].AABB.size);
+				if (bullets [i].AABB != Rect.zero) {
+					Gizmos.color = Color.green;
+					Gizmos.DrawWireCube (bullets [i].AABB.center, bullets [i].AABB.size);
 
-				Gizmos.color = Color.red;
-				if (bullets [i].Radius != 0) {
-					Gizmos.DrawWireSphere (bullets [i].AABB.center, bullets [i].Radius);
+					Gizmos.color = Color.red;
+					if (bullets [i].Radius != 0) {
+						Gizmos.DrawWireSphere (bullets [i].AABB.center, bullets [i].Radius);
+					}
 				}
 			}
         }

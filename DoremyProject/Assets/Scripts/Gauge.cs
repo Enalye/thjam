@@ -11,6 +11,7 @@ public class Gauge : MonoBehaviour {
 
 	void Start () {
 		fluid = gameObject.GetComponent<UnityEngine.UI.Image>();
+		UpdateLevel (0);
 		StartCoroutine (_Decrease ());
 	}
 
@@ -28,7 +29,10 @@ public class Gauge : MonoBehaviour {
 	public IEnumerator _Decrease() {
 		while (Application.isPlaying) {
 			yield return new WaitForSeconds (0.1f);
-			UpdateLevel(-0.1f);
+
+			if (!GameScheduler.instance.dialogue.in_dialogue) {
+				UpdateLevel (-0.1f);
+			}
 		}
 	}
 

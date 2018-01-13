@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public partial class MeshPool : MonoBehaviour {
     public int BulletCount;
     public MeshRenderer[] MeshRenderers;
@@ -42,7 +41,8 @@ public partial class MeshPool : MonoBehaviour {
     // Queue to reference available bullets
     private Queue<int> _available;
 
-    [ExecuteInEditMode]
+	public bool _debug;
+
     public void Init() {
         _active.Clear();
 
@@ -54,6 +54,9 @@ public partial class MeshPool : MonoBehaviour {
 
         // Dirty init stuff here
 		_available = new Queue<int>(Enumerable.Range(0, MaxBullets));
+		if (_debug) {
+			StartCoroutine (DisplayAvailableSize ());
+		}
 
         int NbMaterials = (int)EMaterial.COUNT;
 
@@ -87,6 +90,7 @@ public partial class MeshPool : MonoBehaviour {
 			_colors[i] = Enumerable.Repeat((Color32)Color.white, MaxItems * 4).ToArray();
             _meshs[i] = new Mesh { vertices = _vertices[i], normals = _normals[i], uv = _uvs[i], colors32 = _colors[i] };
 			_materials[i] = MeshRenderers[i].sharedMaterial;
+			MeshRenderers [i].sortingLayerName = "Default";
         }
 
 		// GUI elements
@@ -98,13 +102,6 @@ public partial class MeshPool : MonoBehaviour {
         return _active;
     }
 
-    public void PullAdd(Bullet bullet) {
-        int index = _available.Dequeue();
-        bullet.Index = index;
-        bullet.CurrentTime = 0;
-        _bullets[index] = bullet;
-    }
-
     public Bullet PullBullet(EType type, EMaterial material) {
         if (_available.Count == 0) {
             Debug.LogWarning("No available quads, failed to add bullet");
@@ -113,6 +110,7 @@ public partial class MeshPool : MonoBehaviour {
 
         int index = _available.Dequeue();
         Bullet bullet = _bullets[index];
+		bullet.Init();
 
         // Get an available Index and set Time to 0
         bullet.Index = index;
@@ -126,6 +124,7 @@ public partial class MeshPool : MonoBehaviour {
 
     public void SetupBullet(Bullet bullet) {
         int MaterialIdx = (int)bullet.Material;
+
         // Update bullet appearance (UVs)
         bullet.SetupUVs(_uvs[MaterialIdx], _materials[MaterialIdx].mainTexture);
 
@@ -171,8 +170,6 @@ public partial class MeshPool : MonoBehaviour {
         int xdx = bullet.Index * 6;
         int matidx = (int)bullet.Material;
 
-		bullet.Clean();
-
         _indices[matidx][xdx] = 0;
         _indices[matidx][xdx + 1] = 0;
         _indices[matidx][xdx + 2] = 0;
@@ -182,7 +179,9 @@ public partial class MeshPool : MonoBehaviour {
     }
 
     public void RemoveBullet(Bullet bullet) {
-		StartCoroutine(_DeleteAfterFade(bullet));
+		bullet.Active = false;
+		CleanBullet(bullet);
+		_available.Enqueue(bullet.Index);
     }
 
 	public IEnumerator _DeleteAfterFade(Bullet bullet) {
@@ -191,12 +190,7 @@ public partial class MeshPool : MonoBehaviour {
 			yield return StartCoroutine(bullet._Disappear(0.5f));
 		}
 
-		CleanBullet(bullet);
-		bullet.Active = false;
-		bullet.Removing = false;
-		bullet.CurrentTime = 0;
-		_available.Enqueue(bullet.Index);
-		_temp.Remove(bullet);
+		RemoveBullet(bullet);
 	}
 
     public void ChangeBulletAppearance(Bullet bullet, Sprite sprite, EMaterial material) {
@@ -234,7 +228,7 @@ public partial class MeshPool : MonoBehaviour {
 					bullet.ComputePosition(_vertices[MaterialIdx], _colors[MaterialIdx], dt);
 				}
 
-				_temp.Add (bullet);
+				_temp.Add(bullet);
 			}
         }
 
@@ -269,6 +263,13 @@ public partial class MeshPool : MonoBehaviour {
 			 (bullet.AutoDelete && (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT || bullet.Type == EType.ENEMY) &&
 			 !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect)))) {
 			RemoveBullet(bullet);
+		}
+	}
+
+	public IEnumerator DisplayAvailableSize() {
+		while (Application.isPlaying) {
+			Debug.Log ("Size of available queue : " + _available.Count);
+			yield return new WaitForSeconds (10.0f);
 		}
 	}
 }
