@@ -161,7 +161,7 @@ public partial class Bullet : ScriptableObject
 		if (ang_vec.HasValue) { AngularVelocity = ang_vec.Value; }
 	}
 
-    public void CopyData(Sprite sprite, EType type, EMaterial material, Vector3 position,
+	public void CopyData(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position,
 						 float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
         Position = position;
         PreviousPosition = position;
@@ -169,6 +169,7 @@ public partial class Bullet : ScriptableObject
         Sprite = sprite;
         Type = type;
         Material = material;
+		Color = color;
         Speed = speed;
         Angle = angle;
         Acceleration = acc;
@@ -178,23 +179,6 @@ public partial class Bullet : ScriptableObject
             UVs = sprite.rect;
             Bounds = sprite.bounds;
         }
-    }
-
-    public void CopyData(Bullet prefab) {
-        Position = prefab.Position;
-        PreviousPosition = prefab.Position;
-        Direction = prefab.Direction;
-        Lifetime = prefab.Lifetime;
-        Scale = prefab.Scale;
-        Angle = prefab.Angle;
-        Speed = prefab.Speed;
-        Acceleration = prefab.Acceleration;
-        AngularVelocity = prefab.AngularVelocity;
-        UVs = prefab.Sprite.rect;
-        Bounds = prefab.Sprite.bounds;
-        Type = prefab.Type;
-        Damage = prefab.Damage;
-		Material = prefab.Material;
     }
 
     public virtual void SetupTriangles(int[] _indices) {
