@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Fading : MonoBehaviour {
 	public Texture2D fadeOutTexture;
@@ -9,6 +10,10 @@ public class Fading : MonoBehaviour {
 	private int drawDepth = -1000;
 	private float alpha = 1.0f;
 	private int fadeDir = -1;
+
+	void Start() {
+		SceneManager.sceneLoaded += FadeOnLoad;
+	}
 
 	void OnGUI() {
 		alpha += fadeDir * fadeSpeed * Time.deltaTime;
@@ -21,11 +26,10 @@ public class Fading : MonoBehaviour {
 
 	public float BeginFade(int direction) {
 		fadeDir = direction;
-		return fadeSpeed;
+		return fadeDir;
 	}
 
-	// Fade in
-	void OnLevelWasLoaded() {
+	public void FadeOnLoad(Scene scene, LoadSceneMode mode) {
 		BeginFade(-1);
 	}
 }

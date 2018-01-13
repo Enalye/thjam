@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuButton : MonoBehaviour {
 	private UnityEngine.UI.RawImage image;
@@ -30,7 +31,7 @@ public class MainMenuButton : MonoBehaviour {
 			}
 		}
 		image.color = new Color (1f, 1f, 1f, Mathf.Lerp (.35f, 1f, (Mathf.Cos (Time.time * 2f) + 1f) / 2f));
-		if (Input.GetButton ("Shot1") || Input.GetButton ("Shot2") || Input.GetButton ("Shot3")) {
+		if (Input.anyKey) {
 			float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
 			StartCoroutine (LoadAfter(fadeTime));
 		}
@@ -52,6 +53,6 @@ public class MainMenuButton : MonoBehaviour {
 
 	private IEnumerator LoadAfter(float time) {
 		yield return new WaitForSeconds (time);
-		Application.LoadLevel (1);
+		SceneManager.LoadScene (1);
 	}
 }

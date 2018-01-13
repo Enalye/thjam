@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public class GameScheduler : MonoBehaviour
 {
     public static GameScheduler instance = null;     // Singleton
@@ -33,14 +32,7 @@ public class GameScheduler : MonoBehaviour
 	public AudioClip stageMusic;
 	public AudioClip bossMusic;
 
-    public bool InDialogue;
-
-    // Charged to initialize every other script in the right order.
-    void OnEnable() {
-		StartCoroutine(Begin());
-    }
-
-	IEnumerator Begin() {
+	void Start() {
 		// Set instance to this object
 		if (instance == null) {
 			instance = this;
@@ -62,14 +54,10 @@ public class GameScheduler : MonoBehaviour
 			audioManager.PlayMusic (stageMusic);
 		}
 
-		// Wait for dialogue end
-		InDialogue = true;
-		yield return StartCoroutine(dialogue.StartDialogue());
-		InDialogue = false;
-
-		//Start camera travelling
-		splineController.FollowSpline();
-		splineController2.FollowSpline();
+		if (dialogue.isActiveAndEnabled) {
+			StartCoroutine (dialogue.StartDialogue());
+			StartCoroutine (MoveCameraAfterDialogueEnd ());
+		}
 
 		// Initialize enemies
 		enemies = FindObjectsOfType(typeof(Enemy)) as Enemy[];
@@ -81,7 +69,7 @@ public class GameScheduler : MonoBehaviour
 	}
 
     void Update() {
-		player.UpdateAt (1f);
+		player.UpdateAt(1f);
 
 		float frameTime = Time.deltaTime;
 		accumulator += frameTime;
@@ -93,7 +81,7 @@ public class GameScheduler : MonoBehaviour
 			// Collisions checks
 			player.UpdateAt (dt);
 
-			if (InDialogue == false) {
+			if (dialogue.in_dialogue == false) {
 				for (int i = 0; i < enemies.Length; ++i) {
 					enemies [i].UpdateAt (dt);
 				}
@@ -103,4 +91,14 @@ public class GameScheduler : MonoBehaviour
 			t += dt;
 		}
     }
+
+	IEnumerator MoveCameraAfterDialogueEnd() {
+		while (GameScheduler.instance.dialogue.in_dialogue) {
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
+
+		// Start camera travelling
+		splineController.FollowSpline();
+		splineController2.FollowSpline();
+	}
 }

@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ReturnMainMenu : MonoBehaviour {
-	void Start () {
-		
+	void Update () {
+		if (Input.anyKey) {
+			float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
+			StartCoroutine (LoadAfter(fadeTime));
+		}
 	}
 
-	void Update () {
-		if (Input.GetButton ("Shot1") || Input.GetButton ("Shot2") || Input.GetButton ("Shot3")) {
-			Application.LoadLevel (0);
-		}
+	private IEnumerator LoadAfter(float time) {
+		yield return new WaitForSeconds (time);
+		SceneManager.LoadScene (0);
 	}
 }

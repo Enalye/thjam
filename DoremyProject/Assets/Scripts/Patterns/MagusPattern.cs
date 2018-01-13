@@ -4,7 +4,9 @@ using UnityEngine;
 
 public partial class Enemy : Entity {
 	public IEnumerator MagusPattern() {
+		can_be_damaged = false;
 		yield return new WaitForSeconds (3.0f);
+		can_be_damaged = true;
 
 		// Variables
 		float bway = 5;

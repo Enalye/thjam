@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Layering {
-	public static float Bullet = 5;
-	public static float Hitbox = 8;
-	public static float Player = 10;
+	public static float GUI = 100;
+	public static float Bullet = 200;
+	public static float Hitbox = 210;
+	public static float Player = 220;
 }

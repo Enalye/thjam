@@ -1,45 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Dialogue : MonoBehaviour {
-	public SpriteRenderer left_doll;
-	public SpriteRenderer left_bubble;
-	public SpriteRenderer left_text;
+	public Image left_doll;
+	public Image left_bubble;
+	public Image left_text;
 
 	public List<Sprite> text;
 
-	public SpriteRenderer right_doll;
-	public SpriteRenderer right_bubble;
-	public SpriteRenderer right_text;
+	public Image right_doll;
+	public Image right_bubble;
+	public Image right_text;
+
+	public bool in_dialogue;
 
 	private int currentDialogue;
 	private int textID;
 
 	public IEnumerator StartDialogue() {
+		in_dialogue = true;
 		StartCoroutine(_Appear(1.0f, left_doll));
 		StartCoroutine(_Appear(1.0f, left_bubble));
 		yield return StartCoroutine(_Appear(1.0f, left_text));
+
 		left_text.sprite = text[0];
 		currentDialogue = 0;
 		textID = 0;
 
 		while (textID < text.Count) {
-			if (Input.GetButton("Shot1")) {
+			if (Input.GetButtonDown("Shot1")) {
 				textID++;
 				if (textID < text.Count) {
-					left_text.sprite = text [textID];
+					left_text.sprite = text[textID];
 				}
 			}
-			yield return new WaitForSeconds (0.2f);
+			yield return new WaitForSeconds(GameScheduler.dt);
 		}
 
 		StartCoroutine (_Disappear (1.0f, left_doll));
 		StartCoroutine (_Disappear (1.0f, left_bubble));
 		yield return StartCoroutine (_Disappear (1.0f, left_text));
+		in_dialogue = false;
 	}
 		
-	public IEnumerator _Appear(float time, SpriteRenderer target) {
+	public IEnumerator _Appear(float time, Image target) {
 		target.color = Colors.ChangeAlpha(target.color, 0);
 
 		float elapsedTime = 0;
@@ -53,7 +59,7 @@ public class Dialogue : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator _Disappear(float time, SpriteRenderer target) {
+	public IEnumerator _Disappear(float time, Image target) {
 		float oriAlpha = target.color.a * 255;
 
 		float elapsedTime = 0;

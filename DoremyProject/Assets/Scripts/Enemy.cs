@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum EPattern { NONE, CIRCLE, ROSACE, HOMING, SPIRAL, PLANT, ELLIPSE, MAGUS, KNIFE, WAVE, LIANE, BOSS };
 
-[ExecuteInEditMode]
 public partial class Enemy : Entity {
 	public Sprite power_item;
 	public Sprite point_item;
@@ -16,9 +16,11 @@ public partial class Enemy : Entity {
 
 	public EPattern    pattern;
 	public BezierCurve curve;
-	public int nbPatterns = 1;
 	public bool can_be_damaged;
 
+	public int nbPatterns = 1;
+
+	// States
     private bool dead;
 	private int currentPattern;
 
@@ -31,7 +33,6 @@ public partial class Enemy : Entity {
         if(obj != null && Application.isPlaying) {
 			obj.Radius = 35;
 			obj.Scale = Vector3.one;
-			obj.AutoDelete = false;
 
 			StartCoroutine(_Behaviour());
 		}
@@ -49,7 +50,11 @@ public partial class Enemy : Entity {
 	}
 
 	public IEnumerator _Behaviour() {
-		yield return new WaitForSeconds(wait_time);
+		while (GameScheduler.instance.dialogue.in_dialogue) {
+			yield return  new WaitForSeconds(GameScheduler.dt);
+		}
+
+		yield return GameScheduler.dt;
 
 		can_be_damaged = true;
 
@@ -82,7 +87,6 @@ public partial class Enemy : Entity {
 		if (pattern == EPattern.KNIFE) {
 			obj.Type = EType.DREAM;
 			obj.Color = Colors.royalblue;
-			obj.AutoDelete = false;
 			StartCoroutine(KnifePattern(15, 75));
 		}
 
@@ -116,17 +120,14 @@ public partial class Enemy : Entity {
 		yield return StartCoroutine(PlantPattern());
 		yield return StartCoroutine(MagusPattern());
 
-		float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
-		yield return new WaitForSeconds (fadeTime);
-		Application.LoadLevel (3);
+		Fading fadingObj = GameObject.Find ("Fading").GetComponent<Fading> ();
+		fadingObj.BeginFade (1);
+		yield return new WaitForSeconds (fadingObj.fadeSpeed);
+		SceneManager.LoadScene (3);
 	}
 
 	public void NextPattern() {
 		nbPatterns--;
 		currentPattern++;
-
-		if (nbPatterns > 0) {
-			life = 50;
-		}
 	}
 }

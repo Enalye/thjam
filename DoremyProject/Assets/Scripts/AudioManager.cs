@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,9 +9,6 @@ public class AudioManager : MonoBehaviour {
 	private List<AudioSource> efxSources;             // Reference to the audio source which will play the music.
 
 	public void Init() {
-		// Set AudioManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-		DontDestroyOnLoad(gameObject);
-
 		if (audio_prefab != null) {
 			Instantiate(audio_prefab, transform.position, transform.rotation);
 		}
