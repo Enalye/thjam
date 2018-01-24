@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CreateAssetMenu(fileName = "Bullet", menuName = "Sprites/Gauge")]
 public class Gauge : MonoBehaviour {
@@ -38,6 +39,6 @@ public class Gauge : MonoBehaviour {
 
 	private IEnumerator LoadAfter(float time) {
 		yield return new WaitForSeconds (time);
-		Application.LoadLevel(2);
+		SceneManager.LoadScene(2);
 	}
 }

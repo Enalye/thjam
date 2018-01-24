@@ -62,16 +62,15 @@ public class QuadTreeHolder : MonoBehaviour {
 
 						if(CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
 							StartCoroutine(player._HitDisplay());
-							bullet_pool.RemoveBullet(bullets_close_player[i]);
+							bullets_close_player[i].MarkForDeletion();
 						}
 					}
 				}
 
 				if((bullets_close_player[i].Type == EType.DREAM && bullets_close_player[i].Removing == false) &&
 					CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
-
 					StartCoroutine(player._EatDisplay());
-					bullet_pool.RemoveBullet(bullets_close_player[i]);
+					bullets_close_player[i].MarkForDeletion();
 				}
 
 				if((bullets_close_player[i].Type == EType.ITEM)) {
@@ -90,7 +89,7 @@ public class QuadTreeHolder : MonoBehaviour {
 			for (int j = 0; j < bullets_buffer.Count; ++j) {
 				if (bullets_buffer[j].Type == EType.SHOT) {
 					enemy.life -= bullets_buffer[j].Damage;  // Add the damage of each bullet
-					bullet_pool.RemoveBullet(bullets_buffer[j]);
+					bullets_buffer[j].MarkForDeletion();
 
 					if (enemy.life <= 0) {
 						enemy.NextPattern();

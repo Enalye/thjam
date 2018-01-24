@@ -3,16 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour {
-	public GameObject audio_prefab;
-
-	private AudioSource musicSource;                 // Reference to the audio source which will play the music.
-	private List<AudioSource> efxSources;             // Reference to the audio source which will play the music.
+	private AudioSource musicSource;         // Reference to the audio source which will play the music.
+	private List<AudioSource> efxSources;    // Reference to the audio source which will play the music.
 
 	public void Init() {
-		if (audio_prefab != null) {
-			Instantiate(audio_prefab, transform.position, transform.rotation);
-		}
-
 		musicSource = gameObject.AddComponent<AudioSource>();
 		efxSources = new List<AudioSource>();
 	}
@@ -44,6 +38,7 @@ public class AudioManager : MonoBehaviour {
 		// If not found
 		if (found_it == -1) {
 			efxSource = gameObject.AddComponent<AudioSource>();
+			efxSource.playOnAwake = false;
 			efxSources.Add(efxSource);
 		} else {
 			efxSource = efxSources[found_it];
@@ -59,6 +54,7 @@ public class AudioManager : MonoBehaviour {
 	public void PlayMusic(AudioClip clip) {
 		// Set the clip of our musicSource audio source to the clip passed in as a parameter.
 		musicSource.clip = clip;
+		musicSource.volume = 0.25f;
 		musicSource.loop = true;
 
 		// Play the clip.

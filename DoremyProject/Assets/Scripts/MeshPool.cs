@@ -135,9 +135,10 @@ public partial class MeshPool : MonoBehaviour {
         bullet.SetupVertices(_vertices[MaterialIdx], _colors[MaterialIdx]);
     }
 
-	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position, float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
+	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position, Vector3 scale,
+							float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
 		Bullet bullet = PullBullet(type, material);
-		bullet.CopyData(sprite, type, material, color, position, speed, angle, acc, ang_vec);
+		bullet.CopyData(sprite, type, material, color, position, scale, speed, angle, acc, ang_vec);
 
 		if (type == EType.NIGHTMARE || type == EType.DREAM) {
 			bullet.Position.z = Layering.Bullet;
@@ -157,6 +158,11 @@ public partial class MeshPool : MonoBehaviour {
 		_active.Add(bullet);
 
 		return bullet;
+	}
+
+	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position,
+							float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
+		return AddBullet (sprite, type, material, color, position, Vector3.one, speed, angle, acc, ang_vec);
 	}
 
 	public Bullet AddBullet(Sprite sprite, EType type, EMaterial material, Color32 color) {
@@ -260,7 +266,7 @@ public partial class MeshPool : MonoBehaviour {
 			((bullet.Lifetime.HasValue && bullet.CurrentTime >= bullet.Lifetime.Value) ||
 			 (bullet.AutoDelete && (bullet.Type == EType.NIGHTMARE || bullet.Type == EType.DREAM || bullet.Type == EType.SHOT || bullet.Type == EType.ENEMY) &&
 			 !bullet.AABB.Overlaps(QuadTreeHolder.quadtree.rect)))) {
-			RemoveBullet(bullet);
+			StartCoroutine(_DeleteAfterFade(bullet));
 		}
 	}
 

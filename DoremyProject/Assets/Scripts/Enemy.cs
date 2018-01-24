@@ -40,7 +40,7 @@ public partial class Enemy : Entity {
 
     public void Die() {
         if(!dead) {
-            pool.RemoveBullet(obj);
+			obj.MarkForDeletion();
             dead = true;
         }
     }
@@ -51,10 +51,10 @@ public partial class Enemy : Entity {
 
 	public IEnumerator _Behaviour() {
 		while (GameScheduler.instance.dialogue.in_dialogue) {
-			yield return  new WaitForSeconds(GameScheduler.dt);
+			yield return new WaitForSeconds(GameScheduler.dt);
 		}
 
-		yield return GameScheduler.dt;
+		yield return new WaitForSeconds(wait_time);
 
 		can_be_damaged = true;
 
