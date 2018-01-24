@@ -13,10 +13,6 @@ public class Player : Entity {
     public Animator animator;
 	public SpriteRenderer animatorRenderer;
 
-    public AudioClip death_hit; // TODO : create an audio handler class
-    public AudioClip death;     // TODO : create an audio handler class
-    public AudioClip game_over; // TODO : create an audio handler class
-
     public Bounds clamping;
 
 	public Bullet playerSprite;
@@ -34,6 +30,9 @@ public class Player : Entity {
 
     private float moveHorizontal;
     private float moveVertical;
+
+	public AudioClip shot;		// TODO : create an audio handler class
+	public AudioClip death;     // TODO : create an audio handler class
 
     [System.NonSerialized]
     public bool can_move;        // TODO : create a status class
@@ -306,6 +305,7 @@ public class Player : Entity {
 
 			if (Input.GetButton ("Focus")) {
 				if (CanShoot()) {
+					GameScheduler.instance.audioManager.PlaySingle (shot);
 					// Focus fire.
 					for (int i = 0; i < 3; i++) {
 						Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
@@ -325,6 +325,7 @@ public class Player : Entity {
 				}
 				yield return new WaitForSeconds (.1f);
 			} else if (CanShoot()) {
+				GameScheduler.instance.audioManager.PlaySingle (shot);
 				// Unfocus fire.
 				for (int i = 0; i < 6; i++) {
 					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,

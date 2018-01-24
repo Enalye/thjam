@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2e6a8e487d4b8524fa576f7d1b8b98e8
-timeCreated: 1515276984
+timeCreated: 1516317332
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -95,20 +95,6 @@ TextureImporter:
   spriteSheet:
     serializedVersion: 2
     sprites:
-    - serializedVersion: 2
-      name: playersprites_10
-      rect:
-        serializedVersion: 2
-        x: 141
-        y: 189
-        width: 4
-        height: 4
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
     - serializedVersion: 2
       name: playersprites_11
       rect:

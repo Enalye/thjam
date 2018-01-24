@@ -25,12 +25,11 @@ public partial class Enemy : Entity {
 
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
 				                          type == (EType.NIGHTMARE) ? Colors.chartreusegreen : Colors.royalblue,
-				                          obj.Position, speed, ang);
+										  obj.Position, Vector3.one * 1.5f, speed, ang);
 
 			shot.Position.z = Layering.Bullet;
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
 			shot.Radius = 10f;
-			shot.Scale = Vector3.one * 1.5f;
 
 			bullets.Add(shot);
 		}

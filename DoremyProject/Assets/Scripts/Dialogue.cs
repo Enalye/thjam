@@ -36,7 +36,7 @@ public class Dialogue : MonoBehaviour {
 					left_text.sprite = text[textID];
 				}
 			}
-			yield return new WaitForSeconds(GameScheduler.dt);
+			yield return null;
 		}
 
 		StartCoroutine (_Disappear (1.0f, left_doll));

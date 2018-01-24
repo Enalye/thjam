@@ -161,10 +161,11 @@ public partial class Bullet : ScriptableObject
 		if (ang_vec.HasValue) { AngularVelocity = ang_vec.Value; }
 	}
 
-	public void CopyData(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position,
-						 float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
+	public void CopyData(Sprite sprite, EType type, EMaterial material, Color32 color, Vector3 position, Vector3 scale,
+                         float speed = 0, float angle = 0, float acc = 0, float ang_vec = 0) {
         Position = position;
         PreviousPosition = position;
+		Scale = scale;
         Direction = new Vector3(0, 0);
         Sprite = sprite;
         Type = type;
@@ -287,6 +288,10 @@ public partial class Bullet : ScriptableObject
 		colors[offset] = colors[offset + 1] = colors[offset + 2] = colors[offset + 3] = Color;
 	}
 
+	public void MarkForDeletion() {
+		Lifetime = 0;
+	}
+
 	public IEnumerator _Follow(BezierCurve curve) {
         float elapsedTime = 0;
         while (elapsedTime < 1) {
@@ -322,10 +327,16 @@ public partial class Bullet : ScriptableObject
 
 			yield return new WaitForSeconds(GameScheduler.dt);
 		}
+
+		// Ask for deletion of this bullet
+		Lifetime = 0;
 	}
 
 	public IEnumerator _Appear(float time) {
+		Vector3 originalScale = Scale;
+		Vector3 biggerScale = originalScale * 2.25f;
 		Color = Colors.ChangeAlpha(Color, 0);
+		Scale = biggerScale;
 
 		float elapsedTime = 0;
 		while (elapsedTime < time) {
@@ -333,12 +344,15 @@ public partial class Bullet : ScriptableObject
 
 			byte alpha = (byte)Mathf.Min(255, 255 * timeRatio);
 			Color = Colors.ChangeAlpha(Color, alpha);
+			Scale = Vector3.Lerp(biggerScale, originalScale, timeRatio);
 			elapsedTime += GameScheduler.dt;
 			yield return new WaitForSeconds(GameScheduler.dt);
 		}
 	}
 
 	public IEnumerator _Disappear(float time) {
+		Vector3 originalScale = Scale;
+		Vector3 biggerScale = originalScale * 2.25f;
 		byte oriAlpha = Color.a;
 
 		float elapsedTime = 0;
@@ -346,6 +360,7 @@ public partial class Bullet : ScriptableObject
 			float timeRatio = elapsedTime / time;
 
 			byte alpha = (byte)Mathf.Max(0, oriAlpha * (1 - timeRatio));
+			Scale = Vector3.Lerp(originalScale, biggerScale, timeRatio);
 			Color = Colors.ChangeAlpha(Color, alpha);
 			elapsedTime += GameScheduler.dt;
 			yield return new WaitForSeconds(GameScheduler.dt);
