@@ -1,13 +1,15 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour {
-	private AudioSource musicSource;         // Reference to the audio source which will play the music.
-	private List<AudioSource> efxSources;    // Reference to the audio source which will play the music.
+	private List<AudioSource> mainMusicSources;  // Reference to the audio sources which will play the game music.
+	private List<AudioSource> spiritMusicSources;  // Reference to the audio sources which will play the game music.
+	private List<AudioSource> efxSources;    // Reference to the audio sources which will play the game effects.
 
 	public void Init() {
-		musicSource = gameObject.AddComponent<AudioSource>();
+		mainMusicSources = new List<AudioSource>();
+		spiritMusicSources = new List<AudioSource>();
 		efxSources = new List<AudioSource>();
 	}
 
@@ -15,65 +17,101 @@ public class AudioManager : MonoBehaviour {
 		Destroy(gameObject);
 	}
 
-	public AudioSource GetMusicSource() {
-		return musicSource;
-	}
-
-	public void PlaySingle(AudioClip clip) {
+	private AudioSource PlaySingle(AudioClip clip, List<AudioSource> owner) {
 		if(clip == null) {
-			return;
+			Debug.LogError("Clip passed to PlaySingle was null");
+			return null;
 		}
 
 		int found_it = -1;
 		int i = 0;
 
-		foreach(AudioSource source in efxSources) {
+		foreach(AudioSource source in owner) {
 			if(source.clip == clip) {
 				found_it = i;
 			}
 			i++;
 		}
 
-		AudioSource efxSource = null;
+		AudioSource audioSource = null;
+
 		// If not found
 		if (found_it == -1) {
-			efxSource = gameObject.AddComponent<AudioSource>();
-			efxSource.playOnAwake = false;
-			efxSources.Add(efxSource);
+			audioSource = gameObject.AddComponent<AudioSource>();
+			owner.Add(audioSource);
 		} else {
-			efxSource = efxSources[found_it];
+			audioSource = owner[found_it];
 		}
 
 		// Set the clip of our efxSource audio source to the clip passed in as a parameter.
-		efxSource.clip = clip;
+		audioSource.clip = clip;
 
 		// Play the clip.
-		efxSource.Play();
+		audioSource.Play();
+
+		return audioSource;
 	}
 
-	public void PlayMusic(AudioClip clip) {
-		// Set the clip of our musicSource audio source to the clip passed in as a parameter.
-		musicSource.clip = clip;
-		musicSource.volume = 0.25f;
-		musicSource.loop = true;
-
-		// Play the clip.
-		musicSource.Play();
+	public void PlayEffect(AudioClip clip) {
+		AudioSource audioSource = PlaySingle(clip, efxSources);
+		audioSource.playOnAwake = false;
 	}
 
-	public void StopMusic() {
-		musicSource.Stop();
+	public void PlayMusic(AudioClip mainClip, AudioClip spiritClip, int startLoop, float volume) {
+		AudioSource mainSource = PlaySingle(mainClip, mainMusicSources);
+		mainSource.volume = volume;
+
+		AudioSource spiritSource = PlaySingle(spiritClip, spiritMusicSources);
+		spiritSource.volume = 0;
+
+		StartCoroutine(Loop(mainSource, spiritSource, startLoop));
 	}
 
-	IEnumerator CR_CountTime(AudioSource source)
-	{
-		float t = 0;
+	/* Loops the themes with custom satrt and end times */
+	public IEnumerator Loop(AudioSource mainSource, AudioSource spiritSource, int startLoop) {
+		while(mainSource.volume != 0) {
+			if(mainSource.isPlaying == false) {
+				mainSource.timeSamples = startLoop;
+				spiritSource.timeSamples = startLoop;
 
-		while(t < source.clip.length) {
-			t += Time.deltaTime;
+				mainSource.Play();
+				spiritSource.Play();
+			}
+
+			yield return new WaitForSeconds(GameScheduler.dt);
 		}
-		source.Pause();
+	}
 
-		yield break;
+	/* Prerequisite : both musics already playing, only one duo is active */
+	public IEnumerator SwitchMusic(float time) {
+		AudioSource currSource = null;
+		AudioSource newSource = null;
+
+		for(int i = 0; i < mainMusicSources.Count; ++i) {
+			if (mainMusicSources[i].volume != 0) {
+				currSource = mainMusicSources[i];
+				newSource = spiritMusicSources[i];
+				break;
+			}
+
+			if(spiritMusicSources[i].volume != 0) {
+				currSource = spiritMusicSources[i];
+				newSource = mainMusicSources[i];
+				break;
+			}
+		}
+
+		if ((currSource != null) && (newSource != null)) {
+			float elapsedTime = 0;
+			while (elapsedTime < time) {
+				float timeRatio = elapsedTime / time;
+				currSource.volume = Mathf.Lerp (1.0f, 0, timeRatio);
+				newSource.volume = Mathf.Lerp (0, 1.0f, timeRatio);
+				elapsedTime += GameScheduler.dt;
+				yield return new WaitForSeconds (GameScheduler.dt);
+			}
+
+			currSource.volume = 0;
+		}
 	}
 }

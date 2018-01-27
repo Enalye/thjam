@@ -14,10 +14,12 @@ public class QuadTreeHolder : MonoBehaviour {
 	public Player	player;
 
     public bool trap;
+	private bool playerWasInsideBomb;
 
     [ExecuteInEditMode]
     public void Init() {
         ResetQuadTree();
+		playerWasInsideBomb = false;
         bullets_close_player = new List<Bullet>();
         bullets_buffer = new List<Bullet>();
     }
@@ -77,6 +79,15 @@ public class QuadTreeHolder : MonoBehaviour {
 					// @TODO item handling
 				}
 			}
+		}
+
+		bool playerInsideBomb = CircleCollision (player.obj.Position, player.bomb.transform.localPosition, player.obj.Radius, 125);
+		if (playerInsideBomb && !playerWasInsideBomb) {
+			StartCoroutine (GameScheduler.instance.audioManager.SwitchMusic (0.75f));
+			playerWasInsideBomb = true;
+		} else if(!playerInsideBomb && playerWasInsideBomb) {
+			StartCoroutine (GameScheduler.instance.audioManager.SwitchMusic (0.75f));
+			playerWasInsideBomb = false;
 		}
 	}
 

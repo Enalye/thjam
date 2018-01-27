@@ -30,7 +30,11 @@ public class GameScheduler : MonoBehaviour
     public static float scale_factor;
 
 	public AudioClip stageMusic;
+	public AudioClip stageMusic_spirit;
 	public AudioClip bossMusic;
+	public AudioClip bossMusic_spirit;
+
+	public int stageStartLoop;
 
 	void Start() {
 		// Set instance to this object
@@ -50,8 +54,8 @@ public class GameScheduler : MonoBehaviour
 		quadtree.player = player;
 
 		if (Application.isPlaying) {
-			audioManager.Init ();
-			audioManager.PlayMusic (stageMusic);
+			audioManager.Init();
+			audioManager.PlayMusic(stageMusic, stageMusic_spirit, stageStartLoop, 1.0f);
 		}
 
 		if (dialogue.isActiveAndEnabled) {
@@ -75,11 +79,11 @@ public class GameScheduler : MonoBehaviour
 		accumulator += frameTime;
 
 		while (accumulator >= dt) {
-			meshpool.UpdateAt (dt);			// Movement
-			meshpool.ReferenceBullets ();	// Reference bullets for collisions
+			meshpool.UpdateAt(dt);			// Movement
+			meshpool.ReferenceBullets();	// Reference bullets for collisions
 
 			// Collisions checks
-			player.UpdateAt (dt);
+			player.UpdateAt(dt);
 
 			if (dialogue.in_dialogue == false) {
 				for (int i = 0; i < enemies.Length; ++i) {

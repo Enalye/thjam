@@ -21,7 +21,7 @@ public class Gauge : MonoBehaviour {
 		fluid.rectTransform.sizeDelta = new Vector3(fluid.rectTransform.sizeDelta.x,
 												    (level / 100) * 400);
 
-		if (level == 0) {
+		if (level == 0 && !Player.instance.debug_invincible) {
 			float fadeTime = GameObject.Find("Fading").GetComponent<Fading>().BeginFade (1);
 			StartCoroutine (LoadAfter(fadeTime));
 		}
