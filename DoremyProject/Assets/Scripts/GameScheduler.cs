@@ -35,6 +35,7 @@ public class GameScheduler : MonoBehaviour
 	public AudioClip bossMusic_spirit;
 
 	public int stageStartLoop;
+	public int bossStartLoop;
 
 	void Start() {
 		// Set instance to this object
@@ -55,7 +56,7 @@ public class GameScheduler : MonoBehaviour
 
 		if (Application.isPlaying) {
 			audioManager.Init();
-			audioManager.PlayMusic(stageMusic, stageMusic_spirit, stageStartLoop, 1.0f);
+			audioManager.PlayMusic(stageMusic, stageMusic_spirit, stageStartLoop);
 		}
 
 		if (dialogue.isActiveAndEnabled) {
@@ -73,8 +74,6 @@ public class GameScheduler : MonoBehaviour
 	}
 
     void Update() {
-		player.UpdateAt(1f);
-
 		float frameTime = Time.deltaTime;
 		accumulator += frameTime;
 
@@ -104,5 +103,9 @@ public class GameScheduler : MonoBehaviour
 		// Start camera travelling
 		splineController.FollowSpline();
 		splineController2.FollowSpline();
+	}
+
+	public void PlayBossMusic() {
+		audioManager.PlayMusic(bossMusic, bossMusic_spirit, bossStartLoop);
 	}
 }

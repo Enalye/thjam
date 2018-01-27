@@ -32,7 +32,8 @@ public class Player : Entity {
     private float moveVertical;
 
 	public AudioClip shot;		// TODO : create an audio handler class
-	public AudioClip death;     // TODO : create an audio handler class
+	public AudioClip eat;       // TODO : create an audio handler class
+	public AudioClip hit;       // TODO : create an audio handler class
 
     [System.NonSerialized]
     public bool can_move;        // TODO : create a status class
@@ -40,8 +41,6 @@ public class Player : Entity {
     public bool can_be_damaged;  // TODO : create a status class
     [System.NonSerialized]
     public bool moving;          // TODO : create a status class
-    [System.NonSerialized]
-    public bool bombing;         // TODO : create a status class
     [System.NonSerialized]
     public bool dead;            // TODO : create a status class
 
@@ -52,6 +51,7 @@ public class Player : Entity {
     public bool render;
 
     private List<OptionData> options;
+	private AudioManager audioManager;
 
     [System.Serializable]
     public class OptionData {
@@ -80,6 +80,7 @@ public class Player : Entity {
         }
 
         base.Init();
+		audioManager = GameScheduler.instance.audioManager;
 
 		if (obj != null) {
 			// Obj represents hitbox here */
@@ -210,7 +211,7 @@ public class Player : Entity {
 			power_level = newPowerLevel;
 		}
 
-		if(Input.GetButton("Bomb")) {
+		if(Input.GetButton("Bomb") && !bomb.active) {
 			bomb.Fire();
 		}
 
@@ -222,8 +223,8 @@ public class Player : Entity {
 				} else {
 					float optionAngle = ((-90f + (power_level - 1) * -10f) + (i * 20f)) * Mathf.Deg2Rad;
 					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle) * option_distance, Mathf.Sin(optionAngle) * option_distance, 0f);
-					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
-					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
+					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * 25f);
+					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 200f);
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0.75f);
 				}
 				options[i].bullet.Position = options[i].position;
@@ -237,10 +238,10 @@ public class Player : Entity {
 				} else {
 					float optionAngle = ((i * 360f + optionAngleOffset) / power_level) * Mathf.Deg2Rad;
 					Vector3 pos = obj.Position + new Vector3(Mathf.Cos(optionAngle) * option_distance, Mathf.Sin(optionAngle) * option_distance, 0f) * 1.5f;
-					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * .25f);
-					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 2f);
+					options[i].position = Vector3.Lerp(options[i].position, pos, deltaTime * 25f);
+					options[i].bullet.SpriteAngle += new Vector3(0f, 0f, deltaTime * 200f);
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0.75f);
-					optionAngleOffset += deltaTime * 5f;
+					optionAngleOffset += deltaTime * 500f;
 				}
 				options[i].bullet.Position = options[i].position;
 				options[i].bullet.Scale = Vector3.one * 0.75f;
@@ -304,7 +305,7 @@ public class Player : Entity {
 
 			if (Input.GetButton ("Focus")) {
 				if (CanShoot()) {
-					GameScheduler.instance.audioManager.PlayEffect(shot);
+					audioManager.PlayEffect(shot);
 					// Focus fire.
 					for (int i = 0; i < 3; i++) {
 						Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
@@ -324,7 +325,7 @@ public class Player : Entity {
 				}
 				yield return new WaitForSeconds (.1f);
 			} else if (CanShoot()) {
-				GameScheduler.instance.audioManager.PlayEffect(shot);
+				audioManager.PlayEffect(shot);
 				// Unfocus fire.
 				for (int i = 0; i < 6; i++) {
 					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
@@ -349,8 +350,9 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _HitDisplay() {
+		audioManager.PlayEffect(hit);
 		can_be_damaged = false;
-		pool.UpdateGaugeLevel(-20.0f);
+		pool.UpdateGaugeLevel(-10.0f);
 		pool.ChangeBulletColor(obj, Colors.firebrick);
 		yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
 		pool.ChangeBulletColor(obj, Colors.transparent);
@@ -358,6 +360,7 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _EatDisplay() {
+		audioManager.PlayEffect(eat);
 		pool.UpdateGaugeLevel(15.0f);
 		pool.ChangeBulletColor(obj, Colors.limegreen);
 		yield return new WaitForSeconds(0.1f);
