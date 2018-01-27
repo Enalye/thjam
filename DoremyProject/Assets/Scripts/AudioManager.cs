@@ -7,10 +7,19 @@ public class AudioManager : MonoBehaviour {
 	private List<AudioSource> spiritMusicSources;  // Reference to the audio sources which will play the game music.
 	private List<AudioSource> efxSources;    // Reference to the audio sources which will play the game effects.
 
+	private AudioSource currMainSource;
+	private AudioSource currSpiritSource;
+
+	private Coroutine switchToMain;
+	private Coroutine switchToSpirit;
+
 	public void Init() {
 		mainMusicSources = new List<AudioSource>();
 		spiritMusicSources = new List<AudioSource>();
 		efxSources = new List<AudioSource>();
+
+		switchToMain = null;
+		switchToSpirit = null;
 	}
 
 	public void Destroy() {
@@ -54,17 +63,35 @@ public class AudioManager : MonoBehaviour {
 
 	public void PlayEffect(AudioClip clip) {
 		AudioSource audioSource = PlaySingle(clip, efxSources);
+		audioSource.volume = 1.0f;
 		audioSource.playOnAwake = false;
 	}
 
-	public void PlayMusic(AudioClip mainClip, AudioClip spiritClip, int startLoop, float volume) {
+	public void PlayMusic(AudioClip mainClip, AudioClip spiritClip, int startLoop) {
+		if (currMainSource != null) {
+			CleanUpMusic();
+		}
+
 		AudioSource mainSource = PlaySingle(mainClip, mainMusicSources);
-		mainSource.volume = volume;
+		mainSource.volume = 1.0f;
+		currMainSource = mainSource;
 
 		AudioSource spiritSource = PlaySingle(spiritClip, spiritMusicSources);
 		spiritSource.volume = 0;
+		currSpiritSource = spiritSource;
 
 		StartCoroutine(Loop(mainSource, spiritSource, startLoop));
+	}
+
+	private void CleanUpMusic() {
+		currMainSource.volume = 0.0f;
+		currSpiritSource.volume = 0.0f;
+
+		currMainSource.Stop();
+		currSpiritSource.Stop();
+
+		StopAndResetCoroutine(ref switchToMain);
+		StopAndResetCoroutine(ref switchToSpirit);
 	}
 
 	/* Loops the themes with custom satrt and end times */
@@ -83,24 +110,29 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	/* Prerequisite : both musics already playing, only one duo is active */
-	public IEnumerator SwitchMusic(float time) {
-		AudioSource currSource = null;
-		AudioSource newSource = null;
-
-		for(int i = 0; i < mainMusicSources.Count; ++i) {
-			if (mainMusicSources[i].volume != 0) {
-				currSource = mainMusicSources[i];
-				newSource = spiritMusicSources[i];
-				break;
-			}
-
-			if(spiritMusicSources[i].volume != 0) {
-				currSource = spiritMusicSources[i];
-				newSource = mainMusicSources[i];
-				break;
-			}
+	public void SwitchMusicToMainVersion(float time) {
+		if (switchToMain == null && currSpiritSource.volume == 1.0f) {
+			StopAndResetCoroutine(ref switchToSpirit);
+			switchToMain = StartCoroutine(SwitchMusic(currSpiritSource, currMainSource, time));
 		}
+	}
 
+	/* Prerequisite : both musics already playing, only one duo is active */
+	public void SwitchMusicToSpiritVersion(float time) {
+		if (switchToSpirit == null && currMainSource.volume == 1.0f) {
+			StopAndResetCoroutine(ref switchToMain);
+			switchToSpirit = StartCoroutine(SwitchMusic(currMainSource, currSpiritSource, time));
+		}
+	}
+
+	private void StopAndResetCoroutine(ref Coroutine coroutine) {
+		if(coroutine != null) {
+			StopCoroutine(coroutine);
+			coroutine = null;
+		}
+	}
+
+	private IEnumerator SwitchMusic(AudioSource currSource, AudioSource newSource, float time) {
 		if ((currSource != null) && (newSource != null)) {
 			float elapsedTime = 0;
 			while (elapsedTime < time) {
@@ -112,6 +144,7 @@ public class AudioManager : MonoBehaviour {
 			}
 
 			currSource.volume = 0;
+			newSource.volume = 1.0f;
 		}
 	}
 }

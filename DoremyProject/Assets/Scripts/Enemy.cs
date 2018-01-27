@@ -11,7 +11,7 @@ public partial class Enemy : Entity {
 
     public Sprite death_effect;     // The effect used for coroutine DeathEffect
     public Color death_color;       // Color used for coroutine DeathEffect
-	public float life;              // The amount of life this enemy has
+	public float base_life;              // The amount of life this enemy has
 	public float wait_time;
 
 	public EPattern    pattern;
@@ -22,11 +22,13 @@ public partial class Enemy : Entity {
 
 	// States
     private bool dead;
+	private float life;
 	private int currentPattern;
 
     public override void Init() {
         base.Init();
 		dead = false;
+		life = base_life;
 		can_be_damaged = false;
 		currentPattern = 0;
 
@@ -36,13 +38,6 @@ public partial class Enemy : Entity {
 
 			StartCoroutine(_Behaviour());
 		}
-    }
-
-    public void Die() {
-        if(!dead) {
-			obj.MarkForDeletion();
-            dead = true;
-        }
     }
 
 	public void UpdateAt(float dt) {
@@ -115,7 +110,7 @@ public partial class Enemy : Entity {
 	IEnumerator Boss() {
 		yield return new WaitForSeconds(2.5f);
 
-		//StartCoroutine(GameScheduler.instance.audioManager.SwitchMusic(0.75f));
+		GameScheduler.instance.PlayBossMusic();
 
 		yield return StartCoroutine(PlantPattern());
 		yield return StartCoroutine(MagusPattern());
@@ -126,8 +121,27 @@ public partial class Enemy : Entity {
 		SceneManager.LoadScene (3);
 	}
 
-	public void NextPattern() {
-		nbPatterns--;
+	public void TakeDamage(float damage) {
+		life -= damage;
+
+		if (life <= 0) {
+			NextPattern();
+		}
+	}
+
+	private void NextPattern() {
 		currentPattern++;
+		life = base_life;
+
+		if (currentPattern > nbPatterns) {
+			Die();
+		}
+	}
+
+	private void Die() {
+		if(!dead) {
+			obj.MarkForDeletion();
+			dead = true;
+		}
 	}
 }

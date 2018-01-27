@@ -13,13 +13,16 @@ public class QuadTreeHolder : MonoBehaviour {
     public MeshPool bullet_pool; // to remove bullets
 	public Player	player;
 
+	private AudioManager audioManager;
+	private Bomb 	     bomb;
+
     public bool trap;
-	private bool playerWasInsideBomb;
 
     [ExecuteInEditMode]
     public void Init() {
         ResetQuadTree();
-		playerWasInsideBomb = false;
+		bomb = player.bomb;
+		audioManager = GameScheduler.instance.audioManager;
         bullets_close_player = new List<Bullet>();
         bullets_buffer = new List<Bullet>();
     }
@@ -74,20 +77,14 @@ public class QuadTreeHolder : MonoBehaviour {
 					StartCoroutine(player._EatDisplay());
 					bullets_close_player[i].MarkForDeletion();
 				}
-
-				if((bullets_close_player[i].Type == EType.ITEM)) {
-					// @TODO item handling
-				}
 			}
 		}
-
-		bool playerInsideBomb = CircleCollision (player.obj.Position, player.bomb.transform.localPosition, player.obj.Radius, 125);
-		if (playerInsideBomb && !playerWasInsideBomb) {
-			StartCoroutine (GameScheduler.instance.audioManager.SwitchMusic (0.75f));
-			playerWasInsideBomb = true;
-		} else if(!playerInsideBomb && playerWasInsideBomb) {
-			StartCoroutine (GameScheduler.instance.audioManager.SwitchMusic (0.75f));
-			playerWasInsideBomb = false;
+			
+		bool playerInsideBomb = bomb.active && (CircleCollision (player.obj.Position, bomb.transform.localPosition, player.obj.Radius, bomb.radius));
+		if (playerInsideBomb) {
+			audioManager.SwitchMusicToSpiritVersion(0.75f);
+		} else {
+			audioManager.SwitchMusicToMainVersion(0.75f);
 		}
 	}
 
@@ -99,22 +96,14 @@ public class QuadTreeHolder : MonoBehaviour {
 			// For each bullet in the list we just got
 			for (int j = 0; j < bullets_buffer.Count; ++j) {
 				if (bullets_buffer[j].Type == EType.SHOT) {
-					enemy.life -= bullets_buffer[j].Damage;  // Add the damage of each bullet
 					bullets_buffer[j].MarkForDeletion();
-
-					if (enemy.life <= 0) {
-						enemy.NextPattern();
-
-						if (enemy.nbPatterns == 0) {
-							enemy.Die ();
-						}
-					}
+					enemy.TakeDamage(bullets_buffer [j].Damage);
 				}
 			}
 		}
 	}
 
-	// Circle collision (between player and bullet @TODO generalize)
+	// Circle collision
 	public static bool CircleCollision(Vector3 pos1, Vector3 pos2, float rad1, float rad2) {
 		float diff_x = pos1.x - pos2.x;
 		float diff_y = pos1.y - pos2.y;
