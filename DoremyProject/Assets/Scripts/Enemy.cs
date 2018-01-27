@@ -115,7 +115,7 @@ public partial class Enemy : Entity {
 	IEnumerator Boss() {
 		yield return new WaitForSeconds(2.5f);
 
-		GameScheduler.instance.audioManager.PlayMusic(GameScheduler.instance.bossMusic);
+		//StartCoroutine(GameScheduler.instance.audioManager.SwitchMusic(0.75f));
 
 		yield return StartCoroutine(PlantPattern());
 		yield return StartCoroutine(MagusPattern());

@@ -17,7 +17,7 @@ public class Player : Entity {
 
 	public Bullet playerSprite;
 	public Bullet grazeObj;
-    public GameObject bomb;
+	public Bomb   bomb;
 
 	public float option_distance;
     public float focus_speed;
@@ -177,23 +177,18 @@ public class Player : Entity {
     }
 
 	void UpdateAnimations() {
-		if (Input.GetKey ("x") && bombing == false) {
+		if (obj.Direction.x < 0) {
+			animator.SetBool ("IsGoingLeft", true);
 			animator.SetBool ("IsGoingRight", false);
-			animator.SetBool ("IsGoingLeft", false);           
-		} else if (bombing == false) { 
-			if (obj.Direction.x < 0) {
-				animator.SetBool ("IsGoingLeft", true);
-				animator.SetBool ("IsGoingRight", false);
-				playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
-			} else if (obj.Direction.x > 0) {
-				animator.SetBool ("IsGoingLeft", false);
-				animator.SetBool ("IsGoingRight", true);
-				playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
-			} else {
-				animator.SetBool ("IsGoingLeft", false);
-				animator.SetBool ("IsGoingRight", false);
-				playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
-			}
+			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
+		} else if (obj.Direction.x > 0) {
+			animator.SetBool ("IsGoingLeft", false);
+			animator.SetBool ("IsGoingRight", true);
+			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
+		} else {
+			animator.SetBool ("IsGoingLeft", false);
+			animator.SetBool ("IsGoingRight", false);
+			playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
 		}
 	}
 
@@ -213,6 +208,10 @@ public class Player : Entity {
 			power_level = newPowerLevel;
 		} else if (newPowerLevel < power_level) {
 			power_level = newPowerLevel;
+		}
+
+		if(Input.GetButton("Bomb")) {
+			bomb.Fire();
 		}
 
 		if (Input.GetButton("Focus")) {
@@ -305,7 +304,7 @@ public class Player : Entity {
 
 			if (Input.GetButton ("Focus")) {
 				if (CanShoot()) {
-					GameScheduler.instance.audioManager.PlaySingle (shot);
+					GameScheduler.instance.audioManager.PlayEffect(shot);
 					// Focus fire.
 					for (int i = 0; i < 3; i++) {
 						Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
@@ -325,7 +324,7 @@ public class Player : Entity {
 				}
 				yield return new WaitForSeconds (.1f);
 			} else if (CanShoot()) {
-				GameScheduler.instance.audioManager.PlaySingle (shot);
+				GameScheduler.instance.audioManager.PlayEffect(shot);
 				// Unfocus fire.
 				for (int i = 0; i < 6; i++) {
 					Bullet shot = pool.AddBullet (shot_sprite, EType.SHOT, EMaterial.PLAYER,
