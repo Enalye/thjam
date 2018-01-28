@@ -46,7 +46,7 @@ public class QuadTreeHolder : MonoBehaviour {
 
 	public void CheckCollision(Player player) {
 		bullets_close_player.Clear();
-		if(player.obj != null && player.can_be_damaged && !player.debug_invincible) { // Optimisation
+		if(player.obj != null && player.can_be_damaged) {
 			bullets_close_player = quadtree.Get(player.grazeObj.AABB);
 
 			// For each bullet close to the ennemy
@@ -57,7 +57,7 @@ public class QuadTreeHolder : MonoBehaviour {
 
 				// Enemy collision => player loses a life
 				if((bullet.Type == EType.NIGHTMARE ||
-					bullet.Type == EType.ENEMY) && player.can_be_damaged) {
+					bullet.Type == EType.ENEMY) && !bullet.Removing && player.can_be_damaged) {
 
 					if(CircleCollision(playerPos, bulletPos, player.grazebox_radius, bullet.Radius)) {
 						if (bullet.Grazed == false) {

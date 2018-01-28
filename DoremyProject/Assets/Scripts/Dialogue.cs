@@ -30,7 +30,7 @@ public class Dialogue : MonoBehaviour {
 		textID = 0;
 
 		while (textID < text.Count) {
-			if (Input.GetButtonDown("Shot1")) {
+			if ((Input.GetKeyDown("w") || Input.GetKeyDown("y") || Input.GetKeyDown("z")) ) {
 				textID++;
 				if (textID < text.Count) {
 					left_text.sprite = text[textID];
