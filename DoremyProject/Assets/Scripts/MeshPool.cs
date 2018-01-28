@@ -182,7 +182,7 @@ public partial class MeshPool : MonoBehaviour {
         _indices[matidx][xdx + 5] = 0;
     }
 
-    public void RemoveBullet(Bullet bullet) {
+    private void RemoveBullet(Bullet bullet) {
 		bullet.Active = false;
 		CleanBullet(bullet);
 		_available.Enqueue(bullet.Index);

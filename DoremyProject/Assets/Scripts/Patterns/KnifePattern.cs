@@ -16,7 +16,7 @@ public partial class Enemy : Entity {
 			float angle = 90;
 			for (int i = 0; i < n; ++i) {
 				if (obj.Removing && !bullets[i].Removing) {
-					pool.RemoveBullet (bullets[i]);
+					bullets[i].MarkForDeletion();
 				}
 
 				if (bullets [i].Active) {
@@ -47,7 +47,7 @@ public partial class Enemy : Entity {
 		}
 
 		for (int i = 0; i < bullets.Count; ++i) {
-			pool.RemoveBullet (bullets [i]);
+			bullets[i].MarkForDeletion();
 		}
 	}
 }

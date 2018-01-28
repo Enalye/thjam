@@ -87,6 +87,9 @@ public partial class Bullet : ScriptableObject
     public float Acceleration;
     public float AngularVelocity;
 
+	// Force handling
+	protected Vector3 Force;
+
     // Vertices and UV information
     public Sprite Sprite; // Usualy Bounds, UVs are set from the sprite ref
     public Bounds Bounds { get; set; }
@@ -135,6 +138,7 @@ public partial class Bullet : ScriptableObject
 		MaxSpeed = null;
 
 		Direction = Vector3.zero;
+		Force = Vector3.zero;
 		Angle = 0;
 		Acceleration = 0;
 		AngularVelocity = 0;
@@ -182,6 +186,17 @@ public partial class Bullet : ScriptableObject
         }
     }
 
+	public void AddForce(float ForceAngle, float ForceSpeed) {
+		float radAng = Mathf.Deg2Rad * ForceAngle;
+		float cos = Mathf.Cos(radAng);
+		float sin = Mathf.Sin(radAng);
+		Force += new Vector3(ForceSpeed * cos, ForceSpeed * sin);
+	}
+
+	public void RemoveRoce() {
+		Force = Vector3.zero;
+	}
+
     public virtual void SetupTriangles(int[] _indices) {
         int xdx = Index * 6;
         int ydx = Index * 4;
@@ -221,7 +236,7 @@ public partial class Bullet : ScriptableObject
 		if(CurrentTime < Delay) {
 			return;
 		}
-
+			
 		Speed = Speed + Acceleration;
 
 		/* If needed tune speed value */
@@ -236,7 +251,7 @@ public partial class Bullet : ScriptableObject
 		if (BoundPosition != null) {
 			Position = BoundPosition.Position;
 		} else {
-			Position += dt * Speed * Direction;
+			Position += dt * Speed * Direction + dt * Force;
 		}
 
         Angle += AngularVelocity;

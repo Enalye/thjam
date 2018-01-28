@@ -211,7 +211,7 @@ public class Player : Entity {
 			power_level = newPowerLevel;
 		}
 
-		if(Input.GetButton("Bomb") && !bomb.active) {
+		if(CanBomb()) {
 			bomb.Fire();
 		}
 
@@ -375,6 +375,10 @@ public class Player : Entity {
 	}
 
 	private bool CanShoot() {
-		return Input.GetButton ("Shot1") && !GameScheduler.instance.dialogue.in_dialogue;
+		return (Input.GetKey("w") || Input.GetKey("y") || Input.GetKey("z")) && !GameScheduler.instance.dialogue.in_dialogue;
+	}
+
+	private bool CanBomb() {
+		return Input.GetKey("x") && !bomb.active && !GameScheduler.instance.dialogue.in_dialogue;
 	}
 }	
