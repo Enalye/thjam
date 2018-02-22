@@ -17,13 +17,13 @@ public partial class Enemy : Entity {
 	public EPattern    pattern;
 	public BezierCurve curve;
 	public bool can_be_damaged;
+	public bool debug;
 
 	public int nbPatterns = 1;
 
-	// States
-    private bool dead;
-	private float life;
-	private int currentPattern;
+	protected bool  dead;
+	protected float life;
+	protected int   currentPattern;
 
     public override void Init() {
         base.Init();
@@ -31,6 +31,8 @@ public partial class Enemy : Entity {
 		life = base_life;
 		can_be_damaged = false;
 		currentPattern = 0;
+
+		obj.Position.z = Layering.Enemy;
 
         if(obj != null && Application.isPlaying) {
 			obj.Radius = 35;
@@ -40,7 +42,7 @@ public partial class Enemy : Entity {
 		}
     }
 
-	public void UpdateAt(float dt) {
+	public virtual void UpdateAt(float dt) {
 		pool.QuadTreeHolder.CheckCollision(this);
 	}
 
@@ -54,7 +56,11 @@ public partial class Enemy : Entity {
 		can_be_damaged = true;
 
 		if (curve != null) {
-			StartCoroutine (obj._Follow (curve));
+			if(debug) {
+				obj.BoundPosition = curve.GetPoint(0.999f);
+			} else {
+				StartCoroutine (obj._Follow (curve));
+			}
 		}
 
 		if (pattern == EPattern.ROSACE) {
@@ -82,7 +88,7 @@ public partial class Enemy : Entity {
 		if (pattern == EPattern.KNIFE) {
 			obj.Type = EType.DREAM;
 			obj.Color = Colors.royalblue;
-			StartCoroutine(KnifePattern(15, 75));
+			StartCoroutine(KnifePattern(15, 50));
 		}
 
 		if (pattern == EPattern.WAVE) {
@@ -108,12 +114,16 @@ public partial class Enemy : Entity {
 	}
 
 	IEnumerator Boss() {
-		yield return new WaitForSeconds(2.5f);
+		if(!debug) {
+			yield return new WaitForSeconds(3.0f);
+		}
 
 		GameScheduler.instance.PlayBossMusic();
 
+		yield return StartCoroutine(Epitrochoid(100, 10, 100));
 		yield return StartCoroutine(PlantPattern());
 		yield return StartCoroutine(MagusPattern());
+		yield return StartCoroutine(LotusSpell());
 
 		Fading fadingObj = GameObject.Find ("Fading").GetComponent<Fading> ();
 		fadingObj.BeginFade (1);
@@ -121,12 +131,21 @@ public partial class Enemy : Entity {
 		SceneManager.LoadScene (3);
 	}
 
-	public void TakeDamage(float damage) {
+	public virtual void TakeDamage(float damage) {
 		life -= damage;
 
 		if (life <= 0) {
 			NextPattern();
 		}
+	}
+
+	public Vector3 BulletPos() {
+		return new Vector3(obj.Position.x, obj.Position.y, Layering.Bullet);
+	}
+
+	public Vector3 BulletSpriteAngle(Bullet bullet) {
+		float angle = Mathf.Atan2(bullet.Position.y - obj.Position.y, bullet.Position.x - obj.Position.x) * Mathf.Rad2Deg;
+		return Vector3.forward * (angle + 180);
 	}
 
 	private void NextPattern() {

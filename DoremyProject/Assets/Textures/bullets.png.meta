@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2646887540854c34195ed6e0cfa0fed2
-timeCreated: 1515256167
+timeCreated: 1517435661
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -289,6 +289,7 @@ TextureImporter:
     21300564: bullets_282
     21300566: bullets_283
     21300568: white_star_negatif
+    21300570: empty_bullet
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -2180,6 +2181,20 @@ TextureImporter:
         height: 17
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: empty_bullet
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

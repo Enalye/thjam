@@ -23,7 +23,7 @@ public partial class Enemy : Entity {
 					float x = obj.Position.x + radius * Mathf.Cos (Mathf.Deg2Rad * angle);
 					float y = obj.Position.y + radius * Mathf.Sin (Mathf.Deg2Rad * angle);
 
-					bullets [i].Position = new Vector3 (x, y, Layering.Bullet);
+					bullets [i].Position = new Vector3 (x, y);
 					bullets [i].Speed = 0;
 					bullets [i].Angle = angle;
 					bullets [i].SpriteAngle = Vector3.forward * angle;

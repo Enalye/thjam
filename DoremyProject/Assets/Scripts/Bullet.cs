@@ -37,7 +37,7 @@ public partial class Bullet : ScriptableObject
     // Standard Position, Rotation, Scale
     public Vector3 Position;
     public Vector3 PreviousPosition;
-	public Bullet BoundPosition;
+	public Vector3? BoundPosition;
     public Vector3 Scale = new Vector3(1, 1);
     public Quaternion Rotation { get; set; }
 
@@ -52,8 +52,7 @@ public partial class Bullet : ScriptableObject
 
     // Cartesian Information
     private Vector3 _direction;
-    public Vector3 Direction
-    {
+    public Vector3 Direction {
         get { return _direction; }
         set
         {
@@ -66,8 +65,7 @@ public partial class Bullet : ScriptableObject
     // Polar information
     [SerializeField]
     private float _angle;
-    public float Angle
-    {
+    public float Angle {
         get { return _angle; }
         set
         {
@@ -86,9 +84,7 @@ public partial class Bullet : ScriptableObject
 	public float? MaxSpeed;
     public float Acceleration;
     public float AngularVelocity;
-
-	// Force handling
-	protected Vector3 Force;
+	public Vector3 Force;
 
     // Vertices and UV information
     public Sprite Sprite; // Usualy Bounds, UVs are set from the sprite ref
@@ -101,8 +97,7 @@ public partial class Bullet : ScriptableObject
 
     [SerializeField]
     private Color32 _color = new Color32(255, 255, 255, 255);
-    public Color32 Color
-    {
+    public Color32 Color {
         get { return _color; }
         set { _color = value; }
     }
@@ -113,12 +108,15 @@ public partial class Bullet : ScriptableObject
     // Delay before appearing
     public float Delay;
 
-    // Player shot data
+	// Damage / Heal value
     public float Damage;
 
     // Deletion conditions
-    public bool SpellResist = false;
-    public bool AutoDelete = true;
+    public bool SpellResist;
+    public bool AutoDelete;
+
+	// Status
+	public bool Magnetized;
 
     // Usually not to be modified by hand
     public float CurrentTime { get; set; }
@@ -138,10 +136,10 @@ public partial class Bullet : ScriptableObject
 		MaxSpeed = null;
 
 		Direction = Vector3.zero;
-		Force = Vector3.zero;
 		Angle = 0;
 		Acceleration = 0;
 		AngularVelocity = 0;
+		Force = Vector3.zero;
 		Radius = 0;
 		Delay = 0;
 		Damage = 0;
@@ -154,6 +152,7 @@ public partial class Bullet : ScriptableObject
 		Removing = false;
 		SpellResist = false;
 		AutoDelete = true;
+		Magnetized = false;
 
 		AABB = Rect.zero;
 	}
@@ -185,17 +184,6 @@ public partial class Bullet : ScriptableObject
             Bounds = sprite.bounds;
         }
     }
-
-	public void AddForce(float ForceAngle, float ForceSpeed) {
-		float radAng = Mathf.Deg2Rad * ForceAngle;
-		float cos = Mathf.Cos(radAng);
-		float sin = Mathf.Sin(radAng);
-		Force += new Vector3(ForceSpeed * cos, ForceSpeed * sin);
-	}
-
-	public void RemoveRoce() {
-		Force = Vector3.zero;
-	}
 
     public virtual void SetupTriangles(int[] _indices) {
         int xdx = Index * 6;
@@ -248,8 +236,8 @@ public partial class Bullet : ScriptableObject
 			Speed = Mathf.Min (MaxSpeed.Value, Speed);
 		}
 			
-		if (BoundPosition != null) {
-			Position = BoundPosition.Position;
+		if (BoundPosition.HasValue) {
+			Position = BoundPosition.Value;
 		} else {
 			Position += dt * Speed * Direction + dt * Force;
 		}
@@ -307,10 +295,32 @@ public partial class Bullet : ScriptableObject
 		Lifetime = 0;
 	}
 
+	public void MarkInvincible() {
+		Lifetime = null;
+		AutoDelete = false;
+	}
+
+	private Vector3 ComputeForce(float forceAngle, float forceSpeed) {
+		float radAng = Mathf.Deg2Rad * forceAngle;
+		float cos = Mathf.Cos(radAng);
+		float sin = Mathf.Sin(radAng);
+		return new Vector3(forceSpeed * cos, forceSpeed * sin);
+	}
+
+	private void SetForce(float forceAngle, float forceSpeed) {
+		BoundPosition = null;
+		Force = ComputeForce(forceAngle, forceSpeed);
+	}
+
+	private void SetForce(Vector3 force) {
+		BoundPosition = null;
+		Force = force;
+	}
+
 	public IEnumerator _Follow(BezierCurve curve) {
         float elapsedTime = 0;
         while (elapsedTime < 1) {
-			Position = curve.GetPoint (elapsedTime);
+			BoundPosition = curve.GetPoint (elapsedTime);
 			Direction = curve.GetDirection (elapsedTime);
 			elapsedTime += GameScheduler.dt * curve.GetSpeed (elapsedTime);
 
@@ -320,6 +330,24 @@ public partial class Bullet : ScriptableObject
 		// Turn on AutoDelete once moved to the end
 		AutoDelete = true;
     }
+
+	public IEnumerator _Magnetize() {
+		Magnetized = true;
+		float steeringSpeed = 0;
+
+		while(Active && !Removing) {
+			Vector3 playerPos = Player.instance.obj.Position;
+			float angle = Mathf.Atan2(playerPos.y - Position.y, playerPos.x - Position.x) * Mathf.Rad2Deg;
+			SpriteAngle = Vector3.forward * angle;
+
+			Vector3 desiredDirection = Vector3.Normalize(playerPos - Position) * steeringSpeed;
+			Vector3 steering = desiredDirection - Direction; 
+			SetForce(steering);
+
+			steeringSpeed += 4f;
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
+	}
 
 	public IEnumerator _RotateAround(Bullet other, float angle) {
 		yield return null; // Exit the first time since other not set yet

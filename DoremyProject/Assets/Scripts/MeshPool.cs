@@ -23,7 +23,7 @@ public partial class MeshPool : MonoBehaviour {
     private Bullet[] _bullets;
 
 	// Dream gauge
-	public Gauge   _gauge;
+	public DreamGauge _gauge;
 
 	// GUI elements
 	public  Sprite  _border_sprite;
@@ -95,6 +95,7 @@ public partial class MeshPool : MonoBehaviour {
 
 		// GUI elements
 		_border = AddBullet(_border_sprite, EType.EFFECT, EMaterial.GUI, Color.white);
+		_border.Position = new Vector3(0, 0, Layering.Background);
 		_border.Scale = new Vector3(1.55f, 1.6f, 1);
     }
 
@@ -141,7 +142,7 @@ public partial class MeshPool : MonoBehaviour {
 		bullet.CopyData(sprite, type, material, color, position, scale, speed, angle, acc, ang_vec);
 
 		if (type == EType.NIGHTMARE || type == EType.DREAM) {
-			bullet.Position.z = Layering.Bullet;
+			//bullet.Position.z = Layering.Bullet;
 			StartCoroutine(bullet._Appear(0.5f));
 		}
 

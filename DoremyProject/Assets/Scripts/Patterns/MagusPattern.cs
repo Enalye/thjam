@@ -19,7 +19,8 @@ public partial class Enemy : Entity {
 		float tRange = 400f;
 		float bAngle = 90;
 
-		while (obj.Active && (currentPattern == 1)) {
+		int patternID = currentPattern;
+		while (obj.Active && (currentPattern == patternID)) {
 			if (tRange > 80) {
 				for (int i = 0; i < bnum; ++i) {
 					float bitAngle = bitAnglebase + 360 / bnum * i;
@@ -29,7 +30,7 @@ public partial class Enemy : Entity {
 					angacc = bspd * 10 * Mathf.Sin (Mathf.Deg2Rad * (360 / bnum * i + tcount * wTime * 1.2f)) / 60;
 					for (int j = 0; j < bway; ++j) {
 						float angle = bAngle + 360 / bway * j;
-						Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[4], EType.DREAM, EMaterial.BULLET, Color.white,
+						Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[4], EType.NIGHTMARE, EMaterial.BULLET, Color.white,
 							             new Vector3 (tX, tY), 125f, angle, 0, angacc);
 
 						shot.MaxSpeed = bspd;
@@ -45,13 +46,13 @@ public partial class Enemy : Entity {
 								color = Colors.royalblue;
 								type = EType.DREAM;
 							} else {
-								color = Colors.yellow;
+								color = Colors.orchid;
 							}
 						} else {
 							if (j % 3 == 0) {
-								color = Colors.yellow;
+								color = Colors.mediumpurple;
 							} else {
-								color = Colors.chartreusegreen;
+								color = Colors.hotpink;
 							}
 						}
 

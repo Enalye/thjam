@@ -14,9 +14,10 @@ public class Entity : MonoBehaviour {
     [System.NonSerialized]
     public Bullet obj;                 // Bullet object to manipulate
 
+	protected float radius;
+
     [ExecuteInEditMode]
-    public virtual void Init()
-    {
+    public virtual void Init() {
 		if(gameObject.activeInHierarchy && sprite != null) {
             bullets = new List<Bullet>();
 			obj = pool.AddBullet(sprite, type, material, Color.white, transform.position);
@@ -27,4 +28,14 @@ public class Entity : MonoBehaviour {
     public IEnumerator _Wait(float n) {
         yield return new WaitForSeconds(n);
     }
+
+
+	public IEnumerator _BindObject() {
+		while (obj.Active) {
+			obj.Radius = radius;
+			obj.Scale = Vector3.one * radius * 2;
+			obj.Position = transform.localPosition;
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
+	}
 }

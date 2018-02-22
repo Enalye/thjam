@@ -9,7 +9,7 @@ public partial class Enemy : Entity {
 			EType type = (i % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
 
 			if (obj.Active && !obj.Removing) {
-				Circle (type, 25, 200f, 0);
+				Circle(25, 200f, 0);
 			}
 
 			yield return new WaitForSeconds(0.75f);
@@ -19,19 +19,21 @@ public partial class Enemy : Entity {
 	}
 
 
-	public void Circle(EType type, float n, float speed, float offset) {
+	public void Circle(float n, float speed, float offset) {
+		int a = 0;
 		for(float i = 0; i < 360; i += 360 / n) {
 			float ang = i + offset;
 
+			EType type = (a % 3 == 0) ? EType.DREAM : EType.NIGHTMARE;
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[1], type, EMaterial.BULLET,
 				                          type == (EType.NIGHTMARE) ? Colors.chartreusegreen : Colors.royalblue,
 										  obj.Position, Vector3.one * 1.5f, speed, ang);
 
-			shot.Position.z = Layering.Bullet;
 			shot.SpriteAngle = Vector3.forward * (ang - 180);
 			shot.Radius = 10f;
 
 			bullets.Add(shot);
+			a++;
 		}
 	}
 }
