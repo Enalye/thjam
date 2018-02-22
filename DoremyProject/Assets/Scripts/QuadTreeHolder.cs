@@ -8,6 +8,7 @@ public class QuadTreeHolder : MonoBehaviour {
     public Rect startingBounds;                     // Use this for initialization
 
     private List<Bullet> bullets_buffer;
+	private List<Bullet> bullets_in_bomb;
     private List<Bullet> bullets_close_player;
 
     public MeshPool bullet_pool; // to remove bullets
@@ -24,6 +25,7 @@ public class QuadTreeHolder : MonoBehaviour {
 		bomb = player.bomb;
 		audioManager = GameScheduler.instance.audioManager;
         bullets_close_player = new List<Bullet>();
+		bullets_in_bomb = new List<Bullet>();
         bullets_buffer = new List<Bullet>();
     }
 
@@ -46,6 +48,8 @@ public class QuadTreeHolder : MonoBehaviour {
 
 	public void CheckCollision(Player player) {
 		bullets_close_player.Clear();
+		bullets_in_bomb.Clear();
+
 		if(player.obj != null && player.can_be_damaged) {
 			bullets_close_player = quadtree.Get(player.grazeObj.AABB);
 
@@ -60,9 +64,8 @@ public class QuadTreeHolder : MonoBehaviour {
 					bullet.Type == EType.ENEMY) && !bullet.Removing && player.can_be_damaged) {
 
 					if(CircleCollision(playerPos, bulletPos, player.grazebox_radius, bullet.Radius)) {
-						if (bullet.Grazed == false) {
+						if(player.grazing == false) {
 							StartCoroutine(player._GrazeDisplay());
-							bullet.Grazed = true;
 						}
 
 						if(CircleCollision(playerPos, bulletPos, player.hitbox_radius, bullet.Radius)) {
@@ -78,9 +81,26 @@ public class QuadTreeHolder : MonoBehaviour {
 					bullets_close_player[i].MarkForDeletion();
 				}
 			}
+
+			// For each bullet inside the bomb
+			bullets_in_bomb = quadtree.Get(player.bomb.obj.AABB);
+
+			// For each bullet close to the ennemy
+			for(int i = 0; i < bullets_in_bomb.Count; ++i) {
+				Vector3 playerPos = Player.instance.obj.Position;
+
+				if (CircleCollision (bullets_in_bomb [i].Position, player.bomb.transform.localPosition, bullets_in_bomb[i].Radius, player.bomb.obj.Radius)) {
+					float angle = Mathf.Atan2(playerPos.y - bullets_in_bomb[i].Position.y, playerPos.x - bullets_in_bomb[i].Position.x) * Mathf.Rad2Deg;
+
+					if((bullets_in_bomb[i].Type == EType.DREAM) && !bullets_in_bomb[i].Magnetized) {
+						bullets_in_bomb[i].MarkInvincible();
+						StartCoroutine(bullets_in_bomb[i]._Magnetize());
+					}
+				}
+			}
 		}
 			
-		bool playerInsideBomb = bomb.active && (CircleCollision (player.obj.Position, bomb.transform.localPosition, player.obj.Radius, bomb.radius));
+		bool playerInsideBomb = bomb.active && (CircleCollision (player.obj.Position, bomb.transform.localPosition, player.obj.Radius, bomb.obj.Radius));
 		if (playerInsideBomb) {
 			audioManager.SwitchMusicToSpiritVersion(0.75f);
 		} else {
@@ -268,9 +288,16 @@ public class QuadTreeHolder : MonoBehaviour {
 
 		if (player.obj != null) {
 			Gizmos.color = Color.red;
-			Gizmos.DrawWireSphere (player.obj.Position, player.hitbox_radius);
+			Gizmos.DrawWireSphere(player.obj.Position, player.hitbox_radius);
 			Gizmos.color = Color.blue;
-			Gizmos.DrawWireSphere (player.obj.Position, player.grazebox_radius);
+			Gizmos.DrawWireSphere(player.obj.Position, player.grazebox_radius);
+		}
+
+		if (player.bomb.obj != null) {
+			Gizmos.color = Color.yellow;
+			float radius = player.bomb.obj.Radius;
+			Gizmos.DrawWireSphere (player.bomb.obj.Position, radius);
+			Gizmos.DrawWireCube (player.bomb.obj.AABB.center, player.bomb.obj.AABB.size);
 		}
     }
 }

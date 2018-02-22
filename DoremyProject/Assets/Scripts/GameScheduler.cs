@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameScheduler : MonoBehaviour
-{
+public class GameScheduler : MonoBehaviour {
     public static GameScheduler instance = null;     // Singleton
 
     public MeshPool meshpool;
@@ -44,6 +43,9 @@ public class GameScheduler : MonoBehaviour
 		} else if (instance != this) {
 			Destroy(gameObject);
 		}
+
+		// Avoid music stopping on alt tab
+		Application.runInBackground = true;
 
 		// Initialize quadtree and meshpool
 		quadtree.Init();

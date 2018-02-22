@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Colors {
+	public static Color32 hotpink = new Color32 (255, 110, 180, 255);
 	public static Color32 orchid = new Color32 (218, 112, 214, 255);
+	public static Color32 mediumpurple = new Color32 (147, 112, 219, 255);
 	public static Color32 royalblue = new Color32 (65, 105, 225, 255);
 	public static Color32 chartreusegreen = new Color32 (102, 205, 0, 255);
 	public static Color32 limegreen = new Color32 (50, 205, 50, 255);

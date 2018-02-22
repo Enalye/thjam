@@ -1,11 +1,25 @@
 fileFormatVersion: 2
 guid: 2425bc708c1152d419b83b5612372a82
-timeCreated: 1515119156
+timeCreated: 1517520527
 licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - pool: {instanceID: 0}
+  - sprite: {instanceID: 0}
+  - obj: {instanceID: 0}
+  - shot_sprite: {instanceID: 0}
+  - option_sprite: {instanceID: 0}
+  - animator: {instanceID: 0}
+  - animatorRenderer: {instanceID: 0}
+  - playerSprite: {instanceID: 0}
+  - grazeObj: {instanceID: 0}
+  - bomb: {instanceID: 0}
+  - shot: {instanceID: 0}
+  - eat: {instanceID: 0}
+  - hit: {instanceID: 0}
+  - graze: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

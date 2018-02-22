@@ -20,11 +20,12 @@ public partial class Enemy : Entity {
 		float angleUpdate = 0.25f;
 		float nbBranches = 2;
 
-		EType type = (generation % 2 == 0) ? EType.NIGHTMARE : EType.DREAM;
-		Color32 color = (type == EType.NIGHTMARE) ? Colors.orchid : Colors.royalblue;
-
+		int a = 0;
 		for(int i = 0; i < 360; i+= 360 / 60) {
 			float ang = i;
+
+			EType type = (a % 4 == 0) ? EType.DREAM : EType.NIGHTMARE;
+			Color32 color = (type == EType.NIGHTMARE) ? Colors.orchid : Colors.royalblue;
 
 			Bullet shot = pool.AddBullet (GameScheduler.instance.sprites[0], type, EMaterial.BULLET,
 				                          color, obj.Position, 0, ang, 0, 0);
@@ -36,6 +37,7 @@ public partial class Enemy : Entity {
 			bullets.Add(shot);
 
 			StartCoroutine (shot._Appear(0.2f));
+			a++;
 		}
 
 		bool expand = true;
@@ -67,7 +69,9 @@ public partial class Enemy : Entity {
 					radius -= 0.025f;
 				}
 
-				Rosace (nbBranches, shot.Angle, radius, angOffset * direction, shot);
+				if(!shot.Magnetized) {
+					Rosace (nbBranches, shot.Angle, radius, angOffset * direction, shot);
+				}
 			}
 
 			yield return new WaitForSeconds(0.01f);
@@ -78,14 +82,11 @@ public partial class Enemy : Entity {
 
 	public void Rosace(float k, float ang, float radius, float rot, Bullet rosacePart) {
 		float radAng = Mathf.Deg2Rad * ang;
-		rosacePart.Position.x = Mathf.Cos(k * radAng) * Mathf.Sin(radAng) * radius;
-		rosacePart.Position.y = Mathf.Cos(k * radAng) * Mathf.Cos(radAng) * radius;
-
-		float x = rosacePart.Position.x;
-		float y = rosacePart.Position.y;
+		float posX = Mathf.Cos(k * radAng) * Mathf.Sin(radAng) * radius;
+		float posY = Mathf.Cos(k * radAng) * Mathf.Cos(radAng) * radius;
 
 		float radRot = Mathf.Deg2Rad * rot;
-		rosacePart.Position.x = obj.Position.x + (x * Mathf.Cos(radRot) - y * Mathf.Sin(radRot));
-		rosacePart.Position.y = obj.Position.y + (x * Mathf.Sin(radRot) + y * Mathf.Cos(radRot));
+		rosacePart.BoundPosition = new Vector3(obj.Position.x + (posX * Mathf.Cos(radRot) - posY * Mathf.Sin(radRot)),
+										       obj.Position.y + (posX * Mathf.Sin(radRot) + posY * Mathf.Cos(radRot)));
 	}
 }

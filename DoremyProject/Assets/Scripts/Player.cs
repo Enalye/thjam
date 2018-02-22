@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Player : Entity {
     public static Player instance = null;     // Singleton
-	public float hitbox_radius = 0.15f;
+	public float hitbox_radius = 0.05f;
 	public float grazebox_radius = 0.3f;
 
 	public Sprite shot_sprite;
@@ -34,6 +34,8 @@ public class Player : Entity {
 	public AudioClip shot;		// TODO : create an audio handler class
 	public AudioClip eat;       // TODO : create an audio handler class
 	public AudioClip hit;       // TODO : create an audio handler class
+	public AudioClip graze;		// TODO : create an audio handler class
+	public AudioClip special;	// TODO : create an audio handler class
 
     [System.NonSerialized]
     public bool can_move;        // TODO : create a status class
@@ -41,6 +43,8 @@ public class Player : Entity {
     public bool can_be_damaged;  // TODO : create a status class
     [System.NonSerialized]
     public bool moving;          // TODO : create a status class
+	[System.NonSerialized]
+	public bool grazing;         // TODO : create a status class
     [System.NonSerialized]
     public bool dead;            // TODO : create a status class
 
@@ -80,6 +84,7 @@ public class Player : Entity {
         }
 
         base.Init();
+		bomb.Init();
 		audioManager = GameScheduler.instance.audioManager;
 
 		if (obj != null) {
@@ -94,7 +99,8 @@ public class Player : Entity {
 			CreateOptions();
 
 			if (animatorRenderer != null) {
-				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, Color.white, obj.Position);
+				Vector3 playerSpritePos = new Vector3(obj.Position.x, obj.Position.y, Layering.Player);
+				playerSprite = pool.AddBullet(animatorRenderer.sprite, EType.PLAYER, EMaterial.PLAYER, Color.white, playerSpritePos);
 				playerSprite.Scale = transform.lossyScale;
 				playerSprite.AutoDelete = false;
 			}
@@ -102,7 +108,6 @@ public class Player : Entity {
 			grazeObj = pool.AddBullet(sprite, EType.EFFECT, EMaterial.PLAYER, Colors.invisible, obj.Position);
 			grazeObj.Scale = Vector3.one * 1.2f;
 			grazeObj.Radius = grazebox_radius;
-			grazeObj.BoundPosition = obj;
 
 			/* Init collection hitbox */
 
@@ -110,6 +115,7 @@ public class Player : Entity {
 			can_be_damaged = true;
 			can_move = true;
 			moving = false;
+			grazing = false;
 			dead = false;
 			render = true;
 
@@ -175,21 +181,23 @@ public class Player : Entity {
 		if (animator != null) {
 			UpdateAnimations();
 		}
+
+		grazeObj.BoundPosition = obj.Position;
     }
 
 	void UpdateAnimations() {
 		if (obj.Direction.x < 0) {
 			animator.SetBool ("IsGoingLeft", true);
 			animator.SetBool ("IsGoingRight", false);
-			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
+			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, Layering.Player);
 		} else if (obj.Direction.x > 0) {
 			animator.SetBool ("IsGoingLeft", false);
 			animator.SetBool ("IsGoingRight", true);
-			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, 10);
+			playerSprite.Position = new Vector3(obj.Position.x, obj.Position.y, Layering.Player);
 		} else {
 			animator.SetBool ("IsGoingLeft", false);
 			animator.SetBool ("IsGoingRight", false);
-			playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, 10);
+			playerSprite.Position = new Vector3(obj.Position.x - 5, obj.Position.y, Layering.Player);
 		}
 	}
 
@@ -213,11 +221,12 @@ public class Player : Entity {
 
 		if(CanBomb()) {
 			bomb.Fire();
+			audioManager.PlayEffect(special);
 		}
 
 		if (Input.GetButton("Focus")) {
 			for (int i = 0; i < options.Count; i++) {
-				if (i >= power_level) {
+				if ((i >= power_level) || bomb.active) {
 					options[i].position = obj.Position;
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
 				} else {
@@ -232,7 +241,7 @@ public class Player : Entity {
 			}
 		} else {
 			for (int i = 0; i < options.Count; i++) {
-				if (i >= power_level) {
+				if ((i >= power_level) || bomb.active) {
 					options[i].position = obj.Position;
 					options[i].bullet.Color = new Color(1f, 1f, 1f, 0f);
 				} else {
@@ -350,32 +359,43 @@ public class Player : Entity {
 	}
 
 	public IEnumerator _HitDisplay() {
-		audioManager.PlayEffect(hit);
-		can_be_damaged = false;
-		pool.UpdateGaugeLevel(-10.0f);
-		pool.ChangeBulletColor(obj, Colors.firebrick);
-		yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
-		pool.ChangeBulletColor(obj, Colors.transparent);
-		can_be_damaged = true;
+		if(!debug_invincible) {
+			audioManager.PlayEffect(hit);
+			can_be_damaged = false;
+			pool.UpdateGaugeLevel(-10.0f);
+			yield return new WaitForSeconds(secondsOfInvicibilityOnHit);
+			can_be_damaged = true; 
+		}
 	}
 
 	public IEnumerator _EatDisplay() {
 		audioManager.PlayEffect(eat);
-		pool.UpdateGaugeLevel(15.0f);
-		pool.ChangeBulletColor(obj, Colors.limegreen);
-		yield return new WaitForSeconds(0.1f);
-		pool.ChangeBulletColor(obj, Colors.transparent);
+
+		float eatTime = 0.1f;
+		float eatQuantity = 5.0f;
+		float timeElapsed = 0;
+
+		float eatPerDelta = (eatQuantity * GameScheduler.dt) / eatTime;
+
+		while(timeElapsed < eatTime) {
+			pool.UpdateGaugeLevel(eatPerDelta);
+
+			timeElapsed += GameScheduler.dt;
+			yield return new WaitForSeconds(GameScheduler.dt);
+		}
 	}
 
 	public IEnumerator _GrazeDisplay() {
-		pool.UpdateGaugeLevel(0.5f);
-		pool.ChangeBulletColor(obj, Colors.yellow);
+		grazing = true;
+		audioManager.PlayEffect(graze);
+		float grazeGain = bomb.active ? 0.1f : 0.05f;
+		pool.UpdateGaugeLevel(0.05f);
 		yield return new WaitForSeconds(0.1f);
-		pool.ChangeBulletColor(obj, Colors.transparent);
+		grazing = false;
 	}
 
 	private bool CanShoot() {
-		return (Input.GetKey("w") || Input.GetKey("y") || Input.GetKey("z")) && !GameScheduler.instance.dialogue.in_dialogue;
+		return (Input.GetKey("w") || Input.GetKey("y") || Input.GetKey("z")) && !GameScheduler.instance.dialogue.in_dialogue && !bomb.active;
 	}
 
 	private bool CanBomb() {
